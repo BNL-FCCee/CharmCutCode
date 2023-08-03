@@ -42,13 +42,13 @@ The starting point of this code is ```runAnalysis.cxx```. This code is designed 
 - HistContainer: A simple class to create and maintain a list of hist. Some of the hist name, like the ones for the observables are keyworded. The behaviour is expected to be modified based on analysis type
 - MetadataContainer: This class is designed to propagate metadata as needed. Two funtions to note are the ```getFlavourCategory``` and ```getFitCategories```. These functions are expected to modify their behaviour based on ```analType``` option/
 
-### Local running
+### Usage: Local running for testing
 This is typically going to used for local testing
 ```
 runAnalysis --inputFileList file1,file2 --outputFileName test.root --sampleName wzp6_ee_nunuH_HZZ_ecm240 --processName HZZ --analType vvjj --SOWJSONfile ../source/CharmCutCode/data/FCCee_procDict_winter2023_IDEA.json
 ```
 
-### Batch running
+### Usage: Batch running for processing all samples
 ```
 python3 ../source/CharmCutCode/submission/submit.py --inputFolder <folder/with/inputs> --outputFolder <folderToSaveOutput> --doZHvvjj --<runLocal/runInteractive/submitCondor/...> #pick one option and remove the <brackets>
 ```
@@ -61,3 +61,21 @@ cd <folderToSaveOutput>
 hadd -f combined.root */*root
 ```
 
+## WSMaker
+This code is designed to take input from the above code, and make it into workspace. It relies on the input json file, for which an example is provided in the repository. This code will rebin, clean, unroll 2D hist into a 1D hist, save the outputs and write the XML needed for HistFactory.
+
+**It has the structure to do systematics, but that is very much not supported right now. This is a feature to come**
+
+### Usage
+```
+// This will create all the inputs for HistFactory
+makeWS --jsonConfig ../source/WSMaker/data/ZHvvJJConfig.json --inputFile <folderToSaveOutput>/combined.root --outputDir <wsfolder>
+
+// Run HistFactory
+hist2workspace <wsfolder>/XML/driver.xml  
+```
+
+At this end of this, there will be a combined workspace that can be used for fitting
+
+## WScanner (stat analysis)
+The workspace above can be used in any statistics related software. I will add this in the future. Need to see how to make my stat framework into a standalone easy to use system. Potentially could provide a simple script for testing
