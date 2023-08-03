@@ -20,6 +20,7 @@ git clone --recursive https://gitlab.cern.ch/sabidi/CharmCutCode.git ./
 For first time usage:
 ```
 cd ../build
+source ../source/setup.sh
 cmake ../source
 make -j
 cd ../run
@@ -29,6 +30,7 @@ source ../build/setup.sh
 For normal usage after the first compile:
 ```
 cd run
+source ../source/setup.sh
 source ../build/setup.sh
 ```
 

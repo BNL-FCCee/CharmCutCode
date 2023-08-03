@@ -127,6 +127,7 @@ def _writeJobList(jobOutPath, jobOutName, cmd):
     fileObj.write("#!/bin/bash\n\n")
     if(not (args.runLocal or args.runInteractive)): 
         CWD = os.getcwd()
+        fileObj.write("source ../source/setup.sh\n")
         fileObj.write("source ../build/setup.sh\n")
     fileObj.write(cmd)
     fileObj.write("\n")

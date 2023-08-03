@@ -5,7 +5,7 @@ project(CharmCutCode)
 message("announcing CharmCutCode")
 set(CMAKE_BUILD_TYPE Debug)
 
-add_compile_options(-std=c++14 -fPIC -Wall -Wextra -Wno-unused-parameter -O2)
+add_compile_options(-std=c++17 -fPIC -Wall -Wextra -Wno-unused-parameter -O2)
 
 # You need to tell CMake where to find the ROOT installation. This can be done in a number of ways:
 #   - ROOT built with classic configure/make use the provided $ROOTSYS/etc/cmake/FindROOT.cmake
