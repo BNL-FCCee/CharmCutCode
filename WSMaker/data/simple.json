@@ -1,0 +1,10 @@
+{
+    "category":["BH", "BM", "BL", "CH", "CM", "CL", "SH", "SM", "SL", "GH", "GM", "GL"],
+    "process":["ZZ", "Zqq", "Hbb"],
+    "processHeldConstant":[],
+
+    "xRebinFactor":5,
+    "yRebinFactor":5,
+    "lumi": 100000.0
+
+}
