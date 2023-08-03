@@ -32,4 +32,32 @@ cd run
 source ../build/setup.sh
 ```
 
-** Do remember to compile again if you edit any of the c++ code :) **
+**Do remember to compile again if you edit any of the c++ code :)**
+
+## CharmCutCode
+
+The starting point of this code is ```runAnalysis.cxx```. This code is designed to parse the input options, create the correct analysis running, and call the required function on that. Do note that this is relatively hard-written process, in the sense that categories and their filling are left to be implemented in c++. This is done to ensure the greatest flexibility, since we don't know what is required to implemeted a FCCee analysis. A couple things to note:
+- AnalysisXXX.cxx: This code must implement the simple event loop and apply selection and fill the relevant hist. Only this code needs to know what is the exact definition of the category
+- TreeContainer: Simple but a dynamic reader to read only the variable requested. Make stuff faster
+- HistContainer: A simple class to create and maintain a list of hist. Some of the hist name, like the ones for the observables are keyworded. The behaviour is expected to be modified based on analysis type
+- MetadataContainer: This class is designed to propagate metadata as needed. Two funtions to note are the ```getFlavourCategory``` and ```getFitCategories```. These functions are expected to modify their behaviour based on ```analType``` option/
+
+### Local running
+This is typically going to used for local testing
+```
+runAnalysis --inputFileList file1,file2 --outputFileName test.root --sampleName wzp6_ee_nunuH_HZZ_ecm240 --processName HZZ --analType vvjj --SOWJSONfile ../source/CharmCutCode/data/FCCee_procDict_winter2023_IDEA.json
+```
+
+### Batch running
+```
+python3 ../source/CharmCutCode/submission/submit.py --inputFolder <folder/with/inputs> --outputFolder <folderToSaveOutput> --doZHvvjj --<runLocal/runInteractive/submitCondor/...> #pick one option and remove the <brackets>
+```
+
+This will submit the jobs to be run in the choosen way. It will run multiple files in one job, as specified by the 'mergeFile' option. 
+
+After the jobs are done, a manually merging of the files is needed
+```
+cd <folderToSaveOutput>
+hadd -f combined.root */*root
+```
+

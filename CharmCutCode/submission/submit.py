@@ -12,7 +12,7 @@ parser.add_argument("--outputFolder",               default = "/Users/haider/FCC
 parser.add_argument("--doZHvvjj",                   default = False, action='store_true',   help = "Run jobs for ZHvvjj analysis") 
 
 ## Batch options
-parser.add_argument("--mergeFile",                  default = 20,     type=int,              help = "Number of files to merge into one job")
+parser.add_argument("--mergeFile",                  default = 20,    type=int,              help = "Number of files to merge into one job")
 parser.add_argument("--dryRun",                     default = False, action='store_true',   help = "Does not submit to anything") 
 parser.add_argument("--runLocal",                   default = False, action='store_true',   help = "Run in parallel") 
 parser.add_argument("--runInteractive",             default = False, action='store_true',   help = "Run in interactive move") 

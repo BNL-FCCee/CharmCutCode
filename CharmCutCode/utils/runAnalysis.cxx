@@ -51,7 +51,6 @@ bool cmdline(int argc, char** argv, map<TString,std::string>& opts)
     opts.clear();
 
     // defaults
-    opts["debug"]           = "";
     opts["nEvents"]         = "-1";
     
     opts["inputFileList"]   = "/Users/haider/FCC/data/ntuples/zh_vvjj/wzp6_ee_nunuH_HZZ_ecm240/events_0.root";
@@ -68,7 +67,13 @@ bool cmdline(int argc, char** argv, map<TString,std::string>& opts)
         string opt=argv[i];
 
         if (opt=="--help") {
-            cout<<"--debug           : event number for debugging (delimted by comma)"<<endl;
+            cout<<"--nEvents           : Number of events to run (-1 means all events)"<<endl;
+            cout<<"--inputFileList     : comma seperated list of inputs files to run on"<<endl;
+            cout<<"--outputFileName    : name (including path) for where to store the output file"<<endl;
+            cout<<"--sampleName        : sample name as defined in the Sum of weight file provided by FCC collaboration"<<endl;
+            cout<<"--processName       : simple process name - becomes a keyword for the ws building"<<endl;
+            cout<<"--analType          : analysis type to preform on the inputs - supported options: vvjj"<<endl;
+            cout<<"--SOWJSONfile       : path to the Sum of wieght json file"<<endl;
 
             return false;
         }
