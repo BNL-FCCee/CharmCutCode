@@ -79,6 +79,8 @@ def main():
 
         if(len(_mergeJobTmp) > 0): fileList.append(",".join(_mergeJobTmp))
 
+        print("final list: ", len(fileList))
+
         # create the output folder
         outPath = args.outputFolder + "/" + submissionJob["folderName"]
         _createFolder(outPath)
@@ -105,8 +107,6 @@ def main():
             _writeJobList(cInfo["jobOutPath"], cInfo["jobOutName"], cmd)
 
             submissionManager.addJob(cInfo)
-
-            if(index == 3): break
 
 
     ##############################################################
@@ -168,6 +168,8 @@ def getRootFileList(dirName):
     for fileName in os.listdir(dirName):
         if(fileName.endswith(".root")):
             fileList.append(dirName + "/" + fileName);
+    
+    print("looking for", dirName, ": nFile: ", len(fileList))
     return fileList
 
 if __name__ == '__main__':
