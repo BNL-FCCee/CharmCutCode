@@ -1,7 +1,7 @@
 {
     "category":["BH", "BM", "BL", "CH", "CM", "CL", "SH", "SM", "SL", "GH", "GM", "GL"],
-    "process":["ZZ", "Zqq", "HZZ", "Hbb", "Hcc", "Hgg", "Htautau", "qqH"],
-    "processHeldConstant":["Zqq", "qqH"],
+    "process":["WW", "ZZ", "Zqq", "Hbb", "Hcc", "Hgg", "Hss", "HWW", "HZZ", "Htautau", "qqH"],
+    "processHeldConstant":[],
 
     "xRebinFactor":5,
     "yRebinFactor":5,
