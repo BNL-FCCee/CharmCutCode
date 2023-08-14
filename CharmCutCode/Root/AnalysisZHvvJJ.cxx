@@ -27,6 +27,7 @@ void AnalysisZHvvJJ::run()
     auto scoreMapHist = m_histContainer->getFlavourCategoryHist();
     auto scoreMapFitCatHist = m_histContainer->getFitCategoryHist();
     auto obsHist = m_histContainer->getObsHistinFitCategory();
+    auto countingHist = m_histContainer->getCountingHist();
 
     // Extra hist for easy fill up
     auto BH_obsHist = obsHist["BH"];
@@ -77,6 +78,8 @@ void AnalysisZHvvJJ::run()
     for(int i = 0; i < nEntries; i++)
     {
         treeCont->getEntry(i);
+        // Just to store how many events were run over
+        countingHist->Fill(1);
 
         if(i % 10000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
 
@@ -204,7 +207,19 @@ void AnalysisZHvvJJ::finalize()
     // using json = nlohmann::json;
     std::ifstream f(MDC::GetInstance()->getSOWJSONFile());
     nlohmann::json data = nlohmann::json::parse(f);
+
+    // override the sum of weights, if it is inside the extra files that we built by hand
+    std::ifstream customF(MDC::GetInstance()->getCustomSOWJSONFile());
+    nlohmann::json customData = nlohmann::json::parse(customF);
+
     double normWeight = (double)data[MDC::GetInstance()->getSampleName()]["crossSection"]/(double)data[MDC::GetInstance()->getSampleName()]["sumOfWeights"];
+    
+    // If the information is in the custom file, scale it
+    if(customData.contains(MDC::GetInstance()->getSampleName()))
+    {
+        normWeight = (double)data[MDC::GetInstance()->getSampleName()]["crossSection"]/(double)customData[MDC::GetInstance()->getSampleName()]["sumOfWeights"];
+    }
+    
     // Close the outputFile
     auto outFile = TFile::Open(MDC::GetInstance()->getOutputFileName().c_str(), "recreate");
     

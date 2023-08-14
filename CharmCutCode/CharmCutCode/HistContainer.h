@@ -27,6 +27,21 @@ class HistContainer
 
       }
 
+      // For knowing know many events were run over
+      TH1F* getCountingHist()
+      {
+         static TH1F* hist = NULL;
+         if(hist) return hist;
+
+         auto processName = MDC::GetInstance()->getProcessName();
+
+         hist = new TH1F(("counting_" + processName).c_str(), ("counting_" + processName).c_str(), 10, 0, 10);
+         registerHist(hist);
+
+         return hist;
+
+      }
+
       TH1F* getFlavourCategoryHist()
       {
          static TH1F* hist = NULL;

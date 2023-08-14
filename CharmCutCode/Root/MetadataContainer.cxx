@@ -43,6 +43,7 @@ void MetadataContainer::setMetadata(std::string key, std::string value)
     else if(key == "processName") m_processName = value;
     else if(key == "analType") m_analType = value;
     else if(key == "SOWJSONfile") m_SOWJSONfile = value;
+    else if(key == "CustomSOWJSONfile") m_CustomSOWJSONfile = value;
     else
     {
         std::cout<<"Did not recognize the key: "<<key<<std::endl;

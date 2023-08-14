@@ -1,0 +1,32 @@
+{
+    "wzp6_ee_nunuH_Htautau_ecm240": {
+        "numberOfEvents": 1046944,
+        "sumOfWeights": 1046944.0
+    },
+    "wzp6_ee_qqH_ecm240": {
+        "numberOfEvents": 5400000,
+        "sumOfWeights": 5400000.0
+    },
+    "wzp6_ee_nunuH_HZZ_ecm240": {
+        "numberOfEvents": 189156,
+        "sumOfWeights": 189156.0
+    },
+    "wzp6_ee_nunuH_HWW_ecm240": {
+        "numberOfEvents": 386663,
+        "sumOfWeights": 386663.0
+    },
+    "p8_ee_Zqq_ecm240": {
+        "numberOfEvents": 97919933,
+        "sumOfWeights": 97919933
+    },
+    "p8_ee_WW_ecm240": {
+        "numberOfEvents": 359572153,
+        "sumOfWeights": 359572153
+    },
+    "p8_ee_ZZ_ecm240": {
+        "numberOfEvents": 48843076,
+        "sumOfWeights": 48843076
+    }
+
+
+}

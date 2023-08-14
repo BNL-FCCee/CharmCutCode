@@ -34,6 +34,7 @@ int main(int argc, char** argv)
     MDC::GetInstance()->setMetadata("sampleName", opts["sampleName"]);
     MDC::GetInstance()->setMetadata("processName", opts["processName"]);
     MDC::GetInstance()->setMetadata("SOWJSONfile", opts["SOWJSONfile"]);
+    MDC::GetInstance()->setMetadata("CustomSOWJSONfile", opts["CustomSOWJSONfile"]);
     MDC::GetInstance()->setMetadata("nEvents", std::atoi(opts["nEvents"].c_str()));
 
     analysis->run();
@@ -51,14 +52,15 @@ bool cmdline(int argc, char** argv, map<TString,std::string>& opts)
     opts.clear();
 
     // defaults
-    opts["nEvents"]         = "-1";
+    opts["nEvents"]              = "-1";
     
-    opts["inputFileList"]   = "/Users/haider/FCC/data/ntuples/zh_vvjj/wzp6_ee_nunuH_HZZ_ecm240/events_0.root";
-    opts["outputFileName"]  = "wzp6_ee_nunuH_HZZ_ecm240_0.root";
-    opts["sampleName"]      = "wzp6_ee_nunuH_HZZ_ecm240";
-    opts["processName"]     = "qqH";
-    opts["analType"]        = "vvjj";
-    opts["SOWJSONfile"]     = "../source/CharmCutCode/data/FCCee_procDict_winter2023_IDEA.json";
+    opts["inputFileList"]       = "/Users/haider/FCC/data/ntuples/zh_vvjj/wzp6_ee_nunuH_HZZ_ecm240/events_0.root";
+    opts["outputFileName"]      = "wzp6_ee_nunuH_HZZ_ecm240_0.root";
+    opts["sampleName"]          = "wzp6_ee_nunuH_HZZ_ecm240";
+    opts["processName"]         = "qqH";
+    opts["analType"]            = "vvjj";
+    opts["SOWJSONfile"]         = "../source/CharmCutCode/data/FCCee_procDict_winter2023_IDEA.json";
+    opts["CustomSOWJSONfile"]   = "../source/CharmCutCode/data/SumOfWeightsCustom.json";
 
 
 

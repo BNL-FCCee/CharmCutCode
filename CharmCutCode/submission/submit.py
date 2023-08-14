@@ -71,7 +71,7 @@ def main():
         for fileName in rawFileList:
             if(counter >= args.mergeFile):
                 fileList.append(",".join(_mergeJobTmp))
-                mergeJobTmp = []
+                _mergeJobTmp = []
                 counter = 0
 
             counter += 1
