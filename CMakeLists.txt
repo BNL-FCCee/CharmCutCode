@@ -10,3 +10,4 @@ set(CMAKE_BUILD_TYPE Debug)
 # the project's entire directory structure.
 add_subdirectory(CharmCutCode)
 add_subdirectory(WSMaker)
+add_subdirectory(wscanner)

@@ -17,7 +17,6 @@ parser.add_argument("--dryRun",                     default = False, action='sto
 parser.add_argument("--runLocal",                   default = False, action='store_true',   help = "Run in parallel") 
 parser.add_argument("--runInteractive",             default = False, action='store_true',   help = "Run in interactive move") 
 parser.add_argument("--submitCondor",               default = False, action='store_true',   help = "Submit jobs to the batch") 
-parser.add_argument("--submitSlurm",                default = False, action='store_true',   help = "Submit jobs to the batch") 
 parser.add_argument("--submitCedarContainer",       default = False, action='store_true',   help = "submission for cedarContainer")
 parser.add_argument("--cedarTime",                  default = "6:00:00", type = str,        help = "Time for a job to run on Cedar. Needs to be in format hh:mm:ss")
 parser.add_argument("--maxProcs",                   default = 4,     type=int,              help = "Number of parallel processed")

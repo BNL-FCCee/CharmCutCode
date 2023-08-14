@@ -33,7 +33,6 @@ target_link_libraries(WSMakerLib ${ROOT_LIBRARIES})
 #---Link the exe files
 file(GLOB_RECURSE exe_files "utils/*.cxx")
 foreach(_exe_file ${exe_files})
-    message(${_exe_file})
     get_filename_component(_theExec ${_exe_file} NAME_WE)
     add_executable(${_theExec} ${_exe_file})
     target_link_libraries(${_theExec} WSMakerLib)
