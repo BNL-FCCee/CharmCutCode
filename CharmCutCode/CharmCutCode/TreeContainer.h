@@ -31,8 +31,7 @@ class varMember {
 
         T operator() (){return var;}
 
-
-  private:
+    private:
         T var;
 
 };
@@ -43,16 +42,26 @@ class TreeContainer
         TreeContainer();
         virtual ~TreeContainer() {};
 
+        // Get the raw number of entries in the tree
         int getEntries(){return m_tree->GetEntries();};
 
-        TTree* getTree(){return m_tree;};
+        // Get events to run on
+        int getEventsToRun()
+        {
+            int nEntries = getEntries();
+            if(MDC::GetInstance()->getNEvents() > 0) nEntries = MDC::GetInstance()->getNEvents();
+            return nEntries;
+        }
 
+
+        TTree* getTree(){return m_tree;};
         void getEntry(int i){ m_tree->GetEntry(i);};
-        
-        std::vector<TString> splitString(TString string, TString delimiter);
+
 
    protected:
         TTree* m_tree;
+
+        std::vector<TString> splitString(TString string, TString delimiter);
 
 };
 

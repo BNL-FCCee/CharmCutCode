@@ -18,91 +18,27 @@
 class HistContainer 
 {
    public:
-      HistContainer()
-      {
-
-      }
-      virtual ~HistContainer()
-      {
-
-      }
+      HistContainer();
+      virtual ~HistContainer() {};
 
       // For knowing know many events were run over
-      TH1F* getCountingHist()
-      {
-         static TH1F* hist = NULL;
-         if(hist) return hist;
-
-         auto processName = MDC::GetInstance()->getProcessName();
-
-         hist = new TH1F(("counting_" + processName).c_str(), ("counting_" + processName).c_str(), 10, 0, 10);
-         registerHist(hist);
-
-         return hist;
-
-      }
-
-      TH1F* getFlavourCategoryHist()
-      {
-         static TH1F* hist = NULL;
-         if(hist) return hist;
-
-         auto flavour = MDC::GetInstance()->getFlavourCategory();
-         auto processName = MDC::GetInstance()->getProcessName();
-
-         hist = new TH1F(("scoreMap_1D_" + processName).c_str(), ("scoreMap_1D_" + processName).c_str(), flavour.size(), 0, flavour.size());
-         registerHist(hist);
-         int index = 0;
-         for(const auto& v: flavour)
-         {
-            hist->GetXaxis()->SetBinLabel(index + 1, v.c_str());
-            index++;
-         }
-         return hist;
-
-      }
-
-      TH1F* getFitCategoryHist()
-      {
-         static TH1F* hist = NULL;
-         if(hist) return hist;
-
-         auto flavour = MDC::GetInstance()->getFitCategories();
-         auto processName = MDC::GetInstance()->getProcessName();
-
-         hist = new TH1F(("scoreMapFitCategory_1D_" + processName).c_str(), ("scoreMapFitCategory_1D_" + processName).c_str(), flavour.size(), 0, flavour.size());
-         registerHist(hist);
-         int index = 0;
-         for(const auto& v: flavour)
-         {
-            hist->GetXaxis()->SetBinLabel(index + 1, v.c_str());
-            index++;
-         }
-         return hist;
+      TH1F* getCountingHist();
 
 
-      }
+      // Create generic TH1F that are registered in the Hist container
+      TH1F* get1DHist(std::string name, int binX, double lwrX, double uprX, std::vector<std::string> optionalBinNames = {});
 
-      std::map<std::string, TH2F*> getObsHistinFitCategory()
-      {
-         static  std::map<std::string, TH2F*> histList;
-         if(histList.size() > 0) return histList;
+      // Create generic TH2F that are registered in the Hist container
+      TH2F* get2DHist(std::string name, int binX, double lwrX, double uprX, int binY, double lwrY, double uprY);
 
-         auto categories = MDC::GetInstance()->getFitCategories();
+      ////// Please only call one of them in the analysis, otherwise, there will be chaos
+      // If it gets too much, we can add runtime check to see one of them has been called
+      // Create 2D histograms that will be used for fit observable
+      std::map<std::string, TH2F*> getObsHistinFitCategory(std::vector<std::string> fitCategories, int binX, double lwrX, double uprX, int binY, double lwrY, double uprY);
+      // Create 1D histograms that will be used for fit observable
+      std::map<std::string, TH1F*> getObsHistinFitCategory(std::vector<std::string> fitCategories, int binX, double lwrX, double uprX);
 
-         for(const auto& c: categories)
-         {
 
-            // This is high keywored; It needs to be in ObsHist_Cat_XXX_Process_YYY. The WS building depends on this
-            auto name = "ObsHist_Cat_" + c + "_Process_" + MDC::GetInstance()->getProcessName();
-            auto hist = new TH2F(name.c_str(), name.c_str(), 250, 0, 250, 250, 0, 250);
-            registerHist(hist);
-            histList[c] = hist;
-         }
-      
-         return histList;
-
-      }
 
       std::vector<TH1*> getHistList(){return m_histList;};
 
@@ -112,6 +48,16 @@ class HistContainer
       void registerHist(TH1* h)
       {
          m_histList.push_back(h);
+      }
+
+      // Check if the hist exists
+      TH1* getHist(std::string name)
+      {
+         for(const auto& h: m_histList)
+         {
+            if(h->GetTitle() == name) return h;
+         }
+         return NULL;
       }
 
 };

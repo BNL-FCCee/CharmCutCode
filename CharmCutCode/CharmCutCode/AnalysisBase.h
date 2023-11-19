@@ -18,14 +18,26 @@ class AnalysisBase
         AnalysisBase() {};
         virtual ~AnalysisBase() {};
 
-        virtual void initialize() = 0;
+        virtual void initialize()
+        {
+            m_histContainer = std::make_shared<HistContainer>();
+        }
 
+
+        // Main logic of analysis in here
         virtual void run() = 0;
 
-        virtual void finalize() = 0;
+        // Called to finalize the analysis
+        // Write output, for now
+        virtual void finalize()
+        {
+            writeHistogram();
+        }
 
     protected:
         std::shared_ptr<HistContainer> m_histContainer;
+
+        void writeHistogram();
 
 
 };

@@ -17,11 +17,7 @@ class AnalysisZHvvJJ: public AnalysisBase
       AnalysisZHvvJJ();
       virtual ~AnalysisZHvvJJ();
 
-      void initialize() override {};
-
       void run() override;
-
-      void finalize() override; 
 
    protected:
 
