@@ -10,7 +10,8 @@
 using namespace std;
 
 // Base class 
-AnalysisZHvvJJ::AnalysisZHvvJJ()
+AnalysisZHvvJJ::AnalysisZHvvJJ():
+    AnalysisBase()
 {
     m_histContainer = std::make_shared<HistContainer>();;
 }

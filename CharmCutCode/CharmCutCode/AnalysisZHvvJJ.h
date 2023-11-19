@@ -9,22 +9,21 @@
 #include <algorithm>
 
 // local include
-#include "CharmCutCode/MetadataContainer.h"
-#include "CharmCutCode/HistContainer.h"
+#include "CharmCutCode/AnalysisBase.h"
 
-class AnalysisZHvvJJ 
+class AnalysisZHvvJJ: public AnalysisBase
 {
    public:
       AnalysisZHvvJJ();
       virtual ~AnalysisZHvvJJ();
 
-      // event loop and systematic loop
-      void run();
+      void initialize() override {};
 
-      void finalize();
+      void run() override;
+
+      void finalize() override; 
 
    protected:
-      std::shared_ptr<HistContainer> m_histContainer;
 
 
 };

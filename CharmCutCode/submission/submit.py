@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser()
 ## Analysis options
 parser.add_argument("--inputFolder",                default = "/Users/haider/FCC/data/ntuples/zh_vvjj/", type = str,      help = "Path to folder with all the input folder")
 parser.add_argument("--outputFolder",               default = "/Users/haider/FCC/CharmCutCode/run/root-files/", type = str,      help = "Path to folder with all the output")
-parser.add_argument("--doZHvvjj",                   default = False, action='store_true',   help = "Run jobs for ZHvvjj analysis") 
+parser.add_argument("--doZHvvJJ",                   default = False, action='store_true',   help = "Run jobs for ZHvvjj analysis") 
 
 ## Batch options
 parser.add_argument("--mergeFile",                  default = 20,    type=int,              help = "Number of files to merge into one job")
@@ -33,7 +33,7 @@ submissionJobList = []
 
 
 
-if args.doZHvvjj:
+if args.doZHvvJJ:
     submissionJobList = [
     {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
     {"folderName" : "p8_ee_ZZ_ecm240",              "processName" : "ZZ"},
@@ -152,8 +152,8 @@ def _getRunCommand(exePath, currJob):
     cmd += ' --sampleName %s' %(currJob['sampleName'])
     cmd += ' --processName %s' %(currJob['processName'])
 
-    if(args.doZHvvjj):
-        cmd += ' --analType vvjj'
+    if(args.doZHvvJJ):
+        cmd += ' --analType ZHvvJJ'
 
     return cmd
 

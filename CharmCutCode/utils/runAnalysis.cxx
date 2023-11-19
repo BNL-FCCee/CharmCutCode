@@ -13,6 +13,7 @@
 
 
 // Class include
+#include "CharmCutCode/AnalysisBase.h"
 #include "CharmCutCode/AnalysisZHvvJJ.h"
 #include "CharmCutCode/MetadataContainer.h"
 
@@ -27,7 +28,6 @@ int main(int argc, char** argv)
 
     if (!cmdline(argc,argv,opts)) return 0;
 
-    auto analysis = std::make_shared<AnalysisZHvvJJ>();
     MDC::GetInstance()->setMetadata("analType", opts["analType"]);
     MDC::GetInstance()->setMetadata("inputFileList", opts["inputFileList"]);
     MDC::GetInstance()->setMetadata("outputFileName", opts["outputFileName"]);
@@ -37,6 +37,21 @@ int main(int argc, char** argv)
     MDC::GetInstance()->setMetadata("CustomSOWJSONfile", opts["CustomSOWJSONfile"]);
     MDC::GetInstance()->setMetadata("nEvents", std::atoi(opts["nEvents"].c_str()));
 
+    std::shared_ptr<AnalysisBase>  analysis;
+
+    if(opts["analType"] == "ZHvvJJ") 
+    {
+        analysis =  std::make_shared<AnalysisZHvvJJ>();
+    }
+    else
+    {
+        std::cout<<"Anal Type not recognized"<<std::endl;
+        std::cout<<"Input analType: "<<opts["analType"]<<std::endl;
+        exit(1);
+    }
+
+
+    analysis->initialize();
     analysis->run();
     analysis->finalize();
 
