@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--inputFolder",                default = "/Users/haider/FCC/data/ntuples/zh_vvjj/", type = str,      help = "Path to folder with all the input folder")
 parser.add_argument("--outputFolder",               default = "/Users/haider/FCC/CharmCutCode/run/root-files/", type = str,      help = "Path to folder with all the output")
 parser.add_argument("--doZHvvJJ",                   default = False, action='store_true',   help = "Run jobs for ZHvvjj analysis") 
+parser.add_argument("--doZHAllHad",                   default = False, action='store_true',   help = "Run jobs for ZHAllHad analysis") 
 
 ## Batch options
 parser.add_argument("--mergeFile",                  default = 20,    type=int,              help = "Number of files to merge into one job")
@@ -47,6 +48,48 @@ if args.doZHvvJJ:
     {"folderName" : "wzp6_ee_nunuH_Htautau_ecm240", "processName" : "Htautau"},
     {"folderName" : "wzp6_ee_qqH_ecm240",           "processName" : "qqH"},
     ]
+elif args.doZHAllHad:
+    submissionJobList = [
+    {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
+    {"folderName" : "p8_ee_Zqq_ecm240",             "processName" : "Zqq"},
+    {"folderName" : "p8_ee_ZZ_ecm240",              "processName" : "ZZ"},
+    {"folderName" : "wzp6_ee_bbH_Hbb_ecm240",       "processName" : "Hbb"},
+    {"folderName" : "wzp6_ee_bbH_Hcc_ecm240",       "processName" : "Hcc"},
+    {"folderName" : "wzp6_ee_bbH_Hgg_ecm240",       "processName" : "Hgg"},
+    {"folderName" : "wzp6_ee_bbH_Hss_ecm240",       "processName" : "Hss"},
+    {"folderName" : "wzp6_ee_bbH_Htautau_ecm240",   "processName" : "Htautau"},
+    {"folderName" : "wzp6_ee_bbH_HWW_ecm240",       "processName" : "HWW"},
+    {"folderName" : "wzp6_ee_bbH_HZa_ecm240",       "processName" : "HZa"},
+    {"folderName" : "wzp6_ee_bbH_HZZ_ecm240",       "processName" : "HZZ"},
+    {"folderName" : "wzp6_ee_ccH_Hbb_ecm240",       "processName" : "Hbb"},
+    {"folderName" : "wzp6_ee_ccH_Hcc_ecm240",       "processName" : "Hcc"},
+    {"folderName" : "wzp6_ee_ccH_Hgg_ecm240",       "processName" : "Hgg"},
+    {"folderName" : "wzp6_ee_ccH_Hss_ecm240",       "processName" : "Hss"},
+    {"folderName" : "wzp6_ee_ccH_Htautau_ecm240",   "processName" : "Htautau"},
+    {"folderName" : "wzp6_ee_ccH_HWW_ecm240",       "processName" : "HWW"},
+    {"folderName" : "wzp6_ee_ccH_HZa_ecm240",       "processName" : "HZa"},
+    {"folderName" : "wzp6_ee_ccH_HZZ_ecm240",       "processName" : "HZZ"},
+    {"folderName" : "wzp6_ee_nunuH_ecm240",         "processName" : "ecm240"},
+    {"folderName" : "wzp6_ee_qqH_Hbb_ecm240",       "processName" : "Hbb"},
+    {"folderName" : "wzp6_ee_qqH_Hcc_ecm240",       "processName" : "Hcc"},
+    {"folderName" : "wzp6_ee_qqH_Hgg_ecm240",       "processName" : "Hgg"},
+    {"folderName" : "wzp6_ee_qqH_Hss_ecm240",       "processName" : "Hss"},
+    {"folderName" : "wzp6_ee_qqH_Htautau_ecm240",   "processName" : "Htautau"},
+    {"folderName" : "wzp6_ee_qqH_HWW_ecm240",       "processName" : "HWW"},
+    {"folderName" : "wzp6_ee_qqH_HZa_ecm240",       "processName" : "HZa"},
+    {"folderName" : "wzp6_ee_qqH_HZZ_ecm240",       "processName" : "HZZ"},
+    {"folderName" : "wzp6_ee_ssH_Hbb_ecm240",       "processName" : "Hbb"},
+    {"folderName" : "wzp6_ee_ssH_Hcc_ecm240",       "processName" : "Hcc"},
+    {"folderName" : "wzp6_ee_ssH_Hgg_ecm240",       "processName" : "Hgg"},
+    {"folderName" : "wzp6_ee_ssH_Hss_ecm240",       "processName" : "Hss"},
+    {"folderName" : "wzp6_ee_ssH_Htautau_ecm240",   "processName" : "Htautau"},
+    {"folderName" : "wzp6_ee_ssH_HWW_ecm240",       "processName" : "HWW"},
+    {"folderName" : "wzp6_ee_ssH_HZa_ecm240",       "processName" : "HZa"},
+    {"folderName" : "wzp6_ee_ssH_HZZ_ecm240",       "processName" : "HZZ"},
+    ]
+else:
+    print("Dont know what type of job you are running. Select one option")
+    exit(1)
 
 def main():
     submissionManager = submissionFactory(args)
@@ -154,6 +197,11 @@ def _getRunCommand(exePath, currJob):
 
     if(args.doZHvvJJ):
         cmd += ' --analType ZHvvJJ'
+    elif(args.doZHAllHad)
+        cmd += ' --analType ZHAllHad'
+    else:
+        print("Dont know what type of job you are running. doXXXX not supported for run Command")
+        exit(1)
 
     return cmd
 
@@ -166,7 +214,7 @@ def getRootFileList(dirName):
     fileList = []
     for fileName in os.listdir(dirName):
         if(fileName.endswith(".root")):
-            fileList.append(dirName + "/" + fileName);
+            fileList.append(dirName + "/" + fileName)
     
     print("looking for", dirName, ": nFile: ", len(fileList))
     return fileList

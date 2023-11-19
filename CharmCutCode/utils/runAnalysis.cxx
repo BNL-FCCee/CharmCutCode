@@ -15,6 +15,7 @@
 // Class include
 #include "CharmCutCode/AnalysisBase.h"
 #include "CharmCutCode/AnalysisZHvvJJ.h"
+#include "CharmCutCode/AnalysisZHAllHad.h"
 #include "CharmCutCode/MetadataContainer.h"
 
 using namespace std;
@@ -42,6 +43,10 @@ int main(int argc, char** argv)
     if(opts["analType"] == "ZHvvJJ") 
     {
         analysis =  std::make_shared<AnalysisZHvvJJ>();
+    }
+    else if(opts["analType"] == "ZHAllHad") 
+    {
+        analysis =  std::make_shared<AnalysisZHAllHad>();
     }
     else
     {
