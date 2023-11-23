@@ -30,9 +30,6 @@ class MetadataContainer
           
       };
 
-      std::vector<std::string> getFlavourCategory();
-      std::vector<std::string> getFitCategories();
-
       std::string getAnalType(){return m_analType;};
       std::string getSampleName(){return m_sampleName;};
       std::string getInputFileList(){return m_inputFileList;};

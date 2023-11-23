@@ -1,5 +1,5 @@
-#ifndef _AnalysisZHvvJJ_H
-#define _AnalysisZHvvJJ_H
+#ifndef _AnalysisZHAllHad_H
+#define _AnalysisZHAllHad_H
 
 // c++ includes
 #include <map>
@@ -11,11 +11,11 @@
 // local include
 #include "CharmCutCode/AnalysisBase.h"
 
-class AnalysisZHvvJJ: public AnalysisBase
+class AnalysisZHAllHad: public AnalysisBase
 {
    public:
-      AnalysisZHvvJJ();
-      virtual ~AnalysisZHvvJJ();
+      AnalysisZHAllHad();
+      virtual ~AnalysisZHAllHad();
 
       void run() override;
 

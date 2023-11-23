@@ -3,30 +3,30 @@
 #include "CharmCutCode/TreeContainer.h"
 #include <iomanip>
 #include <TFile.h>
-#include <nlohmann/json.hpp>
 #include <fstream>
 
 
 using namespace std;
 
 // Base class 
-AnalysisZHvvJJ::AnalysisZHvvJJ()
-{
-    m_histContainer = std::make_shared<HistContainer>();;
-}
+AnalysisZHvvJJ::AnalysisZHvvJJ():
+    AnalysisBase()
+{}
 AnalysisZHvvJJ::~AnalysisZHvvJJ()
-{
-}
-
-
+{}
 
 
 void AnalysisZHvvJJ::run()
 {
+
+    std::vector<std::string> flavourCategory {"B", "C", "S", "G"};
+    std::vector<std::string> fitCategory {"BH", "BM", "BL", "CH", "CM", "CL", "SH", "SM", "SL", "GH", "GM", "GL"};
+
+    
     // Get the histograms
-    auto scoreMapHist = m_histContainer->getFlavourCategoryHist();
-    auto scoreMapFitCatHist = m_histContainer->getFitCategoryHist();
-    auto obsHist = m_histContainer->getObsHistinFitCategory();
+    auto scoreMapHist = m_histContainer->get1DHist("scoreMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
+    auto scoreMapFitCatHist = m_histContainer->get1DHist("scoreMapFitCategory_1D", fitCategory.size(), 0, fitCategory.size(), fitCategory);
+    auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0, 250, 250, 0, 250);
     auto countingHist = m_histContainer->getCountingHist();
 
     // Extra hist for easy fill up
@@ -45,16 +45,13 @@ void AnalysisZHvvJJ::run()
 
     // Get the trees
     auto treeCont = std::make_shared<TreeContainer>();
-
     std::cout<<"sampleName: "<<MDC::GetInstance()->getSampleName()<<" events: "<<treeCont->getEntries()<<std::endl;
 
     // Get max events to run on
-    int nEntries = treeCont->getEntries();
-    if(MDC::GetInstance()->getNEvents() > 0) nEntries = MDC::GetInstance()->getNEvents();
-    auto tree = treeCont->getTree();
-
+    int nEntries = treeCont->getEventsToRun();
 
     // Connect branches to trees
+    auto tree = treeCont->getTree();
     varMember<float> B {tree, "B"};
     varMember<float> C {tree, "C"};
     varMember<float> S {tree, "S"};
@@ -181,13 +178,10 @@ void AnalysisZHvvJJ::run()
         }
     }
 
-
     scoreMapHist->SetBinContent(1, BlikeEvents*100./NafterCut);
     scoreMapHist->SetBinContent(2, ClikeEvents*100./NafterCut);
     scoreMapHist->SetBinContent(3, SlikeEvents*100./NafterCut);
     scoreMapHist->SetBinContent(4, GlikeEvents*100./NafterCut);
-
-
 
     for(int i = 0; i < 3; i++)
     {
@@ -196,49 +190,7 @@ void AnalysisZHvvJJ::run()
         scoreMapFitCatHist->SetBinContent(3+i*3, SlikeEvents_cat[i]*100./NafterCut);
         scoreMapFitCatHist->SetBinContent(4+i*3, GlikeEvents_cat[i]*100./NafterCut);
     }
-
-
   
 }
 
 
-void AnalysisZHvvJJ::finalize()
-{
-    // using json = nlohmann::json;
-    std::ifstream f(MDC::GetInstance()->getSOWJSONFile());
-    nlohmann::json data = nlohmann::json::parse(f);
-
-    // override the sum of weights, if it is inside the extra files that we built by hand
-    std::ifstream customF(MDC::GetInstance()->getCustomSOWJSONFile());
-    nlohmann::json customData = nlohmann::json::parse(customF);
-
-    double normWeight = (double)data[MDC::GetInstance()->getSampleName()]["crossSection"]/(double)data[MDC::GetInstance()->getSampleName()]["sumOfWeights"];
-    
-    // If the information is in the custom file, scale it
-    if(customData.contains(MDC::GetInstance()->getSampleName()))
-    {
-        normWeight = (double)data[MDC::GetInstance()->getSampleName()]["crossSection"]/(double)customData[MDC::GetInstance()->getSampleName()]["sumOfWeights"];
-    }
-    
-    // Close the outputFile
-    auto outFile = TFile::Open(MDC::GetInstance()->getOutputFileName().c_str(), "recreate");
-    
-    // get all the hist
-    auto histList = m_histContainer->getHistList();
-
-    outFile->mkdir("Nominal");
-    outFile->cd("Nominal");
-    
-    for(const auto& h: histList)
-    {
-        // if the keyword ObsHist is in the name, normalize it
-        TString histName = h->GetTitle();
-        if(histName.Contains("ObsHist"))
-        {
-            h->Scale(normWeight);
-        }
-        h->Write();
-    } 
-    
-    outFile->Close();
-}
