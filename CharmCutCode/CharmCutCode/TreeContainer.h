@@ -14,6 +14,7 @@
 #include <TString.h>
 #include <TTree.h>
 #include <algorithm>
+#include "ROOT/RVec.hxx"
 
 template <typename T>
 class varMember {
@@ -35,6 +36,38 @@ class varMember {
         T var;
 
 };
+
+
+/// template specialisation for ROOT::VecOps::RVec branches/ 
+/// These essentially behave like scalars, but provide additional 
+/// convenient element-level accessors as well as iterators. 
+template <typename T>
+class varMember<ROOT::VecOps::RVec<T>> {
+    public:
+        inline varMember(TTree* tree, std::string name)
+        {
+            // make the branch active to be read
+            tree->SetBranchStatus(name.c_str(), true);
+            // Connect the branch
+            tree->SetBranchAddress(name.c_str(), &var);
+        };
+
+        ROOT::VecOps::RVec<T>* getVar() {return var;};
+
+        // get the element at index
+        T at(int i) {return var->at(i); }
+
+        // get the size of the vector
+        int size() {return var->size(); }
+
+        // Return the base object
+        ROOT::VecOps::RVec<T>* operator() (){return var;}
+
+    private:
+        ROOT::VecOps::RVec<T>* var = NULL;
+
+};
+
 
 class TreeContainer 
 {
