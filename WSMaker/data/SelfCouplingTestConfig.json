@@ -1,0 +1,10 @@
+{
+    "category":["Inclusive"],
+    "process":["Hbb"],
+    "processHeldConstant":[],
+
+    "xRebinFactor":5,
+    "yRebinFactor":5,
+
+    "lumi": 5000000.0
+}
