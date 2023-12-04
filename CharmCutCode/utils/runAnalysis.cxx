@@ -16,6 +16,7 @@
 #include "CharmCutCode/AnalysisBase.h"
 #include "CharmCutCode/AnalysisZHvvJJ.h"
 #include "CharmCutCode/AnalysisZHAllHad.h"
+#include "CharmCutCode/AnalysisSelfCouplingTest.h"
 #include "CharmCutCode/MetadataContainer.h"
 
 using namespace std;
@@ -47,6 +48,10 @@ int main(int argc, char** argv)
     else if(opts["analType"] == "ZHAllHad") 
     {
         analysis =  std::make_shared<AnalysisZHAllHad>();
+    }
+    else if(opts["analType"] == "SelfCoupling") 
+    {
+        analysis =  std::make_shared<AnalysisSelfCouplingTest>();
     }
     else
     {
