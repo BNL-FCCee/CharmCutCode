@@ -11,6 +11,7 @@ parser.add_argument("--inputFolder",                default = "/Users/haider/FCC
 parser.add_argument("--outputFolder",               default = "/Users/haider/FCC/CharmCutCode/run/root-files/", type = str,      help = "Path to folder with all the output")
 parser.add_argument("--doZHvvJJ",                   default = False, action='store_true',   help = "Run jobs for ZHvvjj analysis") 
 parser.add_argument("--doZHAllHad",                   default = False, action='store_true',   help = "Run jobs for ZHAllHad analysis") 
+parser.add_argument("--doZHSelfCoupling",                   default = False, action='store_true',   help = "Run jobs for ZH self-coupling analysis") 
 
 ## Batch options
 parser.add_argument("--mergeFile",                  default = 20,    type=int,              help = "Number of files to merge into one job")
@@ -86,6 +87,11 @@ elif args.doZHAllHad:
     {"folderName" : "wzp6_ee_ssH_HWW_ecm240",       "processName" : "HWW"},
     {"folderName" : "wzp6_ee_ssH_HZa_ecm240",       "processName" : "HZa"},
     {"folderName" : "wzp6_ee_ssH_HZZ_ecm240",       "processName" : "HZZ"},
+    ]
+elif args.doZHSelfCoupling:
+        submissionJobList = [
+    {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
+    {"folderName" : "wzp6_ee_ccH_Hbb_ecm240",       "processName" : "Hbb"},
     ]
 else:
     print("Dont know what type of job you are running. Select one option")
@@ -197,8 +203,10 @@ def _getRunCommand(exePath, currJob):
 
     if(args.doZHvvJJ):
         cmd += ' --analType ZHvvJJ'
-    elif(args.doZHAllHad)
+    elif(args.doZHAllHad):
         cmd += ' --analType ZHAllHad'
+    elif(args.doZHSelfCoupling):
+        cmd += ' --analType SelfCoupling'
     else:
         print("Dont know what type of job you are running. doXXXX not supported for run Command")
         exit(1)

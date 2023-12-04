@@ -1,6 +1,6 @@
 {
     "category":["Inclusive"],
-    "process":["Hbb"],
+    "process":["Hbb", "WW"],
     "processHeldConstant":[],
 
     "xRebinFactor":5,
