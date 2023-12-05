@@ -19,13 +19,10 @@ AnalysisSelfCouplingTest::~AnalysisSelfCouplingTest()
 void AnalysisSelfCouplingTest::run()
 {
 
-    std::vector<std::string> flavourCategory {"B", "C", "S", "G"};
     std::vector<std::string> fitCategory {"Inclusive"};
 
     
     // Get the histograms
-    auto scoreMapHist = m_histContainer->get1DHist("scoreMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
-    auto scoreMapFitCatHist = m_histContainer->get1DHist("scoreMapFitCategory_1D", fitCategory.size(), 0, fitCategory.size(), fitCategory);
     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 100, 100, 150);
     auto countingHist = m_histContainer->getCountingHist();
 
@@ -56,11 +53,12 @@ void AnalysisSelfCouplingTest::run()
     // Loop over the trees here
     for(int i = 0; i < nEntries; i++)
     {
-        bool foundZccCandidate = false;
+        foundZccCandidate = false;
         thisPairCscore = -9;
         maxPairCscore = -9;
         highestPairCscore_index = -9;
         treeCont->getEntry(i);
+        
         // Just to store how many events were run over
         countingHist->Fill(1);
 
@@ -74,7 +72,7 @@ void AnalysisSelfCouplingTest::run()
 
             // require invariant mass of that pair to be between 75-110 GeV
             // require sumCscore > 1.6
-            if(thisPairInvMass < 60 || thisPairInvMass > 120) continue; 
+            if(thisPairInvMass < 75 || thisPairInvMass > 110) continue; 
             if(thisPairCscore < 1.6) continue; 
 
             // for jet pairs in event passing criteria, choose the one with the highest sumCscore

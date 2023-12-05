@@ -90,8 +90,10 @@ elif args.doZHAllHad:
     ]
 elif args.doZHSelfCoupling:
         submissionJobList = [
-    {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
-    {"folderName" : "wzp6_ee_ccH_Hbb_ecm240",       "processName" : "Hbb"},
+    #{"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
+    {"folderName" : "p8_ee_ZZ_ecm240",              "processName" : "ZZ"},
+    {"folderName" : "p8_ee_Zqq_ecm240",              "processName" : "Zqq"},
+    #{"folderName" : "wzp6_ee_ccH_Hbb_ecm240",       "processName" : "Hbb"},
     ]
 else:
     print("Dont know what type of job you are running. Select one option")
@@ -173,6 +175,7 @@ def _writeJobList(jobOutPath, jobOutName, cmd):
     fileName = filePath + "/" + jobOutName + ".sh"
     fileObj = open(fileName, 'w')
     fileObj.write("#!/bin/bash\n\n")
+    fileObj.write("export KRB5CCNAME=$HOME/krb5cc_`id -u`\n")
     if(not (args.runLocal or args.runInteractive)): 
         CWD = os.getcwd()
         fileObj.write("source ../source/setup.sh\n")
@@ -210,6 +213,10 @@ def _getRunCommand(exePath, currJob):
     else:
         print("Dont know what type of job you are running. doXXXX not supported for run Command")
         exit(1)
+
+    cmd += '  --SOWJSONfile /usatlas/u/atishelma/FCC/CharmCutCode/source/CharmCutCode/data/FCCee_procDict_winter2023_IDEA.json'
+
+    cmd = cmd.replace("/eos/", "root://eosuser.cern.ch//eos/")
 
     return cmd
 
