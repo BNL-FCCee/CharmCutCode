@@ -49,6 +49,7 @@ void AnalysisSelfCouplingTest::run()
     bool foundZccCandidate = false;
     double ZccCandMass;
     double HCandMass;
+    bool debug = false; // this is very verbose, might not want this if running over many events
 
     // Loop over the trees here
     for(int i = 0; i < nEntries; i++)
@@ -58,6 +59,8 @@ void AnalysisSelfCouplingTest::run()
         maxPairCscore = -9;
         highestPairCscore_index = -9;
         treeCont->getEntry(i);
+
+        if(debug) std::cout << "Event number: " << i << std::endl;
         
         // Just to store how many events were run over
         countingHist->Fill(1);
@@ -69,6 +72,12 @@ void AnalysisSelfCouplingTest::run()
             
             thisPairInvMass = all_invariant_masses.at(j);
             thisPairCscore = recojetpair_isC.at(j);
+
+            if(debug){
+                std::cout << "on jet pair number: " << j << std::endl;
+                std::cout << "jet pair invariant mass: " << thisPairInvMass << std::endl;
+                std::cout << "jet pair sum C score: " << thisPairCscore << std::endl;
+            }
 
             // require invariant mass of that pair to be between 75-110 GeV
             // require sumCscore > 1.6
