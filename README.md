@@ -14,7 +14,20 @@ There are not crazy dependencies, only a semi recent version of root is required
 ```
 mkdir source run build
 cd source
+```
+
+then clone via your preferred protocol:
+
+https:
+
+```
 git clone --recursive https://gitlab.cern.ch/sabidi/CharmCutCode.git ./
+``` 
+
+ssh:
+
+```
+git clone --recursive ssh://git@gitlab.cern.ch:7999/sabidi/CharmCutCode.git ./
 ```
 
 For first time usage:
