@@ -14,8 +14,11 @@
 class AnalysisZHAllHad: public AnalysisBase
 {
    public:
+      bool m_debug;
       AnalysisZHAllHad();
       virtual ~AnalysisZHAllHad();
+
+      // std::vector<unsigned int> missing_pair(std::vector<int>);
 
       void run() override;
 

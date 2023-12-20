@@ -197,7 +197,7 @@ def _getRunCommand(exePath, currJob):
 
     if(args.doZHvvJJ):
         cmd += ' --analType ZHvvJJ'
-    elif(args.doZHAllHad)
+    elif(args.doZHAllHad):
         cmd += ' --analType ZHAllHad'
     else:
         print("Dont know what type of job you are running. doXXXX not supported for run Command")
