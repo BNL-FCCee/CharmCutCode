@@ -32,7 +32,7 @@ void AnalysisZHAllHad::run()
 
     std::vector<std::string> flavours{"B","C","S","D","U","G","TAU"};
     std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G","TAU"};
-    std::vector<std::string> fitCategory {"LowHbb","LowHcc","LowHss","LowHgg","LowHtautau","LowHqq","MidHbb","MidHcc","MidHss","MidHgg","MidHtautau","MidHqq","HiHbb","HiHcc","HiHss","HiHgg","HiHtautau","HiHqq"};
+    std::vector<std::string> fitCategory {"Incl","Incl_Corr","LowHbb","LowHcc","LowHss","LowHgg","LowHtautau","LowHqq","MidHbb","MidHcc","MidHss","MidHgg","MidHtautau","MidHqq","HiHbb","HiHcc","HiHss","HiHgg","HiHtautau","HiHqq"};
     std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "dCut", "Pairing","jjMassCut","ZHmassCut"};
 
     
@@ -44,7 +44,8 @@ void AnalysisZHAllHad::run()
     auto cutFlowHist =  m_histContainer->get1DHist("CutFlow", cutFlowMap.size(), 0, 12,cutFlowMap);
 
         // Extra hist for easy fill up
-    // auto Incl_obsHist = obsHist["Inclusive"];
+    auto Incl_obsHist = obsHist["Incl"];
+    auto Incl_obsHist_corr = obsHist["Incl_Corr"];
     // auto Hbb_obsHist = obsHist["Hbb"];
     // auto Hcc_obsHist = obsHist["Hcc"];
     // auto Hgg_obsHist = obsHist["Hgg"];
@@ -76,18 +77,6 @@ void AnalysisZHAllHad::run()
     auto HiTAU_obsHist = obsHist["HiHtautau"];
 
 
-    // auto score2DHist_j12GC = m_histContainer->get2DHist("j12GC",60,0,3,60,0,3);
-    // auto score2DHist_j13GC = m_histContainer->get2DHist("j13GC",60,0,3,60,0,3);
-    // auto score2DHist_j14GC = m_histContainer->get2DHist("j14GC",60,0,3,60,0,3);
-
-    // auto score2DHist_j12CC = m_histContainer->get2DHist("j12CC",60,0,3,60,0,3);
-    // auto score2DHist_j13CC = m_histContainer->get2DHist("j13CC",60,0,3,60,0,3);
-    // auto score2DHist_j14CC = m_histContainer->get2DHist("j14CC",60,0,3,60,0,3);
-
-    // auto score2DHist_j12GG = m_histContainer->get2DHist("j12GG",60,0,3,60,0,3);
-    // auto score2DHist_j13GG = m_histContainer->get2DHist("j13GG",60,0,3,60,0,3);
-    // auto score2DHist_j14GG = m_histContainer->get2DHist("j14GG",60,0,3,60,0,3);
-
     // Get the trees
     auto treeCont = std::make_shared<TreeContainer>();
     std::cout<<"sampleName: "<<MDC::GetInstance()->getSampleName()<<" events: "<<treeCont->getEntries()<<std::endl;
@@ -97,11 +86,16 @@ void AnalysisZHAllHad::run()
 
     // Connect branches to trees
     auto tree = treeCont->getTree();
+    varMemberVector<float> jet_px_nc{tree, {"jet0_px","jet1_px","jet2_px","jet3_px"}, -999};
+    varMemberVector<float> jet_py_nc{tree, {"jet0_py","jet1_py","jet2_py","jet3_py"}, -999};
+    varMemberVector<float> jet_pz_nc{tree, {"jet0_pz","jet1_pz","jet2_pz","jet3_pz"}, -999};
+    varMemberVector<float> jet_e_nc{tree, {"jet0_e","jet1_e","jet2_e","jet3_e"}, -999};
 
-    varMemberVector<float> jet_px{tree, { "jet0_px","jet1_px", "jet2_px", "jet3_px"}, -999};
-    varMemberVector<float> jet_py{tree, { "jet0_py","jet1_py", "jet2_py", "jet3_py"}, -999};
-    varMemberVector<float> jet_pz{tree, { "jet0_pz","jet1_pz", "jet2_pz", "jet3_pz"}, -999};
-    varMemberVector<float> jet_e{tree, { "jet0_e","jet1_e", "jet2_e", "jet3_e"}, -999};
+
+    varMemberVector<double> jet_px{tree, { "jet0_px_corr","jet1_px_corr", "jet2_px_corr", "jet3_px_corr"}, -999};
+    varMemberVector<double> jet_py{tree, { "jet0_py_corr","jet1_py_corr", "jet2_py_corr", "jet3_py_corr"}, -999};
+    varMemberVector<double> jet_pz{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
+    varMemberVector<double> jet_e{tree, { "jet0_e_corr","jet1_e_corr", "jet2_e_corr", "jet3_e_corr"}, -999};
     
     varMember<float> jet0_scoreB {tree, "jet0_scoreB"};
     varMember<float> jet1_scoreB {tree, "jet1_scoreB"};
@@ -224,9 +218,12 @@ void AnalysisZHAllHad::run()
        //make lorentz vectors
        std::cout<<"Passed intial selection!" << std::endl; 
        std::vector<TLorentzVector> LVjets;
+       std::vector<TLorentzVector> LVjets_nc;
        for (size_t lv = 0; lv < 4; ++lv) {
             TLorentzVector LVjet(jet_px.getVal(lv), jet_py.getVal(lv), jet_pz.getVal(lv), jet_e.getVal(lv));
             LVjets.push_back(LVjet);
+            TLorentzVector LVjet_nc(jet_px_nc.getVal(lv), jet_py_nc.getVal(lv), jet_pz_nc.getVal(lv), jet_e_nc.getVal(lv));
+            LVjets_nc.push_back(LVjet_nc);
         }
        // Flav scores of each jet
        std::array<float,7> j0_flav {jet0_scoreB(), jet0_scoreC(), jet0_scoreS(),jet0_scoreD(),jet0_scoreU(),jet0_scoreG(),jet0_scoreTAU()};
@@ -480,15 +477,24 @@ void AnalysisZHAllHad::run()
         float m_zjj = (LVjets[z_idx[0]]+LVjets[z_idx[1]]).M();
         float m_hjj = (LVjets[h_idx[0]]+LVjets[h_idx[1]]).M();
 
+        float m_zjj_nc = (LVjets_nc[z_idx[0]]+LVjets_nc[z_idx[1]]).M();
+        float m_hjj_nc = (LVjets_nc[h_idx[0]]+LVjets_nc[h_idx[1]]).M();
+
+
         float H_flav_sc = flavMap[h_idx[0]][H_flav]+flavMap[h_idx[1]][H_flav];
         // std::cout << "H flav score:" <<H_flav_sc<<std::endl;
 
         // std::cout << "MASS OF Z:" <<m_zjj<<std::endl;
         // std::cout << "MASS OF H:" <<m_hjj<<std::endl;
+
+        // std::cout << "NOT CORR - MASS OF Z:" <<m_zjj_nc<<std::endl;
+        // std::cout << " NOT CORR - MASS OF H:" <<m_hjj_nc<<std::endl;
         NafterPairing++;
+        Incl_obsHist->Fill(m_zjj,m_hjj);
+        Incl_obsHist_corr->Fill(m_zjj_nc,m_hjj_nc);
         //A bit of selection 
         if(sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2))<10) continue;
-        if(sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-H_mass ,2))<10) continue;
+        if(sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2))<10) continue;
         NjjMassCut++;
         if (50. > m_zjj && m_zjj > 125.) continue;
         if (m_hjj<90.) continue;
