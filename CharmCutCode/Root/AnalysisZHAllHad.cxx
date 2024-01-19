@@ -32,16 +32,45 @@ void AnalysisZHAllHad::run()
 
     std::vector<std::string> flavours{"B","C","S","D","U","G","TAU"};
     std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G","TAU"};
-    std::vector<std::string> fitCategory {"Incl","Incl_Corr","LowHbb","LowHcc","LowHss","LowHgg","LowHtautau","LowHqq","MidHbb","MidHcc","MidHss","MidHgg","MidHtautau","MidHqq","HiHbb","HiHcc","HiHss","HiHgg","HiHtautau","HiHqq"};
-    std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "dCut", "Pairing","jjMassCut","ZHmassCut"};
+    std::vector<std::string> fitCategory {"LowHbb","LowHcc","LowHss","LowHgg","LowHqq","LowHtautau","MidHbb","MidHcc","MidHss","MidHgg","MidHqq","MidHtautau","HiHbb","HiHcc","HiHss","HiHgg","HiHqq","HiHtautau","Incl","Incl_Corr"};
+    std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "d123Cut", "d34Cut","Pairing","jjMassCut","ZHmassCut"};
 
     
     // Get the histograms
     auto scoreMapHist = m_histContainer->get1DHist("scoreMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
     auto scoreMapFitCatHist = m_histContainer->get1DHist("scoreMapFitCategory_1D", fitCategory.size(), 0, fitCategory.size(), fitCategory);
+    auto CountsMapHist = m_histContainer->get1DHist("CountsMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
+    auto CountsFitCatHist = m_histContainer->get1DHist("CountsFitCategory_1D", fitCategory.size(), 0, fitCategory.size(), fitCategory);
     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 75, 50., 125.,160, 90., 250.);
     auto countingHist = m_histContainer->getCountingHist();
     auto cutFlowHist =  m_histContainer->get1DHist("CutFlow", cutFlowMap.size(), 0, 12,cutFlowMap);
+
+    auto Bscore =  m_histContainer->get1DHist("Bscore", 100, 0, 2);
+    auto Cscore =  m_histContainer->get1DHist("Cscore", 100, 0, 2);
+    auto Sscore =  m_histContainer->get1DHist("Sscore", 100, 0, 2);
+    auto Qscore =  m_histContainer->get1DHist("Qscore", 100, 0, 2);
+    // auto Uscore =  m_histContainer->get1DHist("Uscore", 100, 0, 2);
+    auto Gscore =  m_histContainer->get1DHist("Gscore", 100, 0, 2);
+    auto TAUscore =  m_histContainer->get1DHist("TAUscore", 100, 0, 2);
+
+    auto mZ =  m_histContainer->get1DHist("mZ",250, 0., 250.);
+    auto mH =  m_histContainer->get1DHist("mH", 250, 0., 250.);
+
+    auto ZZ_cut =  m_histContainer->get1DHist("ZZ_cut",250, 0., 250.);
+    auto WW_cut =  m_histContainer->get1DHist("WW_cut", 250, 0., 250.);
+
+    auto h_vis_M =  m_histContainer->get1DHist("vis_M",250, 0., 250.);
+    auto h_vis_E =  m_histContainer->get1DHist("vis_e", 250, 0., 250.);
+    auto h_vis_theta =  m_histContainer->get1DHist("vis_theta", 80, 0., 4.);
+
+    auto h_muons_p =  m_histContainer->get1DHist("muons_p", 125, 0., 250.);
+    auto h_electrons_p =  m_histContainer->get1DHist("electrons_p", 125, 0., 250.);
+    auto h_event_nmu =  m_histContainer->get1DHist("event_nmu", 10, 0., 10.);
+    auto h_event_nel =  m_histContainer->get1DHist("event_nel", 10, 0., 10.);
+
+    auto h_d_12 =  m_histContainer->get1DHist("d_12", 1000,14000, 60000.);
+    auto h_d_23 =  m_histContainer->get1DHist("d_23", 1000,200, 20000.);
+    auto h_d_34 =  m_histContainer->get1DHist("d_34", 1000,150, 6000.);
 
         // Extra hist for easy fill up
     auto Incl_obsHist = obsHist["Incl"];
@@ -72,9 +101,9 @@ void AnalysisZHAllHad::run()
     auto MidG_obsHist = obsHist["MidHgg"];
     auto HiG_obsHist = obsHist["HiHgg"];
 
-    auto LowTAU_obsHist = obsHist["LowHtautau"];
-    auto MidTAU_obsHist = obsHist["MidHtautau"];
-    auto HiTAU_obsHist = obsHist["HiHtautau"];
+    // auto LowTAU_obsHist = obsHist["LowHtautau"];
+    // auto MidTAU_obsHist = obsHist["MidHtautau"];
+    // auto HiTAU_obsHist = obsHist["HiHtautau"];
 
 
     // Get the trees
@@ -97,6 +126,17 @@ void AnalysisZHAllHad::run()
     varMemberVector<double> jet_pz{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
     varMemberVector<double> jet_e{tree, { "jet0_e_corr","jet1_e_corr", "jet2_e_corr", "jet3_e_corr"}, -999};
     
+    // varMemberVector<float> jet_px{tree, {"jet0_px","jet1_px","jet2_px","jet3_px"}, -999};
+    // varMemberVector<float> jet_py{tree, {"jet0_py","jet1_py","jet2_py","jet3_py"}, -999};
+    // varMemberVector<float> jet_pz{tree, {"jet0_pz","jet1_pz","jet2_pz","jet3_pz"}, -999};
+    // varMemberVector<float> jet_e{tree, {"jet0_e","jet1_e","jet2_e","jet3_e"}, -999};
+
+
+    // varMemberVector<double> jet_px_nc{tree, { "jet0_px_corr","jet1_px_corr", "jet2_px_corr", "jet3_px_corr"}, -999};
+    // varMemberVector<double> jet_py_nc{tree, { "jet0_py_corr","jet1_py_corr", "jet2_py_corr", "jet3_py_corr"}, -999};
+    // varMemberVector<double> jet_pz_nc{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
+    // varMemberVector<double> jet_e_nc{tree, { "jet0_e_corr","jet1_e_corr", "jet2_e_corr", "jet3_e_corr"}, -999};
+
     varMember<float> jet0_scoreB {tree, "jet0_scoreB"};
     varMember<float> jet1_scoreB {tree, "jet1_scoreB"};
     varMember<float> jet2_scoreB {tree, "jet2_scoreB"};
@@ -133,8 +173,8 @@ void AnalysisZHAllHad::run()
     varMember<float> jet3_scoreS {tree, "jet3_scoreS"};
 
     varMember<int> event_njet {tree, "event_njet"};
-    // varMember<long> event_nmu {tree, "event_nmu"};
-    // varMember<long> event_nel {tree, "event_nel"};
+    varMember<ulong> event_nmu {tree, "event_nmu"};
+    varMember<ulong> event_nel {tree, "event_nel"};
     varMember<double> vis_E {tree, "vis_E"};
     varMember<double> vis_M {tree, "vis_M"};
     varMember<double> vis_theta {tree, "vis_theta"};
@@ -147,7 +187,6 @@ void AnalysisZHAllHad::run()
 
     varMember<float> muons_p {tree, "muons_p"};
     varMember<float> electrons_p {tree, "electrons_p"};
-    varMemberVector<float> jet1{tree, {"jet0_scoreD", "jet1_scoreD", "jet2_scoreD", "jet3_scoreD"}, -999};
 
 
 
@@ -157,7 +196,8 @@ void AnalysisZHAllHad::run()
     int NjetCut = 0;
     int NleptonCut = 0;
     int NkineCut = 0;
-    int NdCut = 0;
+    int NdCutd123 = 0;
+    int NdCutd34 = 0;
     int NafterPairing = 0;
     int NjjMassCut = 0;
     int NafterSel = 0;
@@ -181,7 +221,7 @@ void AnalysisZHAllHad::run()
     {
         std::cout<<"New Event Investigated! Event: " <<i<< std::endl; 
         // Check if 10 iterations have been reached
-        // if (i + 1 == 15) {
+        // if (i + 1 == 10) {
         //     std::cout << "Exiting loop after 20 iterations." << std::endl;
         //     break;  // Exit the loop
         // }
@@ -195,24 +235,28 @@ void AnalysisZHAllHad::run()
         
         if(event_njet() != 4) continue; //Require EXACTLY 4 jet! This SHOULD be the case!
         NjetCut++;
+        //numebr of electrons and muons cut! 2!
         // reject events with leptons with > 20 GeV leptons
-        if(muons_p() > 20) continue;
-        if(electrons_p() > 20) continue;
+        if(event_nmu() > 2) continue;
+        if(event_nel() > 2) continue;
+        if(muons_p() >= 20) continue;
+        if(electrons_p() >= 20) continue;
         NleptonCut++;
         // std::cout<<"Number of muons "<<" "<<event_nmu()<<" and the number of electrons: "<<event_nel()<<std::endl;
 
         //Add this  to the options, as in which selection to choose
         if (vis_M()<150) continue;
         if (vis_E()<150) continue;
-        if (vis_theta()<1.15 || vis_theta()>3.0 ) continue;
+        if (vis_theta()<0.15 || vis_theta()>3.0 ) continue; //typo! rerun!
         NkineCut++;
-  
-        if (d_12()>58000) continue;
+        // change the cuts! update! 
+        if (d_12()<15000 || d_12()>58000) continue;//missing!
         if ((d_23()<400) || (d_23()>18000))continue;
+        NdCutd123++;
         if ((d_34()<100) || (d_34()>6000))continue;
-        NdCut++;
+        NdCutd34++;
 
-        
+        // ALL GOOD UP TO HERE!!!!!!
         // Step 1: check efficiency ~ 80%
         // increment counter of events that pass the cuts!
        //make lorentz vectors
@@ -231,7 +275,7 @@ void AnalysisZHAllHad::run()
        std::array<float,7> j2_flav {jet2_scoreB(), jet2_scoreC(), jet2_scoreS(),jet2_scoreD(),jet2_scoreU(),jet2_scoreG(),jet2_scoreTAU()};
        std::array<float,7> j3_flav {jet3_scoreB(), jet3_scoreC(), jet3_scoreS(),jet3_scoreD(),jet3_scoreU(),jet3_scoreG(),jet3_scoreTAU()};
 
-        // - look for max scofre of jet 
+        // - look for max score of jet 
        std::array<float,7>::iterator j0_maxScore;
        std::array<float,7>::iterator j1_maxScore;
        std::array<float,7>::iterator j2_maxScore; 
@@ -285,8 +329,10 @@ void AnalysisZHAllHad::run()
                 std::cout << std::endl;}
        //Find the pairs
        std::set<int> uniqueFlav(maxScoreIdx.begin(), maxScoreIdx.end());
+       
        std::map<int, std::vector<int>> flavOccurance;
        for (int value : uniqueFlav) {
+            std::cout<<"uniqueFlav: "<<value<<std::endl;
             auto pos = maxScoreIdx.begin();
             while ((pos = std::find(pos, maxScoreIdx.end(), value)) != maxScoreIdx.end()) {
                 int idx = std::distance(maxScoreIdx.begin(), pos);
@@ -298,7 +344,13 @@ void AnalysisZHAllHad::run()
         //Pair the jets, make sth very simple 
        std::map<int, std::vector<int>> jet_pair;
        std::map<int, int> jet_pair_flav;
+       std::vector<int> z_idx;
+       std::vector<int> h_idx;
        for (const auto& entry : flavOccurance) {
+            for (size_t index : entry.second) {
+                        std::cout << index << " ";
+                    }
+            std::cout << std::endl;
             if (entry.second.size() > 1) {
                 jet_pair[pair]=entry.second;   
                 jet_pair_flav[pair]=entry.first;
@@ -309,19 +361,28 @@ void AnalysisZHAllHad::run()
                         std::cout << index << " ";
                     }
                     std::cout << std::endl;
-            }   } 
-    }
-        //Check how many pairs you get from the simple method
+            
+                } }
+                }
+
+        //Check how many pairs you get from the simple method        
         std::vector<int> idx_jet ={0, 1, 2, 3};
         if (m_debug) std::cout << "jet_pair: " <<jet_pair.size()<<std::endl;
         if (jet_pair.size() == 2){
             //So given that there are only 4 jets reconstructed, I am pretty sure that this should work.
-            std::cout << "Oleeee! You have two paird! You can continue with your mission!"<<std::endl;
+            if (m_debug) std::cout << "Oleeee! You have two paird! You can continue with your mission!"<<std::endl;
         }
+        else if (jet_pair.size() == 3){
+            std::cout << "THIS IS IMPOSSIBLE! I THINK???"<<std::endl;
+        }
+        else if (flavOccurance.size()==4){
+                std::cout << "No same flavour pair found. Ignore for now!" <<std::endl;
+                continue;}
         else if (jet_pair.size() == 1){
-            std::cout << "Only 1 jet pair found!" <<std::endl;
-             if (m_debug) std::cout << "flavOccurance.size(): " <<flavOccurance.size()<<std::endl;
+            if (m_debug) std::cout << "Only 1 jet pair found!" <<std::endl;
+            if (m_debug) std::cout << "flavOccurance.size(): " <<flavOccurance.size()<<std::endl;
             if (flavOccurance.size()==3){
+                if (m_debug) std::cout << "2 same flav, 3 diff flav -> 3 unique!"<<std::endl;
                 //Need to sum up each flav and see what max?
                 auto found_pair = jet_pair[0];
                 std::sort(found_pair.begin(), found_pair.end());
@@ -336,12 +397,12 @@ void AnalysisZHAllHad::run()
                     if (flavMap[missing_pair[0]][fl]+flavMap[missing_pair[1]][fl]>max_score){
                         new_fl=fl;
                         max_score=flavMap[missing_pair[0]][fl]+flavMap[missing_pair[1]][fl];
-                        // std::cout << "Updating max score: " << max_score << ", flav is: "<<flavours[fl] <<std::endl;
+                        if (m_debug) std::cout << "Updating max score: " << max_score << ", flav is: "<<flavours[fl] <<std::endl;
                         };
                 }
                 jet_pair[1]=missing_pair;
                 jet_pair_flav[1]=new_fl;
-                // std::cout << "New pair found! With flavour " << flavours[jet_pair_flav[1]] << " found at indices: ";
+                if (m_debug) std::cout << "New pair found! With flavour " << flavours[jet_pair_flav[1]] << " found at indices: ";
                 if (m_debug) {
                     for (size_t index : missing_pair) {
                         std::cout << index << " ";
@@ -350,7 +411,7 @@ void AnalysisZHAllHad::run()
                     }
                 }
             else if (flavOccurance.size()==2){
-                std::cout << "3 same flav, 1 diff flav -> 2 unique!"<<std::endl;
+                if (m_debug) std::cout << "3 same flav, 1 diff flav -> 2 unique!"<<std::endl;
                 std::vector<int> new_pair;
                 float max_sc = 0;
                 for (size_t j1_in : jet_pair[0]){
@@ -398,10 +459,11 @@ void AnalysisZHAllHad::run()
                     std::cout << index << " ";
                 }
                 std::cout << std::endl;
-            
             }
-            else if (flavOccurance.size()==1){
-                std::cout << "4 same flav jets, you continue and decide the paris based on the H/Z chi^2!"<<std::endl;
+            if (flavOccurance.size()==1 or (jet_pair_flav[0]==jet_pair_flav[1])){
+                if (m_debug) std::cout << "4 same flav jets, you continue and decide the paris based on the H/Z chi^2!"<<std::endl;
+                // std::cout << "Flav PAIR 1:" <<jet_pair_flav[0]<<std::endl;
+                // std::cout << "Flav PAIR 2:" <<jet_pair_flav[1]<<std::endl;
                 float chi_z=0;
                 float chi_h=0; 
                 std::vector<float> chi_comb; 
@@ -440,40 +502,38 @@ void AnalysisZHAllHad::run()
                 size_t minIndex = std::distance(chi_comb.begin(), chi_comb_min);
                 jet_pair[0]=z_ijets[minIndex];
                 jet_pair[1]=h_ijets[minIndex];
+                z_idx=jet_pair[0];
+                h_idx=jet_pair[1];
+                H_flav=jet_pair_flav[1];
                 if (m_debug) {
                     std::cout << "chi z+h minIndex: " << minIndex << std::endl;
                     std::cout << "z index: " << jet_pair[0][0] << jet_pair[0][1] <<std::endl;
                     std::cout << "h index: " << jet_pair[1][0] << jet_pair[1][1] <<std::endl;}
                 }
-
-        }
-        // 1 pair recovered 
-        //CASE 1 - 3 same flav, 1 diff flav -> 2 unique
-        // }
-        else {
-            std::cout << "No same flavour pair found. Ignore for now!" <<std::endl;
-            continue;
-        // 0 pairs recovered
-        //CASE 3 - All diff flav
-        }
-        // std::cout << "MASS OF JET PAIR 1:" <<(LVjets[jet_pair[0][0]]+LVjets[jet_pair[0][1]]).M()<<std::endl;
-        // std::cout << "MASS OF JET PAIR 2:" <<(LVjets[jet_pair[1][0]]+LVjets[jet_pair[1][1]]).M()<<std::endl;
-        float chi_p1 = std::pow((LVjets[jet_pair[0][0]]+LVjets[jet_pair[0][1]]).M()-Z_mass,2);
-        float chi_p2 = std::pow((LVjets[jet_pair[1][0]]+LVjets[jet_pair[1][1]]).M()-Z_mass,2);
+                }
+        
+        // std::cout << "AFTER FAILING!" <<std::endl;  
+        // std::cout << "Flav PAIR 1:" <<jet_pair_flav[0]<<std::endl;
+        // std::cout << "Flav PAIR 2:" <<jet_pair_flav[1]<<std::endl;
+        if (jet_pair_flav[0]!=jet_pair_flav[1]){
+            float chi_p1 = std::pow((LVjets[jet_pair[0][0]]+LVjets[jet_pair[0][1]]).M()-Z_mass,2);
+            float chi_p2 = std::pow((LVjets[jet_pair[1][0]]+LVjets[jet_pair[1][1]]).M()-Z_mass,2);
         // std::cout << "chi OF JET PAIR 1:" <<chi_p1<<std::endl;
         // std::cout << "chi OF JET PAIR 2:" <<chi_p2<<std::endl;
-        std::vector<int> z_idx;
-        std::vector<int> h_idx;
-        if (chi_p1<chi_p2){
-            z_idx=jet_pair[0];
-            h_idx=jet_pair[1];
-            H_flav=jet_pair_flav[1];
+            if (chi_p1<chi_p2){
+                if (m_debug) std::cout << "Pair 0 is Z!" <<std::endl;
+                z_idx=jet_pair[0];
+                h_idx=jet_pair[1];
+                H_flav=jet_pair_flav[1];
+            }
+            else{
+                if (m_debug) std::cout << "Pair 0 is H!" <<std::endl;
+                z_idx=jet_pair[1];
+                h_idx=jet_pair[0];
+                H_flav=jet_pair_flav[0];
+            }
         }
-        else{
-            z_idx=jet_pair[1];
-            h_idx=jet_pair[0];
-            H_flav=jet_pair_flav[0];
-        }
+
         float m_zjj = (LVjets[z_idx[0]]+LVjets[z_idx[1]]).M();
         float m_hjj = (LVjets[h_idx[0]]+LVjets[h_idx[1]]).M();
 
@@ -482,7 +542,6 @@ void AnalysisZHAllHad::run()
 
 
         float H_flav_sc = flavMap[h_idx[0]][H_flav]+flavMap[h_idx[1]][H_flav];
-        // std::cout << "H flav score:" <<H_flav_sc<<std::endl;
 
         // std::cout << "MASS OF Z:" <<m_zjj<<std::endl;
         // std::cout << "MASS OF H:" <<m_hjj<<std::endl;
@@ -493,36 +552,61 @@ void AnalysisZHAllHad::run()
         Incl_obsHist->Fill(m_zjj,m_hjj);
         Incl_obsHist_corr->Fill(m_zjj_nc,m_hjj_nc);
         //A bit of selection 
-        if(sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2))<10) continue;
-        if(sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2))<10) continue;
+        float WW_cuts = sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2));
+        float ZZ_cuts = sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2));
+        if(WW_cuts<=10) continue;
+        if(ZZ_cuts<=10) continue;
+
         NjjMassCut++;
-        if (50. > m_zjj && m_zjj > 125.) continue;
-        if (m_hjj<90.) continue;
+        if (50. >= m_zjj)continue; 
+        if (m_zjj >= H_mass) continue; 
+        //Fix
+        if (m_hjj<=Z_mass) continue;
+        // For now remove the Htautau as a cat, only bkg....
+        // if (flavours[H_flav]=="TAU") continue;
         //After parining and cuts 
         NafterSel++;
-        // Incl_obsHist->Fill(m_zjj,m_hjj);
-
+        ZZ_cut->Fill(ZZ_cuts);
+        WW_cut->Fill(WW_cuts);
+        mZ->Fill(m_zjj);
+        mH->Fill(m_hjj);
+        h_vis_M->Fill(vis_M());
+        h_vis_E->Fill(vis_E());
+        h_vis_theta->Fill(vis_theta());
+        h_muons_p->Fill(muons_p());
+        h_electrons_p->Fill(electrons_p());
+        h_event_nmu->Fill(event_nmu());
+        h_event_nel->Fill(event_nel());
+        h_d_12->Fill(d_12());
+        h_d_23->Fill(d_23());
+        h_d_34->Fill(d_34());
         if (flavours[H_flav]=="B"){
             BlikeEvents++;
             // Hbb_obsHist->Fill(m_zjj,m_hjj);
+            // std::cout << "B Flav" << std::endl;
+            Bscore->Fill(H_flav_sc);
             if (H_flav_sc < 1.1)
             {
+                // std::cout << "B Low Cat" << std::endl;
                 LowB_obsHist->Fill(m_zjj,m_hjj);
                 BlikeEvents_cat[0]++;
             }
             else if ((H_flav_sc >= 1.1) && (H_flav_sc <= 1.9))
             {
+                // std::cout << "B Mid Cat" << std::endl;
                 MidB_obsHist->Fill(m_zjj,m_hjj);
                 BlikeEvents_cat[1]++;
             }
             else
             {
+                // std::cout << "B Hi Cat" << std::endl;
                 HiB_obsHist->Fill(m_zjj,m_hjj);
                 BlikeEvents_cat[2]++;
             }
         }
         else if (flavours[H_flav]=="C"){
             ClikeEvents++;
+            Cscore->Fill(H_flav_sc);
             // Hcc_obsHist->Fill(m_zjj,m_hjj);
             if (H_flav_sc < 1.1)
             {
@@ -541,6 +625,7 @@ void AnalysisZHAllHad::run()
             }
         }
         else if (flavours[H_flav]=="S"){
+            Sscore->Fill(H_flav_sc);
             SlikeEvents++;
             // Hss_obsHist->Fill(m_zjj,m_hjj);
             if (H_flav_sc < 1.1)
@@ -561,6 +646,7 @@ void AnalysisZHAllHad::run()
         }
         else if (flavours[H_flav]=="G"){
             GlikeEvents++;
+            Gscore->Fill(H_flav_sc);
             // Hgg_obsHist->Fill(m_zjj,m_hjj);
             if (H_flav_sc < 1.1)
             {
@@ -580,6 +666,7 @@ void AnalysisZHAllHad::run()
         }
         else if (flavours[H_flav]=="U" || flavours[H_flav]=="D" ){
             QlikeEvents++;
+            Qscore->Fill(H_flav_sc);
             // Hqq_obsHist->Fill(m_zjj,m_hjj);
             if (H_flav_sc < 1.1)
             {
@@ -597,25 +684,26 @@ void AnalysisZHAllHad::run()
                 QlikeEvents_cat[2]++;
             }
         }
-        else if (flavours[H_flav]=="TAU"){
-            TAUlikeEvents++;
-            // Htautau_obsHist->Fill(m_zjj,m_hjj);
-            if (H_flav_sc < 1.1)
-            {
-                LowTAU_obsHist->Fill(m_zjj,m_hjj);
-                TAUlikeEvents_cat[0]++;
-            }
-            else if ((H_flav_sc >= 1.1) && (H_flav_sc <= 1.9))
-            {
-                MidTAU_obsHist->Fill(m_zjj,m_hjj);
-                TAUlikeEvents_cat[1]++;
-            }
-            else
-            {
-                HiTAU_obsHist->Fill(m_zjj,m_hjj);
-                TAUlikeEvents_cat[2]++;
-            }
-        }
+        // else if (flavours[H_flav]=="TAU"){
+        //     TAUlikeEvents++;
+        //     TAUscore->Fill(H_flav_sc);
+        //     // Htautau_obsHist->Fill(m_zjj,m_hjj);
+        //     if (H_flav_sc < 1.1)
+        //     {
+        //         LowTAU_obsHist->Fill(m_zjj,m_hjj);
+        //         TAUlikeEvents_cat[0]++;
+        //     }
+        //     else if ((H_flav_sc >= 1.1) && (H_flav_sc <= 1.9))
+        //     {
+        //         MidTAU_obsHist->Fill(m_zjj,m_hjj);
+        //         TAUlikeEvents_cat[1]++;
+        //     }
+        //     else
+        //     {
+        //         HiTAU_obsHist->Fill(m_zjj,m_hjj);
+        //         TAUlikeEvents_cat[2]++;
+        //     }
+        // }
         else if (H_flav == -1){
             std::cout << "Something went wrong! No Higgs found!"<<std::endl;
             break;
@@ -632,26 +720,43 @@ void AnalysisZHAllHad::run()
     scoreMapHist->SetBinContent(3, SlikeEvents*100./NafterSel);
     scoreMapHist->SetBinContent(4, QlikeEvents*100./NafterSel);
     scoreMapHist->SetBinContent(5, GlikeEvents*100./NafterSel);
-    scoreMapHist->SetBinContent(5, TAUlikeEvents*100./NafterSel);
+    // scoreMapHist->SetBinContent(6, TAUlikeEvents*100./NafterSel);
+
+    CountsMapHist->SetBinContent(1, BlikeEvents);
+    CountsMapHist->SetBinContent(2, ClikeEvents);
+    CountsMapHist->SetBinContent(3, SlikeEvents);
+    CountsMapHist->SetBinContent(4, QlikeEvents);
+    CountsMapHist->SetBinContent(5, GlikeEvents);
+    // CountsMapHist->SetBinContent(6, TAUlikeEvents);
+
+    
     //CutFlow
 
     cutFlowHist->SetBinContent(1,NEventsInt);
     cutFlowHist->SetBinContent(2,NjetCut);
     cutFlowHist->SetBinContent(3,NleptonCut);
     cutFlowHist->SetBinContent(4,NkineCut);
-    cutFlowHist->SetBinContent(5,NdCut);
-    cutFlowHist->SetBinContent(6,NafterPairing);
-    cutFlowHist->SetBinContent(7,NjjMassCut);
-    cutFlowHist->SetBinContent(8,NafterSel);
+    cutFlowHist->SetBinContent(5,NdCutd123);
+    cutFlowHist->SetBinContent(6,NdCutd34);
+    cutFlowHist->SetBinContent(7,NafterPairing);
+    cutFlowHist->SetBinContent(8,NjjMassCut);
+    cutFlowHist->SetBinContent(9,NafterSel);
 
     for(int i = 0; i < 3; i++)
     {
-        scoreMapFitCatHist->SetBinContent(1+i*6, BlikeEvents_cat[i]*100./NafterSel);
-        scoreMapFitCatHist->SetBinContent(2+i*6, ClikeEvents_cat[i]*100./NafterSel);
-        scoreMapFitCatHist->SetBinContent(3+i*6, SlikeEvents_cat[i]*100./NafterSel);
-        scoreMapFitCatHist->SetBinContent(4+i*6, GlikeEvents_cat[i]*100./NafterSel);
-        scoreMapFitCatHist->SetBinContent(5+i*6, QlikeEvents_cat[i]*100./NafterSel);
-        scoreMapFitCatHist->SetBinContent(6+i*6, TAUlikeEvents_cat[i]*100./NafterSel);
+        scoreMapFitCatHist->SetBinContent(1+i*5, BlikeEvents_cat[i]*100./NafterSel);
+        scoreMapFitCatHist->SetBinContent(2+i*5, ClikeEvents_cat[i]*100./NafterSel);
+        scoreMapFitCatHist->SetBinContent(3+i*5, SlikeEvents_cat[i]*100./NafterSel);
+        scoreMapFitCatHist->SetBinContent(4+i*5, GlikeEvents_cat[i]*100./NafterSel);
+        scoreMapFitCatHist->SetBinContent(5+i*5, QlikeEvents_cat[i]*100./NafterSel);
+        // scoreMapFitCatHist->SetBinContent(6+i*6, TAUlikeEvents_cat[i]*100./NafterSel);
+
+        CountsFitCatHist->SetBinContent(1+i*5, BlikeEvents_cat[i]);
+        CountsFitCatHist->SetBinContent(2+i*5, ClikeEvents_cat[i]);
+        CountsFitCatHist->SetBinContent(3+i*5, SlikeEvents_cat[i]);
+        CountsFitCatHist->SetBinContent(4+i*5, GlikeEvents_cat[i]);
+        CountsFitCatHist->SetBinContent(5+i*5, QlikeEvents_cat[i]);
+        // CountsFitCatHist->SetBinContent(6+i*6, TAUlikeEvents_cat[i]);
     }
 
 

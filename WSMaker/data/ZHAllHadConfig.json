@@ -1,5 +1,5 @@
 {
-    "category":["LowHbb","MidHbb","HiHbb","LowHcc","MidHcc","HiHcc","LowHss","MidHss","HiHss","LowHtautau","MidHtautau","HiHtautau","LowHqq","MidHqq","HiHqq","LowHgg","MidHgg"],
+    "category":["LowHbb","MidHbb","HiHbb","LowHcc","MidHcc","HiHcc","LowHss","MidHss","HiHss","LowHqq","MidHqq","HiHqq","LowHgg","MidHgg"],
     "process":["WW", "ZZ", "Zqq", "Hbb", "Hcc", "Hgg", "Hss", "HWW", "HZZ", "Htautau", "HZa"],
     "processHeldConstant":[],
 
