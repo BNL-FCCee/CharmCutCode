@@ -18,7 +18,7 @@ using namespace std;
 
 AnalysisZHAllHad::AnalysisZHAllHad():
     AnalysisBase(),
-    m_debug(false)
+    m_debug(true)
 {}
 AnalysisZHAllHad::~AnalysisZHAllHad()
 {}
@@ -120,22 +120,10 @@ void AnalysisZHAllHad::run()
     varMemberVector<float> jet_pz_nc{tree, {"jet0_pz","jet1_pz","jet2_pz","jet3_pz"}, -999};
     varMemberVector<float> jet_e_nc{tree, {"jet0_e","jet1_e","jet2_e","jet3_e"}, -999};
 
-
     varMemberVector<double> jet_px{tree, { "jet0_px_corr","jet1_px_corr", "jet2_px_corr", "jet3_px_corr"}, -999};
     varMemberVector<double> jet_py{tree, { "jet0_py_corr","jet1_py_corr", "jet2_py_corr", "jet3_py_corr"}, -999};
     varMemberVector<double> jet_pz{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
     varMemberVector<double> jet_e{tree, { "jet0_e_corr","jet1_e_corr", "jet2_e_corr", "jet3_e_corr"}, -999};
-    
-    // varMemberVector<float> jet_px{tree, {"jet0_px","jet1_px","jet2_px","jet3_px"}, -999};
-    // varMemberVector<float> jet_py{tree, {"jet0_py","jet1_py","jet2_py","jet3_py"}, -999};
-    // varMemberVector<float> jet_pz{tree, {"jet0_pz","jet1_pz","jet2_pz","jet3_pz"}, -999};
-    // varMemberVector<float> jet_e{tree, {"jet0_e","jet1_e","jet2_e","jet3_e"}, -999};
-
-
-    // varMemberVector<double> jet_px_nc{tree, { "jet0_px_corr","jet1_px_corr", "jet2_px_corr", "jet3_px_corr"}, -999};
-    // varMemberVector<double> jet_py_nc{tree, { "jet0_py_corr","jet1_py_corr", "jet2_py_corr", "jet3_py_corr"}, -999};
-    // varMemberVector<double> jet_pz_nc{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
-    // varMemberVector<double> jet_e_nc{tree, { "jet0_e_corr","jet1_e_corr", "jet2_e_corr", "jet3_e_corr"}, -999};
 
     varMember<float> jet0_scoreB {tree, "jet0_scoreB"};
     varMember<float> jet1_scoreB {tree, "jet1_scoreB"};
@@ -306,6 +294,13 @@ void AnalysisZHAllHad::run()
             std::cout<<"j3_flav: "<<" Max score: "<< *j3_maxScore<< " maxScoreIdx: "<< maxScoreIdx[3]<<std::endl;
        }
        if (m_debug) {
+            std::cout << "maxScoreIdx: ";
+                for (float ScoreIdx : maxScoreIdx) {
+                    std::cout << ScoreIdx << " ";
+                }
+                std::cout << std::endl;
+       }     
+       if (m_debug) {
             std::cout << "Jet score for j0: ";
                 for (float j0_f : j0_flav) {
                     std::cout << j0_f << " ";
@@ -327,33 +322,42 @@ void AnalysisZHAllHad::run()
                     std::cout << j3_f << " ";
                 }
                 std::cout << std::endl;}
-       //Find the pairs
-       std::set<int> uniqueFlav(maxScoreIdx.begin(), maxScoreIdx.end());
+              //Find the pairs
+
+        
+    //    std::set<int> uniqueFlav(maxScoreIdx.begin(), maxScoreIdx.end());
        
-       std::map<int, std::vector<int>> flavOccurance;
-       for (int value : uniqueFlav) {
-            std::cout<<"uniqueFlav: "<<value<<std::endl;
-            auto pos = maxScoreIdx.begin();
-            while ((pos = std::find(pos, maxScoreIdx.end(), value)) != maxScoreIdx.end()) {
-                int idx = std::distance(maxScoreIdx.begin(), pos);
-                flavOccurance[value].push_back(idx);
-                ++pos;
-            }
-        } 
-       int pair = 0;
+    //    for (int value : uniqueFlav) {
+    //         std::cout<<"uniqueFlav: "<<value<<std::endl;
+    //         auto pos = maxScoreIdx.begin();
+    //         while ((pos = std::find(pos, maxScoreIdx.end(), value)) != maxScoreIdx.end()) {
+    //             int idx = std::distance(maxScoreIdx.begin(), pos);
+    //             flavOccurance[value].push_back(idx);
+    //             ++pos;
+    //         }
+    //     } 
+
+
+        //Check how many pairs you get from the simple method  
         //Pair the jets, make sth very simple 
-       std::map<int, std::vector<int>> jet_pair;
-       std::map<int, int> jet_pair_flav;
-       std::vector<int> z_idx;
-       std::vector<int> h_idx;
-       for (const auto& entry : flavOccurance) {
-            for (size_t index : entry.second) {
-                        std::cout << index << " ";
-                    }
-            std::cout << std::endl;
-            if (entry.second.size() > 1) {
-                jet_pair[pair]=entry.second;   
-                jet_pair_flav[pair]=entry.first;
+        std::map<int, std::vector<int>> tmp_jet_pair;
+        std::map<int, std::vector<int>> jet_pair;
+        std::map<int, int> jet_pair_flav;
+        std::map<int, int> tmp_jet_pair_flav;
+        std::vector<int> z_idx;
+        std::vector<int> h_idx;
+        std::map<int, std::vector<int>> flavOccurance;
+        int hz_check = 0 ;
+
+        for (int i = 0; i < 4; ++i) {
+            flavOccurance[maxScoreIdx[i]].push_back(i);
+        } 
+        //Make tmp flav pairs
+        int pair = 0;    
+        for (const auto& entry : flavOccurance) {
+            if (entry.second.size() > 1) {  
+                tmp_jet_pair_flav[pair]=entry.first;
+                tmp_jet_pair[pair]=entry.second; 
                 pair++;
                 if (m_debug) std::cout << "Flav " << flavours[entry.first] << " found at indices: ";
                 if (m_debug) {
@@ -361,30 +365,36 @@ void AnalysisZHAllHad::run()
                         std::cout << index << " ";
                     }
                     std::cout << std::endl;
-            
-                } }
-                }
-
-        //Check how many pairs you get from the simple method        
-        std::vector<int> idx_jet ={0, 1, 2, 3};
-        if (m_debug) std::cout << "jet_pair: " <<jet_pair.size()<<std::endl;
-        if (jet_pair.size() == 2){
+                } 
+            }
+        } 
+        if (m_debug) std::cout << "jet_pair: " <<tmp_jet_pair.size()<<std::endl;
+        if (tmp_jet_pair.size() == 2){
             //So given that there are only 4 jets reconstructed, I am pretty sure that this should work.
             if (m_debug) std::cout << "Oleeee! You have two paird! You can continue with your mission!"<<std::endl;
+            jet_pair[0]= tmp_jet_pair[0];
+            jet_pair[1]= tmp_jet_pair[1];
+            jet_pair_flav[0]=tmp_jet_pair_flav[0];
+            jet_pair_flav[1]=tmp_jet_pair_flav[1];
         }
-        else if (jet_pair.size() == 3){
+        else if (tmp_jet_pair.size() == 3){
             std::cout << "THIS IS IMPOSSIBLE! I THINK???"<<std::endl;
+            break;
         }
         else if (flavOccurance.size()==4){
                 std::cout << "No same flavour pair found. Ignore for now!" <<std::endl;
                 continue;}
-        else if (jet_pair.size() == 1){
+        else if (tmp_jet_pair.size() == 1){
             if (m_debug) std::cout << "Only 1 jet pair found!" <<std::endl;
-            if (m_debug) std::cout << "flavOccurance.size(): " <<flavOccurance.size()<<std::endl;
+            if (m_debug) std::cout << "tmp_jet_pair[0].size(): " <<tmp_jet_pair[0].size()<<std::endl;
             if (flavOccurance.size()==3){
                 if (m_debug) std::cout << "2 same flav, 3 diff flav -> 3 unique!"<<std::endl;
                 //Need to sum up each flav and see what max?
+                jet_pair[0] = tmp_jet_pair[0];
+                jet_pair_flav[0]=tmp_jet_pair_flav[0];
                 auto found_pair = jet_pair[0];
+                //Finding jets that are not paired 
+                std::vector<int> idx_jet ={0, 1, 2, 3};
                 std::sort(found_pair.begin(), found_pair.end());
                 std::sort(idx_jet.begin(), idx_jet.end());
                 std::vector<int> missing_pair;
@@ -404,20 +414,20 @@ void AnalysisZHAllHad::run()
                 jet_pair_flav[1]=new_fl;
                 if (m_debug) std::cout << "New pair found! With flavour " << flavours[jet_pair_flav[1]] << " found at indices: ";
                 if (m_debug) {
-                    for (size_t index : missing_pair) {
+                    for (size_t index : jet_pair[1]) {
                         std::cout << index << " ";
                     }
                     std::cout << std::endl;
                     }
-                }
+            }
             else if (flavOccurance.size()==2){
                 if (m_debug) std::cout << "3 same flav, 1 diff flav -> 2 unique!"<<std::endl;
                 std::vector<int> new_pair;
                 float max_sc = 0;
-                for (size_t j1_in : jet_pair[0]){
-                    for (size_t j2_in : jet_pair[0]){
-                        if ( (j1_in!=j2_in)  && (j2_in>j1_in) && (flavMap[j1_in][jet_pair_flav[0]]+flavMap[j2_in][jet_pair_flav[0]] > max_sc) ){
-                            max_sc = flavMap[j1_in][jet_pair_flav[0]]+flavMap[j2_in][jet_pair_flav[0]];
+                for (size_t j1_in : tmp_jet_pair[0]){
+                    for (size_t j2_in : tmp_jet_pair[0]){
+                        if ( (j1_in!=j2_in)  && (j2_in>j1_in) && (flavMap[j1_in][tmp_jet_pair_flav[0]]+flavMap[j2_in][tmp_jet_pair_flav[0]] > max_sc) ){
+                            max_sc = flavMap[j1_in][tmp_jet_pair_flav[0]]+flavMap[j2_in][tmp_jet_pair_flav[0]];
                             new_pair={};
                             new_pair.push_back(j1_in);
                             new_pair.push_back(j2_in);
@@ -425,22 +435,23 @@ void AnalysisZHAllHad::run()
 
                         }
                     }
-                    // while (j1_in + j2_in <=3)                  
-                    // max_score=flavMap[j1_in][jet_pair_flav[0]]+flavMap[j2_in][jet_pair_flav[0]]
                 }
-                if (m_debug) std::cout << "New pair found! With flavour " << jet_pair_flav[0] << " found at indices: ";
-                for (size_t ind_new : new_pair) {
-                    std::cout << ind_new << " ";
-                }
-                std::cout << std::endl;
-
                 jet_pair[0]=new_pair;
+                jet_pair_flav[0]=tmp_jet_pair_flav[0];
+                if (m_debug) std::cout << "New pair found! With flavour " << flavours[jet_pair_flav[0]] << " found at indices: ";
+                if (m_debug) {
+                    for (size_t index : jet_pair[0]) {
+                        std::cout << index << " ";
+                    }
+                    std::cout << std::endl;
+                    }
                 //Need to sum up each flav and see what max?
                 auto found_pair = jet_pair[0];
+                std::vector<int> id_jet ={0, 1, 2, 3};
                 std::sort(found_pair.begin(), found_pair.end());
-                std::sort(idx_jet.begin(), idx_jet.end());
+                std::sort(id_jet.begin(), id_jet.end());
                 std::vector<int> missing_p;
-                std::set_symmetric_difference(found_pair.begin(), found_pair.end(), idx_jet.begin(), idx_jet.end(),
+                std::set_symmetric_difference(found_pair.begin(), found_pair.end(), id_jet.begin(), id_jet.end(),
                     std::back_inserter(missing_p));
                 //Maybe this should be a a function! Outside this mess defined... Because you will need to call it again...
                 float max_score = 0;
@@ -455,12 +466,15 @@ void AnalysisZHAllHad::run()
                 jet_pair[1]=missing_p;
                 jet_pair_flav[1]=new_fl;
                 if (m_debug)  std::cout << "New pair found! With flavour " << flavours[jet_pair_flav[1]] << " found at indices: ";
-                for (size_t index : missing_p) {
-                    std::cout << index << " ";
-                }
-                std::cout << std::endl;
+                if (m_debug) {
+                    for (size_t index : jet_pair[1]) {
+                        std::cout << index << " ";
+                    }
+                    std::cout << std::endl;
+                    }
             }
-            if (flavOccurance.size()==1 or (jet_pair_flav[0]==jet_pair_flav[1])){
+            if (flavOccurance.size()==1 || (jet_pair_flav[1] == jet_pair_flav[0]) ){
+                hz_check ++;
                 if (m_debug) std::cout << "4 same flav jets, you continue and decide the paris based on the H/Z chi^2!"<<std::endl;
                 // std::cout << "Flav PAIR 1:" <<jet_pair_flav[0]<<std::endl;
                 // std::cout << "Flav PAIR 2:" <<jet_pair_flav[1]<<std::endl;
@@ -470,14 +484,15 @@ void AnalysisZHAllHad::run()
                 std::vector<vector<int>> z_ijets;
                 std::vector<vector<int>> h_ijets;
                 std::vector<int>z_pair;
-                for (const auto& j : idx_jet) {
-                    for (const auto& jj : idx_jet)  {
+                std::vector<int> idx_j ={0, 1, 2, 3};
+                for (const auto& j : idx_j) {
+                    for (const auto& jj : idx_j)  {
                         if (j<jj){
                             z_pair = {j,jj};
                             std::sort(z_pair.begin(), z_pair.end());
-                            std::sort(idx_jet.begin(), idx_jet.end());
+                            std::sort(idx_j.begin(), idx_j.end());
                             std::vector<int> h_pair;
-                            std::set_symmetric_difference(z_pair.begin(), z_pair.end(), idx_jet.begin(), idx_jet.end(),
+                            std::set_symmetric_difference(z_pair.begin(), z_pair.end(), idx_j.begin(), idx_j.end(),
                     std::back_inserter(h_pair));
 
                             chi_z = std::pow((LVjets[z_pair[0]]+LVjets[z_pair[1]]).M()-Z_mass,2);
@@ -515,7 +530,7 @@ void AnalysisZHAllHad::run()
         // std::cout << "AFTER FAILING!" <<std::endl;  
         // std::cout << "Flav PAIR 1:" <<jet_pair_flav[0]<<std::endl;
         // std::cout << "Flav PAIR 2:" <<jet_pair_flav[1]<<std::endl;
-        if (jet_pair_flav[0]!=jet_pair_flav[1]){
+        if (hz_check==0){
             float chi_p1 = std::pow((LVjets[jet_pair[0][0]]+LVjets[jet_pair[0][1]]).M()-Z_mass,2);
             float chi_p2 = std::pow((LVjets[jet_pair[1][0]]+LVjets[jet_pair[1][1]]).M()-Z_mass,2);
         // std::cout << "chi OF JET PAIR 1:" <<chi_p1<<std::endl;
