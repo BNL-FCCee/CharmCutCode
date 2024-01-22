@@ -1,10 +1,8 @@
 {
-    "category":["LowHbb","MidHbb","HiHbb","LowHcc","MidHcc","HiHcc","LowHss","MidHss","HiHss","LowHqq","MidHqq","HiHqq","LowHgg","MidHgg"],
-    "process":["WW", "ZZ", "Zqq", "Hbb", "Hcc", "Hgg", "Hss", "HWW", "HZZ", "Htautau", "HZa"],
+    "category":["LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","LowbbHqq","LowccHqq","LowssHqq","LowqqHqq","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","MidccHqq","MidssHqq","MidqqHqq","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HiqqHgg","HiccHqq","HiqqHqq"],
+    "process":["WW","ZZ", "Zqq","HZa","HZZ","Hbb","Hcc","Hgg","Hss","HWW", "Htautau"],
     "processHeldConstant":[],
-
     "xRebinFactor":5,
     "yRebinFactor":5,
-
     "lumi": 5000000.0
 }
