@@ -32,7 +32,9 @@ void AnalysisZHAllHad::run()
 
     std::vector<std::string> flavours{"B","C","S","D","U","G","TAU"};
     std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G","TAU"};
-    std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","LowbbHqq","LowccHqq","LowssHqq","LowqqHqq","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","MidbbHqq","MidccHqq","MidssHqq","MidqqHqq","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","HibbHqq","HiccHqq","HissHqq","HiqqHqq","Incl","Incl_Corr"};
+    std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","Incl","Incl_Corr"};
+
+    // std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","LowbbHqq","LowccHqq","LowssHqq","LowqqHqq","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","MidbbHqq","MidccHqq","MidssHqq","MidqqHqq","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","HibbHqq","HiccHqq","HissHqq","HiqqHqq","Incl","Incl_Corr"};
     std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "d123Cut", "d34Cut","Pairing","jjMassCut","ZHmassCut"};
 
     
@@ -112,20 +114,20 @@ void AnalysisZHAllHad::run()
     auto HiS_obsHist = obsHist["HiHss"];
 
     // H->qq
-    auto Low_bbZ_Hqq_obsHist = obsHist["LowbbHqq"];
-    auto Low_ccZ_Hqq_obsHist = obsHist["LowccHqq"];
-    auto Low_ssZ_Hqq_obsHist = obsHist["LowssHqq"];
-    auto Low_qqZ_Hqq_obsHist = obsHist["LowqqHqq"];
+    // auto Low_bbZ_Hqq_obsHist = obsHist["LowbbHqq"];
+    // auto Low_ccZ_Hqq_obsHist = obsHist["LowccHqq"];
+    // auto Low_ssZ_Hqq_obsHist = obsHist["LowssHqq"];
+    // auto Low_qqZ_Hqq_obsHist = obsHist["LowqqHqq"];
 
-    auto Mid_bbZ_Hqq_obsHist = obsHist["MidbbHqq"];
-    auto Mid_ccZ_Hqq_obsHist = obsHist["MidccHqq"];
-    auto Mid_ssZ_Hqq_obsHist = obsHist["MidssHqq"];
-    auto Mid_qqZ_Hqq_obsHist = obsHist["MidqqHqq"];
+    // auto Mid_bbZ_Hqq_obsHist = obsHist["MidbbHqq"];
+    // auto Mid_ccZ_Hqq_obsHist = obsHist["MidccHqq"];
+    // auto Mid_ssZ_Hqq_obsHist = obsHist["MidssHqq"];
+    // auto Mid_qqZ_Hqq_obsHist = obsHist["MidqqHqq"];
 
-    auto Hi_bbZ_Hqq_obsHist = obsHist["HibbHqq"];
-    auto Hi_ccZ_Hqq_obsHist = obsHist["HiccHqq"];
-    auto Hi_ssZ_Hqq_obsHist = obsHist["HissHqq"];
-    auto Hi_qqZ_Hqq_obsHist = obsHist["HiqqHqq"];
+    // auto Hi_bbZ_Hqq_obsHist = obsHist["HibbHqq"];
+    // auto Hi_ccZ_Hqq_obsHist = obsHist["HiccHqq"];
+    // auto Hi_ssZ_Hqq_obsHist = obsHist["HissHqq"];
+    // auto Hi_qqZ_Hqq_obsHist = obsHist["HiqqHqq"];
 
     // H->gg
     auto Low_bbZ_Hgg_obsHist = obsHist["LowbbHgg"];
@@ -241,7 +243,7 @@ void AnalysisZHAllHad::run()
     std::array<int, 3> SlikeEvents_cat {0, 0, 0};
     std::array<int, 3> GlikeEvents_cat {0, 0, 0};
     std::array<int, 3> QlikeEvents_cat {0, 0, 0};
-    std::array<int, 3> TAUlikeEvents_cat {0, 0, 0};
+    // std::array<int, 3> TAUlikeEvents_cat {0, 0, 0};
 
     // Loop over the trees here
     for(int i = 0; i < nEntries; i++)
@@ -783,12 +785,12 @@ void AnalysisZHAllHad::run()
             Sscore->Fill(H_flav_sc);
             SlikeEvents++;
             // Hss_obsHist->Fill(m_zjj,m_hjj);
-            if (H_flav_sc < 1.1)
+            if (H_flav_sc < 0.8)
             {
                 LowS_obsHist->Fill(m_zjj,m_hjj);
                 SlikeEvents_cat[0]++;
             }
-            else if ((H_flav_sc >= 1.1) && (H_flav_sc <= 1.8))
+            else if ((H_flav_sc >= 0.8) && (H_flav_sc <= 1.4))
             {
                 MidS_obsHist->Fill(m_zjj,m_hjj);
                 SlikeEvents_cat[1]++;
@@ -868,66 +870,66 @@ void AnalysisZHAllHad::run()
             QlikeEvents++;
             Qscore->Fill(H_flav_sc);
             // Hqq_obsHist->Fill(m_zjj,m_hjj);
-            if (H_flav_sc < 1.1)
-            {
-                // LowQ_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
-                    Low_bbZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            // if (H_flav_sc < 1.1)
+            // {
+            //     // LowQ_obsHist->Fill(m_zjj,m_hjj);
+            //     if (flavours[Z_flav]=="B"){
+            //         Low_bbZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
 
-                }
-                else if (flavours[Z_flav]=="C"){
-                    Low_ccZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     else if (flavours[Z_flav]=="C"){
+            //         Low_ccZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
 
-                }
-                else if (flavours[Z_flav]=="S"){
-                    Low_ssZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     else if (flavours[Z_flav]=="S"){
+            //         Low_ssZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
 
-                }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Low_qqZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-                }
-                QlikeEvents_cat[0]++;
-            }
-            else if ((H_flav_sc >= 1.1) && (H_flav_sc <= 1.8))
-            {
-                // MidQ_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
-                    Mid_bbZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+            //         Low_qqZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     QlikeEvents_cat[0]++;
+            // }
+            // else if ((H_flav_sc >= 1.1) && (H_flav_sc <= 1.8))
+            // {
+            //     // MidQ_obsHist->Fill(m_zjj,m_hjj);
+            //     if (flavours[Z_flav]=="B"){
+            //         Mid_bbZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
 
-                }
-                else if (flavours[Z_flav]=="C"){
-                    Mid_ccZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     else if (flavours[Z_flav]=="C"){
+            //         Mid_ccZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
 
-                }
-                else if (flavours[Z_flav]=="S"){
-                    Mid_ssZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     else if (flavours[Z_flav]=="S"){
+            //         Mid_ssZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
 
-                }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Mid_qqZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-                }
-                QlikeEvents_cat[1]++;
-            }
-            else
-            {
-                // HiQ_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
-                    Hi_bbZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+            //         Mid_qqZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     QlikeEvents_cat[1]++;
+            // }
+            // else
+            // {
+            //     // HiQ_obsHist->Fill(m_zjj,m_hjj);
+            //     if (flavours[Z_flav]=="B"){
+            //         Hi_bbZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
 
-                }
-                else if (flavours[Z_flav]=="C"){
-                    Hi_ccZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     else if (flavours[Z_flav]=="C"){
+            //         Hi_ccZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
 
-                }
-                else if (flavours[Z_flav]=="S"){
-                    Hi_ssZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     else if (flavours[Z_flav]=="S"){
+            //         Hi_ssZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
 
-                }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Hi_qqZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-                }
-                QlikeEvents_cat[2]++;
-            }
+            //     }
+            //     else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+            //         Hi_qqZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
+            //     }
+            //     QlikeEvents_cat[2]++;
+            // }
         }
         // else if (flavours[H_flav]=="TAU"){
         //     TAUlikeEvents++;
