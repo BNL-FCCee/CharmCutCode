@@ -16,18 +16,15 @@
         "sumOfWeights": 386663.0
     },
     "p8_ee_Zqq_ecm240": {
-        "numberOfEvents": 97414352,
-        "sumOfWeights": 97414352
+        "numberOfEvents": 100559248,
+        "sumOfWeights": 100559248
     },
     "p8_ee_WW_ecm240": {
-        "numberOfEvents": 333842688,
-        "sumOfWeights": 333842688
+        "numberOfEvents": 373375424,
+        "sumOfWeights": 373375424
     },
     "p8_ee_ZZ_ecm240": {
-        "numberOfEvents": 52163332,
-        "sumOfWeights": 52163332
+        "numberOfEvents": 56162092,
+        "sumOfWeights": 56162092
     }
-
-
-
 }

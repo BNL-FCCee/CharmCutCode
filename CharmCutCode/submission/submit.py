@@ -24,6 +24,8 @@ parser.add_argument("--maxProcs",                   default = 4,     type=int,  
 
 parser.add_argument("--remergeResplit",             default = False, action='store_true',   help = "expert option to merge and split jobs")
 parser.add_argument("--remergeResplitSize",         default = 1,     type = int,            help = "expert option to find how many to merge jobs with")
+parser.add_argument("--DetectorVar",                default = "baseline", type = str,        help = "Detector variation to be considered, when updating the B/C tagging score.")
+
 
 
 
@@ -36,7 +38,7 @@ submissionJobList = []
 
 if args.doZHvvJJ:
     submissionJobList = [
-            {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
+    {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
     {"folderName" : "p8_ee_ZZ_ecm240",              "processName" : "ZZ"},
     {"folderName" : "p8_ee_Zqq_ecm240",             "processName" : "Zqq"},
     {"folderName" : "wzp6_ee_nunuH_HWW_ecm240",     "processName" : "HWW"},
@@ -245,6 +247,8 @@ def _getRunCommand(exePath, currJob):
     cmd += ' --outputFileName %s' %(currJob['outputFileName'])
     cmd += ' --sampleName %s' %(currJob['sampleName'])
     cmd += ' --processName %s' %(currJob['processName'])
+    cmd += ' --DetectorVar %s' %(args.DetectorVar)
+    
 
     if(args.doZHvvJJ):
         cmd += ' --analType ZHvvJJ'

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <set>
 #include "TLorentzVector.h"
+#include <TRandom.h>
 
 // DEFINE sel_visMtheta, sel_d123, sel_d34! WHICH SEL TO PICK! CAREFUL!
 using namespace std;
@@ -26,34 +27,51 @@ AnalysisZHAllHad::~AnalysisZHAllHad()
 
 void AnalysisZHAllHad::run()
 {       
+    gRandom->SetSeed(42); 
     float Z_mass = 91.1876;
     float H_mass = 125.11;
     float W_mass = 80.377;
-
+//     std::map<int, std::string> char_jet_flav = {{1, 'q'}, {2, 'q'}, {3, 's'}, {4, 'c'}, {5, 'b'}};
+    std::map<int, std::string> char_jet_flav = {
+        {1, "q"},
+        {2, "q"},
+        {3, "s"},
+        {4, "c"},
+        {5, "b"}
+    };
+    std::vector<std::string> flavourJets {"b", "c", "s", "g", "q"};
     std::vector<std::string> flavours{"B","C","S","D","U","G","TAU"};
     std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G","TAU"};
     std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","Incl","Incl_Corr"};
-
-    // std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","LowbbHqq","LowccHqq","LowssHqq","LowqqHqq","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","MidbbHqq","MidccHqq","MidssHqq","MidqqHqq","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","HibbHqq","HiccHqq","HissHqq","HiqqHqq","Incl","Incl_Corr"};
     std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "d123Cut", "d34Cut","Pairing","jjMassCut","ZHmassCut"};
 
     
     // Get the histograms
+    auto histo_DetVars = m_histContainer->histo_DetVarsScoreSmear(flavourJets);
+
     auto scoreMapHist = m_histContainer->get1DHist("scoreMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
     auto scoreMapFitCatHist = m_histContainer->get1DHist("scoreMapFitCategory_1D", fitCategory.size(), 0, fitCategory.size(), fitCategory);
     auto CountsMapHist = m_histContainer->get1DHist("CountsMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
     auto CountsFitCatHist = m_histContainer->get1DHist("CountsFitCategory_1D", fitCategory.size(), 0, fitCategory.size(), fitCategory);
-    auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 75, 50., 125.,160, 90., 250.);
+    auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0., 250.,130, 0., 130.);
+//     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0., 250.);
     auto countingHist = m_histContainer->getCountingHist();
     auto cutFlowHist =  m_histContainer->get1DHist("CutFlow", cutFlowMap.size(), 0, 12,cutFlowMap);
 
-    auto Bscore =  m_histContainer->get1DHist("Bscore", 100, 0, 2);
-    auto Cscore =  m_histContainer->get1DHist("Cscore", 100, 0, 2);
-    auto Sscore =  m_histContainer->get1DHist("Sscore", 100, 0, 2);
-    auto Qscore =  m_histContainer->get1DHist("Qscore", 100, 0, 2);
-    // auto Uscore =  m_histContainer->get1DHist("Uscore", 100, 0, 2);
-    auto Gscore =  m_histContainer->get1DHist("Gscore", 100, 0, 2);
-    auto TAUscore =  m_histContainer->get1DHist("TAUscore", 100, 0, 2);
+    auto Bscore =  m_histContainer->get1DHist("Higgs_Bscore", 100, 0, 2);
+    auto Cscore =  m_histContainer->get1DHist("Higgs_Cscore", 100, 0, 2);
+    auto Sscore =  m_histContainer->get1DHist("Higgs_Sscore", 100, 0, 2);
+    auto Qscore =  m_histContainer->get1DHist("Higgs_Qscore", 100, 0, 2);
+    auto Gscore =  m_histContainer->get1DHist("Higgs_Gscore", 100, 0, 2);
+    
+    auto Z_Bscore =  m_histContainer->get1DHist("Z_Bscore", 100, 0, 2);
+    auto Z_Cscore =  m_histContainer->get1DHist("Z_Cscore", 100, 0, 2);
+    auto Z_Sscore =  m_histContainer->get1DHist("Z_Sscore", 100, 0, 2);
+    auto Z_Qscore =  m_histContainer->get1DHist("Z_Qscore", 100, 0, 2);
+    auto Z_Gscore =  m_histContainer->get1DHist("Z_Gscore", 100, 0, 2);
+//     auto TAUscore =  m_histContainer->get1DHist("TAUscore", 100, 0, 2);
+        // auto Uscore =  m_histContainer->get1DHist("Uscore", 100, 0, 2);
+
 
     auto mZ =  m_histContainer->get1DHist("mZ",250, 0., 250.);
     auto mH =  m_histContainer->get1DHist("mH", 250, 0., 250.);
@@ -113,21 +131,21 @@ void AnalysisZHAllHad::run()
     auto MidS_obsHist = obsHist["MidHss"];
     auto HiS_obsHist = obsHist["HiHss"];
 
-    // H->qq
-    // auto Low_bbZ_Hqq_obsHist = obsHist["LowbbHqq"];
-    // auto Low_ccZ_Hqq_obsHist = obsHist["LowccHqq"];
-    // auto Low_ssZ_Hqq_obsHist = obsHist["LowssHqq"];
-    // auto Low_qqZ_Hqq_obsHist = obsHist["LowqqHqq"];
+//     // H->qq
+//     auto Low_bbZ_Hqq_obsHist = obsHist["LowbbHqq"];
+//     auto Low_ccZ_Hqq_obsHist = obsHist["LowccHqq"];
+//     auto Low_ssZ_Hqq_obsHist = obsHist["LowssHqq"];
+//     auto Low_qqZ_Hqq_obsHist = obsHist["LowqqHqq"];
 
-    // auto Mid_bbZ_Hqq_obsHist = obsHist["MidbbHqq"];
-    // auto Mid_ccZ_Hqq_obsHist = obsHist["MidccHqq"];
-    // auto Mid_ssZ_Hqq_obsHist = obsHist["MidssHqq"];
-    // auto Mid_qqZ_Hqq_obsHist = obsHist["MidqqHqq"];
+//     auto Mid_bbZ_Hqq_obsHist = obsHist["MidbbHqq"];
+//     auto Mid_ccZ_Hqq_obsHist = obsHist["MidccHqq"];
+//     auto Mid_ssZ_Hqq_obsHist = obsHist["MidssHqq"];
+//     auto Mid_qqZ_Hqq_obsHist = obsHist["MidqqHqq"];
 
-    // auto Hi_bbZ_Hqq_obsHist = obsHist["HibbHqq"];
-    // auto Hi_ccZ_Hqq_obsHist = obsHist["HiccHqq"];
-    // auto Hi_ssZ_Hqq_obsHist = obsHist["HissHqq"];
-    // auto Hi_qqZ_Hqq_obsHist = obsHist["HiqqHqq"];
+//     auto Hi_bbZ_Hqq_obsHist = obsHist["HibbHqq"];
+//     auto Hi_ccZ_Hqq_obsHist = obsHist["HiccHqq"];
+//     auto Hi_ssZ_Hqq_obsHist = obsHist["HissHqq"];
+//     auto Hi_qqZ_Hqq_obsHist = obsHist["HiqqHqq"];
 
     // H->gg
     auto Low_bbZ_Hgg_obsHist = obsHist["LowbbHgg"];
@@ -144,7 +162,7 @@ void AnalysisZHAllHad::run()
     auto Hi_ccZ_Hgg_obsHist = obsHist["HiccHgg"];
     auto Hi_ssZ_Hgg_obsHist = obsHist["HissHgg"];
     auto Hi_qqZ_Hgg_obsHist = obsHist["HiqqHgg"];
-
+    
 
     // Get the trees
     auto treeCont = std::make_shared<TreeContainer>();
@@ -152,53 +170,30 @@ void AnalysisZHAllHad::run()
 
     // Get max events to run on
     int nEntries = treeCont->getEventsToRun();
+  
 
     // Connect branches to trees
     auto tree = treeCont->getTree();
-    varMemberVector<float> jet_px_nc{tree, {"jet0_px","jet1_px","jet2_px","jet3_px"}, -999};
-    varMemberVector<float> jet_py_nc{tree, {"jet0_py","jet1_py","jet2_py","jet3_py"}, -999};
-    varMemberVector<float> jet_pz_nc{tree, {"jet0_pz","jet1_pz","jet2_pz","jet3_pz"}, -999};
-    varMemberVector<float> jet_e_nc{tree, {"jet0_e","jet1_e","jet2_e","jet3_e"}, -999};
-
-    varMemberVector<double> jet_px{tree, { "jet0_px_corr","jet1_px_corr", "jet2_px_corr", "jet3_px_corr"}, -999};
-    varMemberVector<double> jet_py{tree, { "jet0_py_corr","jet1_py_corr", "jet2_py_corr", "jet3_py_corr"}, -999};
-    varMemberVector<double> jet_pz{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
-    varMemberVector<double> jet_e{tree, { "jet0_e_corr","jet1_e_corr", "jet2_e_corr", "jet3_e_corr"}, -999};
-
-    varMember<float> jet0_scoreB {tree, "jet0_scoreB"};
-    varMember<float> jet1_scoreB {tree, "jet1_scoreB"};
-    varMember<float> jet2_scoreB {tree, "jet2_scoreB"};
-    varMember<float> jet3_scoreB {tree, "jet3_scoreB"};
-
-    varMember<float> jet0_scoreC {tree, "jet0_scoreC"};
-    varMember<float> jet1_scoreC {tree, "jet1_scoreC"};
-    varMember<float> jet2_scoreC {tree, "jet2_scoreC"};
-    varMember<float> jet3_scoreC {tree, "jet3_scoreC"};
-
-    varMember<float> jet0_scoreG {tree, "jet0_scoreG"};
-    varMember<float> jet1_scoreG {tree, "jet1_scoreG"};
-    varMember<float> jet2_scoreG {tree, "jet2_scoreG"};
-    varMember<float> jet3_scoreG {tree, "jet3_scoreG"};
-
-    varMember<float> jet0_scoreU {tree, "jet0_scoreU"};
-    varMember<float> jet1_scoreU {tree, "jet1_scoreU"};
-    varMember<float> jet2_scoreU {tree, "jet2_scoreU"};
-    varMember<float> jet3_scoreU {tree, "jet3_scoreU"};
-
-    varMember<float> jet0_scoreTAU {tree, "jet0_scoreTAU"};
-    varMember<float> jet1_scoreTAU {tree, "jet1_scoreTAU"};
-    varMember<float> jet2_scoreTAU {tree, "jet2_scoreTAU"};
-    varMember<float> jet3_scoreTAU {tree, "jet3_scoreTAU"};
-
-    varMember<float> jet0_scoreD {tree, "jet0_scoreD"};
-    varMember<float> jet1_scoreD {tree, "jet1_scoreD"};
-    varMember<float> jet2_scoreD {tree, "jet2_scoreD"};
-    varMember<float> jet3_scoreD{tree, "jet3_scoreD"};
-
-    varMember<float> jet0_scoreS {tree, "jet0_scoreS"};
-    varMember<float> jet1_scoreS {tree, "jet1_scoreS"};
-    varMember<float> jet2_scoreS {tree, "jet2_scoreS"};
-    varMember<float> jet3_scoreS {tree, "jet3_scoreS"};
+  
+    // assuming you have vectors as input (should also save option to run w/o vectors)
+  
+    // flavor scores
+    varMember<ROOT::VecOps::RVec<float>> recojet_isB {tree, "recojet_isB"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isC {tree, "recojet_isC"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isG {tree, "recojet_isG"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isU {tree, "recojet_isU"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isTAU {tree, "recojet_isTAU"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isD {tree, "recojet_isD"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isS {tree, "recojet_isS"};
+    //add truth jet flav
+    varMember<ROOT::VecOps::RVec<int>> truth_flav {tree, "jets_truth"};
+    
+  
+    // corrected momentum
+    varMember<ROOT::VecOps::RVec<float>> jet_px {tree, "jet_px_corr"};
+    varMember<ROOT::VecOps::RVec<float>> jet_py {tree, "jet_py_corr"}; 
+    varMember<ROOT::VecOps::RVec<float>> jet_pz {tree, "jet_pz_corr"};
+    varMember<ROOT::VecOps::RVec<float>> jet_e {tree, "jet_e_corr"}; 
 
     varMember<int> event_njet {tree, "event_njet"};
     varMember<ulong> event_nmu {tree, "event_nmu"};
@@ -216,12 +211,7 @@ void AnalysisZHAllHad::run()
     varMember<float> muons_p {tree, "muons_p"};
     varMember<float> electrons_p {tree, "electrons_p"};
 
-
-
     // varMember<double> costhetainv {tree, "costhetainv"};
-
-    int H_flav = -1;
-    int Z_flav = -1;
     int NjetCut = 0;
     int NleptonCut = 0;
     int NkineCut = 0;
@@ -236,32 +226,31 @@ void AnalysisZHAllHad::run()
     int SlikeEvents = 0;
     int GlikeEvents = 0;
     int QlikeEvents = 0;
-    int TAUlikeEvents = 0;
+//     int TAUlikeEvents = 0;
 
     std::array<int, 3> BlikeEvents_cat {0, 0, 0};
     std::array<int, 3> ClikeEvents_cat {0, 0, 0};
     std::array<int, 3> SlikeEvents_cat {0, 0, 0};
     std::array<int, 3> GlikeEvents_cat {0, 0, 0};
     std::array<int, 3> QlikeEvents_cat {0, 0, 0};
-    // std::array<int, 3> TAUlikeEvents_cat {0, 0, 0};
+//     std::array<int, 3> TAUlikeEvents_cat {0, 0, 0};
 
+//     int debug = 1;
+  
     // Loop over the trees here
     for(int i = 0; i < nEntries; i++)
     {
-        std::cout<<"New Event Investigated! Event: " <<i<< std::endl; 
-        // Check if 10 iterations have been reached
-        // if (i + 1 == 10) {
-        //     std::cout << "Exiting loop after 20 iterations." << std::endl;
-        //     break;  // Exit the loop
-        // }
+
         treeCont->getEntry(i);
         // Just to store how many events were run over
         countingHist->Fill(1);
         NEventsInt++;
+        int H_flav = -1;
+        int Z_flav = -1;
 
-        if(i % 10000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
-        // Add some basic selection
-        
+//         if(i % 10000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
+        if(i % 1000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
+        // Add some basic selection        
         if(event_njet() != 4) continue; //Require EXACTLY 4 jet! This SHOULD be the case!
         NjetCut++;
         //numebr of electrons and muons cut! 2!
@@ -289,20 +278,48 @@ void AnalysisZHAllHad::run()
         // Step 1: check efficiency ~ 80%
         // increment counter of events that pass the cuts!
        //make lorentz vectors
-       std::cout<<"Passed intial selection!" << std::endl; 
-       std::vector<TLorentzVector> LVjets;
-       std::vector<TLorentzVector> LVjets_nc;
-       for (size_t lv = 0; lv < 4; ++lv) {
-            TLorentzVector LVjet(jet_px.getVal(lv), jet_py.getVal(lv), jet_pz.getVal(lv), jet_e.getVal(lv));
+//        std::cout<<"Passed intial selection!" << std::endl; 
+       std::vector<TLorentzVector> LVjets;    
+       std::vector<float> NEWrecojet_isB;
+       std::vector<float> NEWrecojet_isC;
+       std::vector<float> NEWrecojet_isS;
+       for (size_t lv = 0; lv < 4; ++lv) {  
+            TLorentzVector LVjet(jet_px.at(lv), jet_py.at(lv), jet_pz.at(lv), jet_e.at(lv));
             LVjets.push_back(LVjet);
-            TLorentzVector LVjet_nc(jet_px_nc.getVal(lv), jet_py_nc.getVal(lv), jet_pz_nc.getVal(lv), jet_e_nc.getVal(lv));
-            LVjets_nc.push_back(LVjet_nc);
+            std::string jet_flav = char_jet_flav[abs(truth_flav.at(lv))];
+//             std::cout<<"Jet: "<< lv <<std::endl; 
+            if (m_debug) std::cout<<"Truth Flav: "<< abs(truth_flav.at(lv)) <<std::endl;
+            std::vector<int> set = {1, 2, 3, 4, 5};
+            if (std::find(set.begin(), set.end(), abs(truth_flav.at(lv))) == set.end()){
+                if (m_debug) std::cout<<"EMPTY truth_flav.at(lv): "<< truth_flav.at(lv) <<std::endl;
+                NEWrecojet_isB.push_back(recojet_isB.at(lv));
+                NEWrecojet_isC.push_back(recojet_isC.at(lv));
+                NEWrecojet_isS.push_back(recojet_isS.at(lv));
+            }
+            else{
+                double b_score;
+                double c_score;
+                double s_score;
+                histo_DetVars[jet_flav]->GetRandom3(b_score, c_score,s_score);
+                NEWrecojet_isB.push_back(b_score);
+                NEWrecojet_isC.push_back(c_score);
+                NEWrecojet_isS.push_back(s_score);
+            }
+            if (m_debug) {
+               std::cout<<"Old b_score: "<< recojet_isB.at(lv) <<std::endl;
+               std::cout<<"Old c_score: "<< recojet_isC.at(lv)<<std::endl; 
+               std::cout<<"Old s_score: "<< recojet_isS.at(lv)<<std::endl; 
+               std::cout<<"Did it update b_score: "<< NEWrecojet_isB.at(lv) <<std::endl;
+               std::cout<<"Did it update c_score: "<< NEWrecojet_isC.at(lv)<<std::endl;
+               std::cout<<"Did it update s_score: "<< NEWrecojet_isS.at(lv)<<std::endl;}    
         }
+      
        // Flav scores of each jet
-       std::array<float,7> j0_flav {jet0_scoreB(), jet0_scoreC(), jet0_scoreS(),jet0_scoreD(),jet0_scoreU(),jet0_scoreG(),jet0_scoreTAU()};
-       std::array<float,7> j1_flav {jet1_scoreB(), jet1_scoreC(), jet1_scoreS(),jet1_scoreD(),jet1_scoreU(),jet1_scoreG(),jet1_scoreTAU()};
-       std::array<float,7> j2_flav {jet2_scoreB(), jet2_scoreC(), jet2_scoreS(),jet2_scoreD(),jet2_scoreU(),jet2_scoreG(),jet2_scoreTAU()};
-       std::array<float,7> j3_flav {jet3_scoreB(), jet3_scoreC(), jet3_scoreS(),jet3_scoreD(),jet3_scoreU(),jet3_scoreG(),jet3_scoreTAU()};
+    
+       std::array<float,7> j0_flav {NEWrecojet_isB.at(0), NEWrecojet_isC.at(0), NEWrecojet_isS.at(0), recojet_isD.at(0), recojet_isU.at(0), recojet_isG.at(0), recojet_isTAU.at(0)};
+       std::array<float,7> j1_flav {NEWrecojet_isB.at(1), NEWrecojet_isC.at(1), NEWrecojet_isS.at(1), recojet_isD.at(1), recojet_isU.at(1), recojet_isG.at(1), recojet_isTAU.at(1)};
+       std::array<float,7> j2_flav {NEWrecojet_isB.at(2), NEWrecojet_isC.at(2), NEWrecojet_isS.at(2), recojet_isD.at(2), recojet_isU.at(2), recojet_isG.at(2), recojet_isTAU.at(2)};
+       std::array<float,7> j3_flav {NEWrecojet_isB.at(3), NEWrecojet_isC.at(3), NEWrecojet_isS.at(3), recojet_isD.at(3), recojet_isU.at(3), recojet_isG.at(3), recojet_isTAU.at(3)};
 
         // - look for max score of jet 
        std::array<float,7>::iterator j0_maxScore;
@@ -422,9 +439,9 @@ void AnalysisZHAllHad::run()
             std::cout << "THIS IS IMPOSSIBLE! I THINK???"<<std::endl;
             break;
         }
-        else if (flavOccurance.size()==4){
-                std::cout << "No same flavour pair found. Ignore for now!" <<std::endl;
-                continue;}
+        else if (flavOccurance.size()==4) continue;
+//                 std::cout << "No same flavour pair found. Ignore for now!" <<std::endl;
+//                 continue;}
         else if (tmp_jet_pair.size() == 1){
             if (m_debug) std::cout << "Only 1 jet pair found!" <<std::endl;
             if (m_debug) std::cout << "tmp_jet_pair[0].size(): " <<tmp_jet_pair[0].size()<<std::endl;
@@ -572,13 +589,21 @@ void AnalysisZHAllHad::run()
                 }
         
         // std::cout << "AFTER FAILING!" <<std::endl;  
-        // std::cout << "Flav PAIR 1:" <<jet_pair_flav[0]<<std::endl;
-        // std::cout << "Flav PAIR 2:" <<jet_pair_flav[1]<<std::endl;
+        if (m_debug) {
+            std::cout << "PAIR 1:" <<jet_pair_flav[0]<<std::endl;
+            std::cout << "j1:" <<jet_pair[0][0]<<std::endl;
+            std::cout << "j2:" <<jet_pair[0][1]<<std::endl;
+
+            std::cout << "PAIR 2:" <<jet_pair_flav[1]<<std::endl;
+            std::cout << "j2:" <<jet_pair[1][0]<<std::endl;
+            std::cout << "j3:" <<jet_pair[1][1]<<std::endl;}
+        
         if (hz_check==0){
             float chi_p1 = std::pow((LVjets[jet_pair[0][0]]+LVjets[jet_pair[0][1]]).M()-Z_mass,2);
             float chi_p2 = std::pow((LVjets[jet_pair[1][0]]+LVjets[jet_pair[1][1]]).M()-Z_mass,2);
-        // std::cout << "chi OF JET PAIR 1:" <<chi_p1<<std::endl;
-        // std::cout << "chi OF JET PAIR 2:" <<chi_p2<<std::endl;
+            if (m_debug) {
+                std::cout << "chi OF JET PAIR 1:" <<chi_p1<<std::endl;
+                std::cout << "chi OF JET PAIR 2:" <<chi_p2<<std::endl;}
             if (chi_p1<chi_p2){
                 if (m_debug) std::cout << "Pair 0 is Z!" <<std::endl;
                 z_idx=jet_pair[0];
@@ -604,31 +629,37 @@ void AnalysisZHAllHad::run()
         float m_zjj = (LVjets[z_idx[0]]+LVjets[z_idx[1]]).M();
         float m_hjj = (LVjets[h_idx[0]]+LVjets[h_idx[1]]).M();
 
-        float m_zjj_nc = (LVjets_nc[z_idx[0]]+LVjets_nc[z_idx[1]]).M();
-        float m_hjj_nc = (LVjets_nc[h_idx[0]]+LVjets_nc[h_idx[1]]).M();
+//         float m_zjj_nc = (LVjets_nc[z_idx[0]]+LVjets_nc[z_idx[1]]).M();
+//         float m_hjj_nc = (LVjets_nc[h_idx[0]]+LVjets_nc[h_idx[1]]).M();
 
 
         float H_flav_sc = flavMap[h_idx[0]][H_flav]+flavMap[h_idx[1]][H_flav];
+        float Z_flav_sc = flavMap[z_idx[0]][Z_flav]+flavMap[z_idx[1]][Z_flav];
+        if (m_debug) {
+            std::cout << "H_flav_sc: " <<H_flav_sc<<std::endl;
+            std::cout << "Z_flav_sc: " <<Z_flav_sc<<std::endl;}
 
-        // std::cout << "MASS OF Z:" <<m_zjj<<std::endl;
-        // std::cout << "MASS OF H:" <<m_hjj<<std::endl;
-
-        // std::cout << "NOT CORR - MASS OF Z:" <<m_zjj_nc<<std::endl;
-        // std::cout << " NOT CORR - MASS OF H:" <<m_hjj_nc<<std::endl;
         NafterPairing++;
         Incl_obsHist->Fill(m_zjj,m_hjj);
-        Incl_obsHist_corr->Fill(m_zjj_nc,m_hjj_nc);
+
         //A bit of selection 
         float WW_cuts = sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2));
         float ZZ_cuts = sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2));
-        if(WW_cuts<=10) continue;
-        if(ZZ_cuts<=10) continue;
-
+        if (m_debug) {
+            std::cout << "WW_cuts: " <<sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2))<<std::endl;
+            std::cout << "ZZ_cuts: " <<sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2))<<std::endl;}
+        if(sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2))<=10) continue;
+        if(sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2))<=10) continue;
+        if (m_debug) {
+            std::cout << "Passed WW_cuts and ZZ_cuts!"<<std::endl;}
         NjjMassCut++;
         if (50. >= m_zjj)continue; 
         if (m_zjj >= H_mass) continue; 
         //Fix
         if (m_hjj<=Z_mass) continue;
+        if (m_debug) {
+            std::cout << "m_hjj: " <<m_hjj<<std::endl;
+            std::cout << "m_zjj: " <<m_zjj<<std::endl;}
         // For now remove the Htautau as a cat, only bkg....
         // if (flavours[H_flav]=="TAU") continue;
         //After parining and cuts 
@@ -647,6 +678,27 @@ void AnalysisZHAllHad::run()
         h_d_12->Fill(d_12());
         h_d_23->Fill(d_23());
         h_d_34->Fill(d_34());
+        
+        if (flavours[Z_flav]=="B"){
+            Z_Bscore->Fill(Z_flav_sc);
+        }
+        else if (flavours[Z_flav]=="C"){
+            Z_Cscore->Fill(Z_flav_sc);
+        }
+        else if (flavours[Z_flav]=="S"){
+            Z_Sscore->Fill(Z_flav_sc);
+        }
+        else if (flavours[Z_flav]=="G"){
+            Z_Gscore->Fill(Z_flav_sc);
+        }
+        else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D"){
+            Z_Qscore->Fill(Z_flav_sc);
+        }
+        
+        if (flavours[Z_flav]=="G" || flavours[Z_flav]=="TAU" || flavours[H_flav]=="TAU" || flavours[H_flav]=="U" || flavours[H_flav]=="D") continue;
+        //Corrected mh_jj
+        float m_hjj_corr = m_hjj+m_zjj-Z_mass;
+//         if (m_hjj_corr<=Z_mass) continue;
         if (flavours[H_flav]=="B"){
             BlikeEvents++;
             // Hbb_obsHist->Fill(m_zjj,m_hjj);
@@ -656,19 +708,25 @@ void AnalysisZHAllHad::run()
             {
                 // std::cout << "B Low Cat" << std::endl;
                 if (flavours[Z_flav]=="B"){
-                    Low_bbZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_bbZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Low_bbZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="C"){
-                    Low_ccZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_ccZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Low_ccZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
+
 
                 }
                 else if (flavours[Z_flav]=="S"){
-                    Low_ssZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_ssZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Low_ssZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Low_qqZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_qqZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Low_qqZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
+
                 }
                 
                 BlikeEvents_cat[0]++;
@@ -678,40 +736,49 @@ void AnalysisZHAllHad::run()
                 // std::cout << "B Mid Cat" << std::endl;
                 // MidB_obsHist->Fill(m_zjj,m_hjj);
                 if (flavours[Z_flav]=="B"){
-                    Mid_bbZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_bbZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_bbZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
+
 
                 }
                 else if (flavours[Z_flav]=="C"){
-                    Mid_ccZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_ccZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_ccZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="S"){
-                    Mid_ssZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_ssZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_ssZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Mid_qqZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_qqZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_qqZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
                 BlikeEvents_cat[1]++;
             }
-            else
+            else if (H_flav_sc > 1.8)
             {
                 // std::cout << "B Hi Cat" << std::endl;
                 // HiB_obsHist->Fill(m_zjj,m_hjj);
                 if (flavours[Z_flav]=="B"){
-                    Hi_bbZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_bbZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_bbZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="C"){
-                    Hi_ccZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_ccZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_ccZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="S"){
-                    Hi_ssZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_ssZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_ssZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Hi_qqZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_qqZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
+                     Hi_qqZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
                 BlikeEvents_cat[2]++;
             }
@@ -724,19 +791,24 @@ void AnalysisZHAllHad::run()
             {
                 // LowC_obsHist->Fill(m_zjj,m_hjj);
                 if (flavours[Z_flav]=="B"){
-                    Low_bbZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_bbZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                        Low_bbZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
+
 
                 }
                 else if (flavours[Z_flav]=="C"){
-                    Low_ccZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_ccZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                    Low_ccZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="S"){
-                    Low_ssZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_ssZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                    Low_ssZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Low_qqZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_qqZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                    Low_qqZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
                 ClikeEvents_cat[0]++;
             }
@@ -744,39 +816,47 @@ void AnalysisZHAllHad::run()
             {
                 // MidC_obsHist->Fill(m_zjj,m_hjj);
                 if (flavours[Z_flav]=="B"){
-                    Mid_bbZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_bbZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_bbZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="C"){
-                    Mid_ccZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_ccZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                     Mid_ccZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="S"){
-                    Mid_ssZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_ssZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_ssZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Mid_qqZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_qqZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_qqZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
                 ClikeEvents_cat[1]++;
             }
-            else
+            else if (H_flav_sc > 1.8)
             {
                 // HiC_obsHist->Fill(m_zjj,m_hjj);
                 if (flavours[Z_flav]=="B"){
-                    Hi_bbZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_bbZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_bbZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="C"){
-                    Hi_ccZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_ccZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_ccZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="S"){
-                    Hi_ssZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_ssZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_ssZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Hi_qqZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_qqZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_qqZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
                 ClikeEvents_cat[2]++;
             }
@@ -787,17 +867,20 @@ void AnalysisZHAllHad::run()
             // Hss_obsHist->Fill(m_zjj,m_hjj);
             if (H_flav_sc < 0.8)
             {
-                LowS_obsHist->Fill(m_zjj,m_hjj);
+//                 LowS_obsHist->Fill(m_zjj,m_hjj);
+                LowS_obsHist->Fill(m_hjj_corr,m_zjj);
                 SlikeEvents_cat[0]++;
             }
             else if ((H_flav_sc >= 0.8) && (H_flav_sc <= 1.4))
             {
-                MidS_obsHist->Fill(m_zjj,m_hjj);
+//                 MidS_obsHist->Fill(m_zjj,m_hjj);
+                MidS_obsHist->Fill(m_hjj_corr,m_zjj);
                 SlikeEvents_cat[1]++;
             }
-            else
+            else if (H_flav_sc > 1.4)
             {
-                HiS_obsHist->Fill(m_zjj,m_hjj);
+//                 HiS_obsHist->Fill(m_zjj,m_hjj);
+                HiS_obsHist->Fill(m_hjj_corr,m_zjj);
                 SlikeEvents_cat[2]++;
             }
         }
@@ -809,19 +892,23 @@ void AnalysisZHAllHad::run()
             {
                 // LowG_obsHist->Fill(m_zjj,m_hjj);
                 if (flavours[Z_flav]=="B"){
-                    Low_bbZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_bbZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Low_bbZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="C"){
-                    Low_ccZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_ccZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Low_ccZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="S"){
-                    Low_ssZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_ssZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Low_ssZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Low_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Low_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Low_qqZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
                 GlikeEvents_cat[0]++;
             }
@@ -829,109 +916,61 @@ void AnalysisZHAllHad::run()
             {
                 // MidG_obsHist->Fill(m_zjj,m_hjj);
                 if (flavours[Z_flav]=="B"){
-                    Mid_bbZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_bbZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_bbZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="C"){
-                    Mid_ccZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_ccZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_ccZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="S"){
-                    Mid_ssZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_ssZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_ssZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Mid_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Mid_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Mid_qqZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
                 GlikeEvents_cat[1]++;
             }
-            else
+            else if (H_flav_sc > 1.8)
             {
                 // HiG_obsHist->Fill(m_zjj,m_hjj);
                 if (flavours[Z_flav]=="B"){
-                    Hi_bbZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_bbZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_bbZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="C"){
-                    Hi_ccZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_ccZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_ccZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="S"){
-                    Hi_ssZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_ssZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_ssZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
                 else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-                    Hi_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+//                     Hi_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
+                    Hi_qqZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
                 GlikeEvents_cat[2]++;
             }
         }
-        else if (flavours[H_flav]=="U" || flavours[H_flav]=="D" ){
-            QlikeEvents++;
-            Qscore->Fill(H_flav_sc);
-            // Hqq_obsHist->Fill(m_zjj,m_hjj);
-            // if (H_flav_sc < 1.1)
-            // {
-            //     // LowQ_obsHist->Fill(m_zjj,m_hjj);
-            //     if (flavours[Z_flav]=="B"){
-            //         Low_bbZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-
-            //     }
-            //     else if (flavours[Z_flav]=="C"){
-            //         Low_ccZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-
-            //     }
-            //     else if (flavours[Z_flav]=="S"){
-            //         Low_ssZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-
-            //     }
-            //     else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-            //         Low_qqZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-            //     }
-            //     QlikeEvents_cat[0]++;
-            // }
-            // else if ((H_flav_sc >= 1.1) && (H_flav_sc <= 1.8))
-            // {
-            //     // MidQ_obsHist->Fill(m_zjj,m_hjj);
-            //     if (flavours[Z_flav]=="B"){
-            //         Mid_bbZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-
-            //     }
-            //     else if (flavours[Z_flav]=="C"){
-            //         Mid_ccZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-
-            //     }
-            //     else if (flavours[Z_flav]=="S"){
-            //         Mid_ssZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-
-            //     }
-            //     else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-            //         Mid_qqZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-            //     }
-            //     QlikeEvents_cat[1]++;
-            // }
-            // else
-            // {
-            //     // HiQ_obsHist->Fill(m_zjj,m_hjj);
-            //     if (flavours[Z_flav]=="B"){
-            //         Hi_bbZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-
-            //     }
-            //     else if (flavours[Z_flav]=="C"){
-            //         Hi_ccZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-
-            //     }
-            //     else if (flavours[Z_flav]=="S"){
-            //         Hi_ssZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-
-            //     }
-            //     else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
-            //         Hi_qqZ_Hqq_obsHist->Fill(m_zjj,m_hjj);
-            //     }
-            //     QlikeEvents_cat[2]++;
-            // }
+        else if (H_flav == -1){
+            std::cout << "Something went wrong! No Higgs found!"<<std::endl;
+            break;
+            }
+        else{
+            std::cout<<"Couldn't find best score"<<std::endl;
         }
-        // else if (flavours[H_flav]=="TAU"){
+        // }
+        // Step 2: check efficiency ~ 60-70%, for each cat you fit you need to check eff 
+                // else if (flavours[H_flav]=="TAU"){
         //     TAUlikeEvents++;
         //     TAUscore->Fill(H_flav_sc);
         //     // Htautau_obsHist->Fill(m_zjj,m_hjj);
@@ -951,15 +990,6 @@ void AnalysisZHAllHad::run()
         //         TAUlikeEvents_cat[2]++;
         //     }
         // }
-        else if (H_flav == -1){
-            std::cout << "Something went wrong! No Higgs found!"<<std::endl;
-            break;
-            }
-        else{
-            std::cout<<"Couldn't find best score"<<std::endl;
-        }
-        // }
-        // Step 2: check efficiency ~ 60-70%, for each cat you fit you need to check eff 
 
     }
     scoreMapHist->SetBinContent(1, BlikeEvents*100./NafterSel);

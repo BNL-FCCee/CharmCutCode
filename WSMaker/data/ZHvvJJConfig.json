@@ -1,5 +1,5 @@
 {
-    "category":["B", "C", "S", "Q", "G", "TAU"],
+    "category":["BH", "BM", "BL", "CH", "CM", "CL", "SH", "SM", "SL", "GH", "GM", "GL"],
     "process":["WW", "ZZ", "Zqq", "Hbb", "Hcc", "Hgg", "Hss", "HWW", "HZZ", "Htautau", "qqH"],
     "processHeldConstant":[],
 

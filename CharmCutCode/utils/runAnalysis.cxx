@@ -37,6 +37,8 @@ int main(int argc, char** argv)
     MDC::GetInstance()->setMetadata("processName", opts["processName"]);
     MDC::GetInstance()->setMetadata("SOWJSONfile", opts["SOWJSONfile"]);
     MDC::GetInstance()->setMetadata("CustomSOWJSONfile", opts["CustomSOWJSONfile"]);
+    MDC::GetInstance()->setMetadata("DetectorVarFile", opts["DetectorVarFile"]);
+    MDC::GetInstance()->setMetadata("DetectorVar", opts["DetectorVar"]);
     MDC::GetInstance()->setMetadata("nEvents", std::atoi(opts["nEvents"].c_str()));
 
     std::shared_ptr<AnalysisBase>  analysis;
@@ -86,6 +88,8 @@ bool cmdline(int argc, char** argv, map<TString,std::string>& opts)
     opts["analType"]            = "vvjj";
     opts["SOWJSONfile"]         = "../source/CharmCutCode/data/FCCee_procDict_winter2023_IDEA.json";
     opts["CustomSOWJSONfile"]   = "../source/CharmCutCode/data/SumOfWeightsCustom.json";
+    opts["DetectorVarFile"] = "../source/CharmCutCode/data/s_score_baseline_CLD.root";
+    opts["DetectorVar"] = "baseline";
 
 
 
@@ -101,6 +105,9 @@ bool cmdline(int argc, char** argv, map<TString,std::string>& opts)
             cout<<"--processName       : simple process name - becomes a keyword for the ws building"<<endl;
             cout<<"--analType          : analysis type to preform on the inputs - supported options: vvjj"<<endl;
             cout<<"--SOWJSONfile       : path to the Sum of wieght json file"<<endl;
+            cout<<"--DetectorVarFile   : Detector variation file to be used, to update the B/C tagging score."<<endl;
+            cout<<"--DetectorVar       : Detector variation to be considered, when updating the B/C tagging score."<<endl;
+
 
             return false;
         }
