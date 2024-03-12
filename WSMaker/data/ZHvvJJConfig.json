@@ -6,5 +6,8 @@
     "xRebinFactor":5,
     "yRebinFactor":5,
 
-    "lumi": 5000000.0
+    "lumi": 5000000.0,
+
+    "minYieldBinCut": 0.0001
+
 }

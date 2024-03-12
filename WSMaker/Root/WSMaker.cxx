@@ -31,6 +31,7 @@ void WSMaker::run()
         cat->setXRebin(m_jsonConfigData["xRebinFactor"]);
         cat->setYRebin(m_jsonConfigData["yRebinFactor"]);
         cat->setLumi(m_jsonConfigData["lumi"]);
+        cat->setMinYieldBinCut(m_jsonConfigData["minYieldBinCut"]);
 
         std::vector<std::string> constProc = m_jsonConfigData["processHeldConstant"];
         cat->setConstantProc(constProc);
@@ -94,6 +95,13 @@ void WSMaker::WriteXML()
 
     for(const auto& cat: m_categoryCont)
     {
+        // Don't write out a category if it has zero events
+        if(!cat.second->hasEvents())
+        {
+            std::cout<<"\033[1;31mSKIPPING:\033[0m Skipping category due to no events "<<cat.first<<endl;
+            continue;
+        }
+
         oFile<<"<Input>"<<cat.second->getXMLFileName()<<"</Input>"<<endl;
     }
 

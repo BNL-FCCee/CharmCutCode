@@ -4,5 +4,6 @@
     "processHeldConstant":[],
     "xRebinFactor":1,
     "yRebinFactor":1,
-    "lumi": 5000000.0
+    "lumi": 5000000.0,
+    "minYieldBinCut": 0.000000001
 }

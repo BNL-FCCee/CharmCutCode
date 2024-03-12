@@ -73,11 +73,15 @@ void CategoryContainer::cleanHist()
     auto processList = getProcessList();
     for(const auto& proc: processList)
     {
-        if(m_yieldList["Nominal"][proc] == 0)
+        if(m_yieldList["Nominal"][proc] < m_minYieldBinCut)
         { 
             processToRemove.insert(proc);
             cout<<"\033[1;31mStupid Removal:\033[0m Removing process due to zero yeild: "<<m_catName<<" "<<proc<<endl;
         }
+        // else
+        // {
+        //     cout<<"\033[1;32mStupid Removal:\033[0m NOT Removing process due to zero yeild: "<<m_catName<<" "<<proc<<endl;
+        // }
     }
 
     // remove from all maps
@@ -107,6 +111,7 @@ void CategoryContainer::clearOverUnderFlow()
 
 void CategoryContainer::createFlatNonEmptyHist()
 {
+    
     // First get the number of nonEmpty bins
     for(const auto& procHists:m_histList)
     {
@@ -122,14 +127,17 @@ void CategoryContainer::createFlatNonEmptyHist()
         }
     }
 
+    // if everything has be pruned away, sumHist is not created, and we can't proceed forward
+    if(!hasEvents()) return;
+
     // Get the number of non-zero bins
     int nNonZeroBins = 0;
     for(int i = 0; i < m_sumHist->GetNcells(); i++)
     {
-        if(m_sumHist->GetBinContent(i+1) != 0) nNonZeroBins++;
+        if(fabs(m_sumHist->GetBinContent(i+1)) > m_minYieldBinCut) nNonZeroBins++;
     }
 
-    std::cout<<m_catName<<" found nonzero bins: "<<nNonZeroBins<<std::endl;
+    std::cout<<m_catName<<" found bins passing the minimum yield Cut: "<<nNonZeroBins<<std::endl;
 
     // Create flat versions of the hist
     // First get the number of nonEmpty bins
@@ -143,23 +151,34 @@ void CategoryContainer::createFlatNonEmptyHist()
             int index = 0;
             for(int i = 0; i < m_sumHist->GetNcells(); i++)
             {
-                if(m_sumHist->GetBinContent(i+1) != 0)
+                if(fabs(m_sumHist->GetBinContent(i+1)) > m_minYieldBinCut)
                 {
                     flatHist->SetBinContent(index, hist.second->GetBinContent(i+1));
                     flatHist->SetBinError(index, hist.second->GetBinError(i+1));
                     index++;
                 }
             }
-            // std::cout<<m_catName<<" yield: "<<m_yieldList[procHists.first][hist.first]<<" "<<hist.second->GetTitle()<<" hist: "<<hist.second->Integral()<<" flat: "<<flatHist->Integral()<<" "<<flatHist->GetEntries()<<std::endl;
-            
+            if(flatHist->Integral() == 0) continue;
+
+            std::cout<<m_catName<<" yield: "<<m_yieldList[procHists.first][hist.first]<<" "<<hist.second->GetTitle()<<" hist: "<<hist.second->Integral()<<" flat: "<<flatHist->Integral()<<" "<<flatHist->GetEntries()<<std::endl;
+
             flatHist->Scale(1.0/flatHist->Integral());
             m_flatHistList[procHists.first][hist.first] = flatHist;
         }
+    }
+
+    if(m_flatHistList.size() == 0)
+    {
+        delete m_sumHist;
+        m_sumHist = NULL;
     }
 }
 
 void CategoryContainer::writeHistToRoot()
 {
+    // No process passed this category, just don't output anything
+    if(!hasEvents()) return;
+
     TString path = m_outputDir + "/hist";
     std::filesystem::create_directories(path.Data());
 
@@ -186,6 +205,9 @@ void CategoryContainer::writeHistToRoot()
 
 void CategoryContainer::writeXML()
 {
+    // No process passed this category, just don't output anything
+    if(!hasEvents()) return;
+    
     TString path = m_outputDir + "/XML/";
     std::filesystem::create_directories(path.Data());
     std::filesystem::copy_file("../source/WSMaker/data/HistFactorySchema.dtd", (path +  "/HistFactorySchema.dtd").Data(), std::filesystem::copy_options::skip_existing);
@@ -202,6 +224,9 @@ void CategoryContainer::writeXML()
 
     for(const auto& proc: processList)
     {
+
+        if(m_flatHistList.at("Nominal").find(proc) == m_flatHistList.at("Nominal").end()) continue;
+
         // For each process
         oFile<<"<Sample Name=\""<<proc<<"\" InputFile=\""<<getRootOutputFileName()<<"\" HistoName=\""<<m_flatHistList.at("Nominal").at(proc)->GetName()<<"\" HistoPath=\"/Nominal/\" NormalizeByTheory=\"False\" >"<<endl;
 
