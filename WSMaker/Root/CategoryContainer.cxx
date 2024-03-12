@@ -160,7 +160,7 @@ void CategoryContainer::createFlatNonEmptyHist()
             }
             if(flatHist->Integral() == 0) continue;
 
-            std::cout<<m_catName<<" yield: "<<m_yieldList[procHists.first][hist.first]<<" "<<hist.second->GetTitle()<<" hist: "<<hist.second->Integral()<<" flat: "<<flatHist->Integral()<<" "<<flatHist->GetEntries()<<std::endl;
+            // std::cout<<m_catName<<" yield: "<<m_yieldList[procHists.first][hist.first]<<" "<<hist.second->GetTitle()<<" hist: "<<hist.second->Integral()<<" flat: "<<flatHist->Integral()<<" "<<flatHist->GetEntries()<<std::endl;
 
             flatHist->Scale(1.0/flatHist->Integral());
             m_flatHistList[procHists.first][hist.first] = flatHist;
@@ -218,7 +218,7 @@ void CategoryContainer::writeXML()
     oFile<<"<Channel Name=\"R_"<<m_catName<<"\" HistoPath=\"\"> \n"<<endl;
 
     // If we want to do stat err
-    oFile<<"<StatErrorConfig RelErrorThreshold=\"0.1\" ConstraintType=\"Poisson\" /> \n"<<endl;
+    oFile<<"<StatErrorConfig RelErrorThreshold=\""<<std::to_string(m_relStatError)<<"\" ConstraintType=\"Poisson\" /> \n"<<endl;
 
     auto processList = getProcessList();
 
@@ -230,6 +230,10 @@ void CategoryContainer::writeXML()
         // For each process
         oFile<<"<Sample Name=\""<<proc<<"\" InputFile=\""<<getRootOutputFileName()<<"\" HistoName=\""<<m_flatHistList.at("Nominal").at(proc)->GetName()<<"\" HistoPath=\"/Nominal/\" NormalizeByTheory=\"False\" >"<<endl;
 
+        if(m_addStatError)
+        {
+            oFile<<"<StatError Activate=\"True\" />"<<endl;
+        }
         TString normName = "N_" + proc + "_" + m_catName;
         oFile<<"<NormFactor Name=\""<<normName<<"\" Val=\""<<m_yieldList.at("Nominal").at(proc)<<"\" Low=\"-40\" High=\"40\" />"<<endl;
         m_constVarList.push_back(normName.Data());

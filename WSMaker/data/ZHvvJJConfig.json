@@ -8,6 +8,8 @@
 
     "lumi": 5000000.0,
 
-    "minYieldBinCut": 0.0001
+    "minYieldBinCut": 0.000000001,
+    "relErrorThreshold":0.00001,
+    "categoryToAddStatError": []
 
 }

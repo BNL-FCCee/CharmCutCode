@@ -5,5 +5,7 @@
     "xRebinFactor":1,
     "yRebinFactor":1,
     "lumi": 5000000.0,
-    "minYieldBinCut": 0.000000001
+    "minYieldBinCut": 0.000000001,
+    "relErrorThreshold":0.1,
+    "categoryToAddStatError": ["HiHss", "MidHss"]
 }

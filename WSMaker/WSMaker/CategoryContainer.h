@@ -27,7 +27,9 @@ class CategoryContainer
 
         void setXRebin(int _x) {m_rebinX = _x; }
         void setYRebin(int _x) {m_rebinY = _x; }
-        void setLumi(double _x) {m_lumi = _x; }
+        void setLumi(double _x) {m_lumi = _x;}
+        void addStatError() {m_addStatError = true;}
+        void setRelStatError(double _x) {m_relStatError = _x; }
         void setMinYieldBinCut(double _x) {m_minYieldBinCut = _x; }
         void setOutputDir(std::string _x) {m_outputDir = _x; }
         void setConstantProc(std::vector<std::string> procList) {m_constProcList = procList; };
@@ -82,7 +84,6 @@ class CategoryContainer
         // Sum of all nominal 
         TH1* m_sumHist = NULL;
 
-
         // Rebin x factor
         int m_rebinX = 1;
 
@@ -94,6 +95,12 @@ class CategoryContainer
 
         // Min yield in a bin to be considered in the fit
         double m_minYieldBinCut = 0;
+        
+        // Relative stat error for gamma POIs
+        double m_relStatError = 0.1;
+
+        // To add Stat error for the bin
+        bool m_addStatError = false;
 
         // rebins hist based on the settings
         void rebinHist();

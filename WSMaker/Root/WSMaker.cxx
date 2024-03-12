@@ -32,7 +32,8 @@ void WSMaker::run()
         cat->setYRebin(m_jsonConfigData["yRebinFactor"]);
         cat->setLumi(m_jsonConfigData["lumi"]);
         cat->setMinYieldBinCut(m_jsonConfigData["minYieldBinCut"]);
-
+        cat->setRelStatError(m_jsonConfigData["relErrorThreshold"]);
+        if(std::find(m_categoryForStatErrorList.begin(), m_categoryForStatErrorList.end(), categoryName) != m_categoryForStatErrorList.end()) cat->addStatError();
         std::vector<std::string> constProc = m_jsonConfigData["processHeldConstant"];
         cat->setConstantProc(constProc);
         cat->setOutputDir(m_outputDir);
@@ -158,6 +159,9 @@ void WSMaker::parseConfig()
     m_processList = std::vector<std::string>{test1};
     std::vector<std::string> test2 = m_jsonConfigData["processHeldConstant"];
     m_processHeldConstantList = std::vector<std::string>{test2};
+    std::vector<std::string> test3 = m_jsonConfigData["categoryToAddStatError"];
+    m_categoryForStatErrorList = std::vector<std::string>{test3};
+
 }
 
 std::map<CatName, std::vector<TH1*>> WSMaker::readFile()
