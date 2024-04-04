@@ -19,7 +19,7 @@ using namespace std;
 
 AnalysisZHAllHad::AnalysisZHAllHad():
     AnalysisBase(),
-    m_debug(false)
+    m_debug(true)
 {}
 AnalysisZHAllHad::~AnalysisZHAllHad()
 {}
@@ -42,18 +42,20 @@ void AnalysisZHAllHad::run()
     std::vector<std::string> flavourJets {"b", "c", "s", "g", "q"};
     std::vector<std::string> flavours{"B","C","S","D","U","G","TAU"};
     std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G","TAU"};
-    std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","Incl","Incl_Corr"};
-    std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "d123Cut", "d34Cut","Pairing","jjMassCut","ZHmassCut"};
+    std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","Incl"};
+    std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "d123Cut", "d34Cut","Pairing","jjMassCut","ZHmassCut","YieldsFit" };
+    std::vector<std::string> fitCategorySimple  {"LowHbb","LowHcc","LowHss","LowHgg","MidHbb","MidHcc","MidHss","MidHgg","HiHbb","HiHcc", "HiHss","HiHgg"};
 
     
     // Get the histograms
     auto histo_DetVars = m_histContainer->histo_DetVarsScoreSmear(flavourJets);
 
     auto scoreMapHist = m_histContainer->get1DHist("scoreMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
-    auto scoreMapFitCatHist = m_histContainer->get1DHist("scoreMapFitCategory_1D", fitCategory.size(), 0, fitCategory.size(), fitCategory);
+    auto scoreMapFitCatHist = m_histContainer->get1DHist("scoreMapFitCategory_1D", fitCategorySimple.size(), 0, fitCategorySimple.size(), fitCategorySimple);
     auto CountsMapHist = m_histContainer->get1DHist("CountsMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
-    auto CountsFitCatHist = m_histContainer->get1DHist("CountsFitCategory_1D", fitCategory.size(), 0, fitCategory.size(), fitCategory);
-    auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0., 250.,130, 0., 130.);
+    auto CountsFitCatHist = m_histContainer->get1DHist("CountsFitCategory_1D", fitCategorySimple.size(), 0, fitCategorySimple.size(), fitCategorySimple);
+    auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0., 250.,250, 0., 250);
+//     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 90,90.,180.,70,50.,120.);
 //     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0., 250.);
     auto countingHist = m_histContainer->getCountingHist();
     auto cutFlowHist =  m_histContainer->get1DHist("CutFlow", cutFlowMap.size(), 0, 12,cutFlowMap);
@@ -75,6 +77,7 @@ void AnalysisZHAllHad::run()
 
     auto mZ =  m_histContainer->get1DHist("mZ",250, 0., 250.);
     auto mH =  m_histContainer->get1DHist("mH", 250, 0., 250.);
+    auto mH_corr = m_histContainer->get1DHist("mH_corr", 250, 0., 250.);
 
     auto ZZ_cut =  m_histContainer->get1DHist("ZZ_cut",250, 0., 250.);
     auto WW_cut =  m_histContainer->get1DHist("WW_cut", 250, 0., 250.);
@@ -90,12 +93,10 @@ void AnalysisZHAllHad::run()
 
     auto h_d_12 =  m_histContainer->get1DHist("d_12", 1000,14000, 60000.);
     auto h_d_23 =  m_histContainer->get1DHist("d_23", 1000,200, 20000.);
-    auto h_d_34 =  m_histContainer->get1DHist("d_34", 1000,150, 6000.);
+    auto h_d_34 =  m_histContainer->get1DHist("d_34", 1000,50, 6500.);
 
         // Extra hist for easy fill up
     auto Incl_obsHist = obsHist["Incl"];
-    auto Incl_obsHist_corr = obsHist["Incl_Corr"];
-
     // H->bb
     auto Low_bbZ_Hbb_obsHist = obsHist["LowbbHbb"];
     auto Low_ccZ_Hbb_obsHist = obsHist["LowccHbb"];
@@ -198,18 +199,14 @@ void AnalysisZHAllHad::run()
     varMember<int> event_njet {tree, "event_njet"};
     varMember<ulong> event_nmu {tree, "event_nmu"};
     varMember<ulong> event_nel {tree, "event_nel"};
+    varMember<float> muons_p {tree, "muons_p"};
+    varMember<float> electrons_p {tree, "electrons_p"};
     varMember<double> vis_E {tree, "vis_E"};
     varMember<double> vis_M {tree, "vis_M"};
     varMember<double> vis_theta {tree, "vis_theta"};
     varMember<float> d_12 {tree, "d_12"};
     varMember<float> d_23 {tree, "d_23"};
     varMember<float> d_34 {tree, "d_34"};
-
-    // varMember<double> M_jj {tree, "M_jj"};
-    // varMember<double> Mrec_jj {tree, "Mrec_jj"};
-
-    varMember<float> muons_p {tree, "muons_p"};
-    varMember<float> electrons_p {tree, "electrons_p"};
 
     // varMember<double> costhetainv {tree, "costhetainv"};
     int NjetCut = 0;
@@ -220,6 +217,7 @@ void AnalysisZHAllHad::run()
     int NafterPairing = 0;
     int NjjMassCut = 0;
     int NafterSel = 0;
+    int Nfit = 0;
     int NEventsInt = 0;
     int BlikeEvents = 0;
     int ClikeEvents = 0;
@@ -255,25 +253,23 @@ void AnalysisZHAllHad::run()
         NjetCut++;
         //numebr of electrons and muons cut! 2!
         // reject events with leptons with > 20 GeV leptons
-        if(event_nmu() > 2) continue;
-        if(event_nel() > 2) continue;
-        if(muons_p() >= 20) continue;
-        if(electrons_p() >= 20) continue;
+        if(event_nmu() > 2.) continue;
+        if(event_nel() > 2.) continue;
+        if(muons_p() >= 20.) continue;
+        if(electrons_p() >= 20.) continue;
         NleptonCut++;
-        // std::cout<<"Number of muons "<<" "<<event_nmu()<<" and the number of electrons: "<<event_nel()<<std::endl;
 
         //Add this  to the options, as in which selection to choose
-        if (vis_M()<150) continue;
-        if (vis_E()<150) continue;
-        if (vis_theta()<0.15 || vis_theta()>3.0 ) continue; //typo! rerun!
+        if (vis_M() <= 150.) continue;
+        if (vis_E() <= 150.) continue;
+        if (vis_theta()<= 0.15 || vis_theta()>=3.0 ) continue; //typo! rerun!
         NkineCut++;
         // change the cuts! update! 
-        if (d_12()<15000 || d_12()>58000) continue;//missing!
-        if ((d_23()<400) || (d_23()>18000))continue;
+        if (d_12()<=15000. || d_12()>=58000.) continue;//missing!
+        if ((d_23()<=400.) || (d_23()>=18000.))continue;
         NdCutd123++;
-        if ((d_34()<100) || (d_34()>6000))continue;
+        if ((d_34()<=100.) || (d_34()>=6000.))continue;
         NdCutd34++;
-
         // ALL GOOD UP TO HERE!!!!!!
         // Step 1: check efficiency ~ 80%
         // increment counter of events that pass the cuts!
@@ -288,10 +284,10 @@ void AnalysisZHAllHad::run()
             LVjets.push_back(LVjet);
             std::string jet_flav = char_jet_flav[abs(truth_flav.at(lv))];
 //             std::cout<<"Jet: "<< lv <<std::endl; 
-            if (m_debug) std::cout<<"Truth Flav: "<< abs(truth_flav.at(lv)) <<std::endl;
+            // if (m_debug) std::cout<<"Truth Flav: "<< abs(truth_flav.at(lv)) <<std::endl;
             std::vector<int> set = {1, 2, 3, 4, 5};
-            if (std::find(set.begin(), set.end(), abs(truth_flav.at(lv))) == set.end()){
-                if (m_debug) std::cout<<"EMPTY truth_flav.at(lv): "<< truth_flav.at(lv) <<std::endl;
+            if ((std::find(set.begin(), set.end(), abs(truth_flav.at(lv))) == set.end())){
+                // if (m_debug) std::cout<<"EMPTY truth_flav.at(lv): "<< truth_flav.at(lv) <<std::endl;
                 NEWrecojet_isB.push_back(recojet_isB.at(lv));
                 NEWrecojet_isC.push_back(recojet_isC.at(lv));
                 NEWrecojet_isS.push_back(recojet_isS.at(lv));
@@ -304,18 +300,10 @@ void AnalysisZHAllHad::run()
                 NEWrecojet_isB.push_back(b_score);
                 NEWrecojet_isC.push_back(c_score);
                 NEWrecojet_isS.push_back(s_score);
-            }
-            if (m_debug) {
-               std::cout<<"Old b_score: "<< recojet_isB.at(lv) <<std::endl;
-               std::cout<<"Old c_score: "<< recojet_isC.at(lv)<<std::endl; 
-               std::cout<<"Old s_score: "<< recojet_isS.at(lv)<<std::endl; 
-               std::cout<<"Did it update b_score: "<< NEWrecojet_isB.at(lv) <<std::endl;
-               std::cout<<"Did it update c_score: "<< NEWrecojet_isC.at(lv)<<std::endl;
-               std::cout<<"Did it update s_score: "<< NEWrecojet_isS.at(lv)<<std::endl;}    
+            } 
         }
       
        // Flav scores of each jet
-    
        std::array<float,7> j0_flav {NEWrecojet_isB.at(0), NEWrecojet_isC.at(0), NEWrecojet_isS.at(0), recojet_isD.at(0), recojet_isU.at(0), recojet_isG.at(0), recojet_isTAU.at(0)};
        std::array<float,7> j1_flav {NEWrecojet_isB.at(1), NEWrecojet_isC.at(1), NEWrecojet_isS.at(1), recojet_isD.at(1), recojet_isU.at(1), recojet_isG.at(1), recojet_isTAU.at(1)};
        std::array<float,7> j2_flav {NEWrecojet_isB.at(2), NEWrecojet_isC.at(2), NEWrecojet_isS.at(2), recojet_isD.at(2), recojet_isU.at(2), recojet_isG.at(2), recojet_isTAU.at(2)};
@@ -382,20 +370,6 @@ void AnalysisZHAllHad::run()
                 std::cout << std::endl;}
               //Find the pairs
 
-        
-    //    std::set<int> uniqueFlav(maxScoreIdx.begin(), maxScoreIdx.end());
-       
-    //    for (int value : uniqueFlav) {
-    //         std::cout<<"uniqueFlav: "<<value<<std::endl;
-    //         auto pos = maxScoreIdx.begin();
-    //         while ((pos = std::find(pos, maxScoreIdx.end(), value)) != maxScoreIdx.end()) {
-    //             int idx = std::distance(maxScoreIdx.begin(), pos);
-    //             flavOccurance[value].push_back(idx);
-    //             ++pos;
-    //         }
-    //     } 
-
-
         //Check how many pairs you get from the simple method  
         //Pair the jets, make sth very simple 
         std::map<int, std::vector<int>> tmp_jet_pair;
@@ -426,10 +400,10 @@ void AnalysisZHAllHad::run()
                 } 
             }
         } 
-        if (m_debug) std::cout << "jet_pair: " <<tmp_jet_pair.size()<<std::endl;
+        // if (m_debug) std::cout << "jet_pair: " <<tmp_jet_pair.size()<<std::endl;
         if (tmp_jet_pair.size() == 2){
             //So given that there are only 4 jets reconstructed, I am pretty sure that this should work.
-            if (m_debug) std::cout << "Oleeee! You have two paird! You can continue with your mission!"<<std::endl;
+            if (m_debug) std::cout << "OLE! You have two paird! You can continue with your mission!"<<std::endl;
             jet_pair[0]= tmp_jet_pair[0];
             jet_pair[1]= tmp_jet_pair[1];
             jet_pair_flav[0]=tmp_jet_pair_flav[0];
@@ -439,12 +413,12 @@ void AnalysisZHAllHad::run()
             std::cout << "THIS IS IMPOSSIBLE! I THINK???"<<std::endl;
             break;
         }
-        else if (flavOccurance.size()==4) continue;
-//                 std::cout << "No same flavour pair found. Ignore for now!" <<std::endl;
-//                 continue;}
+        else if (flavOccurance.size()==4){
+                if (m_debug) std::cout << "No same flavour pair found. Ignore for now!" <<std::endl;
+                continue;}
         else if (tmp_jet_pair.size() == 1){
             if (m_debug) std::cout << "Only 1 jet pair found!" <<std::endl;
-            if (m_debug) std::cout << "tmp_jet_pair[0].size(): " <<tmp_jet_pair[0].size()<<std::endl;
+            // if (m_debug) std::cout << "tmp_jet_pair[0].size(): " <<tmp_jet_pair[0].size()<<std::endl;
             if (flavOccurance.size()==3){
                 if (m_debug) std::cout << "2 same flav, 3 diff flav -> 3 unique!"<<std::endl;
                 //Need to sum up each flav and see what max?
@@ -532,7 +506,7 @@ void AnalysisZHAllHad::run()
                     }
             }
             if (flavOccurance.size()==1 || (jet_pair_flav[1] == jet_pair_flav[0]) ){
-                hz_check ++;
+                hz_check++;
                 if (m_debug) std::cout << "4 same flav jets, you continue and decide the paris based on the H/Z chi^2!"<<std::endl;
                 // std::cout << "Flav PAIR 1:" <<jet_pair_flav[0]<<std::endl;
                 // std::cout << "Flav PAIR 2:" <<jet_pair_flav[1]<<std::endl;
@@ -550,22 +524,17 @@ void AnalysisZHAllHad::run()
                             std::sort(z_pair.begin(), z_pair.end());
                             std::sort(idx_j.begin(), idx_j.end());
                             std::vector<int> h_pair;
-                            std::set_symmetric_difference(z_pair.begin(), z_pair.end(), idx_j.begin(), idx_j.end(),
-                    std::back_inserter(h_pair));
-
+                            std::set_symmetric_difference(z_pair.begin(), z_pair.end(), idx_j.begin(), idx_j.end(),std::back_inserter(h_pair));
                             chi_z = std::pow((LVjets[z_pair[0]]+LVjets[z_pair[1]]).M()-Z_mass,2);
                             chi_h = std::pow((LVjets[h_pair[0]]+LVjets[h_pair[1]]).M()-H_mass,2);
                             z_ijets.push_back(z_pair);
                             h_ijets.push_back(h_pair);
                             chi_comb.push_back(chi_z+chi_h);
-                            if (m_debug) {
-                                std::cout << "Z mass: " << (LVjets[z_pair[0]]+LVjets[z_pair[1]]).M() << std::endl;
-                                std::cout << "H mass: " << (LVjets[h_pair[0]]+LVjets[h_pair[1]]).M() << std::endl;
-                                std::cout << "Z indx: " << z_pair[0] << z_pair[1] << std::endl;
-                                std::cout << "H indx " << h_pair[0]<<h_pair[1] << std::endl;
-                                std::cout << "z_chi: " << chi_z<< std::endl;
-                                std::cout << "h_chi: " << chi_h<< std::endl;
-                                std::cout << "chi_comb: " << chi_z+chi_h << std::endl;}
+                            // if (m_debug) {
+                            //     std::cout << "Z-H CHI METHOD: "<< chi_z+chi_h  << std::endl;
+                            //     std::cout << "Z indx: " << z_pair[0] << z_pair[1] << ", H indx: " << h_pair[0]<<h_pair[1]<< std::endl;
+                            //     std::cout << "H mass: " << (LVjets[h_pair[0]]+LVjets[h_pair[1]]).M() << " Z mass: " << (LVjets[z_pair[0]]+LVjets[z_pair[1]]).M() << std::endl;
+                            //     }
 
                         }
                     }
@@ -579,46 +548,28 @@ void AnalysisZHAllHad::run()
                 h_idx=jet_pair[1];
                 H_flav=jet_pair_flav[1];
                 Z_flav=jet_pair_flav[0];
-                if (m_debug) {
-                    std::cout << "chi z+h minIndex: " << minIndex << std::endl;
-                    std::cout << "z index: " << jet_pair[0][0] << jet_pair[0][1] <<std::endl;
-                    std::cout << "h index: " << jet_pair[1][0] << jet_pair[1][1] <<std::endl;
-                    std::cout<<"Z_flav " <<flavours[Z_flav]<< std::endl;
-                    std::cout<<"H_flav " <<flavours[H_flav]<< std::endl;}
                 }
                 }
         
-        // std::cout << "AFTER FAILING!" <<std::endl;  
-        if (m_debug) {
-            std::cout << "PAIR 1:" <<jet_pair_flav[0]<<std::endl;
-            std::cout << "j1:" <<jet_pair[0][0]<<std::endl;
-            std::cout << "j2:" <<jet_pair[0][1]<<std::endl;
-
-            std::cout << "PAIR 2:" <<jet_pair_flav[1]<<std::endl;
-            std::cout << "j2:" <<jet_pair[1][0]<<std::endl;
-            std::cout << "j3:" <<jet_pair[1][1]<<std::endl;}
         
         if (hz_check==0){
             float chi_p1 = std::pow((LVjets[jet_pair[0][0]]+LVjets[jet_pair[0][1]]).M()-Z_mass,2);
             float chi_p2 = std::pow((LVjets[jet_pair[1][0]]+LVjets[jet_pair[1][1]]).M()-Z_mass,2);
             if (m_debug) {
-                std::cout << "chi OF JET PAIR 1:" <<chi_p1<<std::endl;
-                std::cout << "chi OF JET PAIR 2:" <<chi_p2<<std::endl;}
+                std::cout << "Z CHI METHOD, chi 1: " <<chi_p1 << " chi 2:" <<chi_p2<<std::endl;
+                }
             if (chi_p1<chi_p2){
-                if (m_debug) std::cout << "Pair 0 is Z!" <<std::endl;
+                // if (m_debug) std::cout << "Pair 0 is Z!" <<std::endl;
                 z_idx=jet_pair[0];
                 Z_flav=jet_pair_flav[0];
                 h_idx=jet_pair[1];
                 H_flav=jet_pair_flav[1];
-                if (m_debug) std::cout<<"Z_flav " <<flavours[jet_pair_flav[0]]<< std::endl;
-                if (m_debug) std::cout<<"H_flav " <<flavours[jet_pair_flav[1]]<< std::endl;
-                
                 
             }
             else{
-                if (m_debug) std::cout << "Pair 0 is H!" <<std::endl;
-                if (m_debug) std::cout<<"Z_flav " <<flavours[jet_pair_flav[1]]<< std::endl;
-                if (m_debug) std::cout<<"H_flav " <<flavours[jet_pair_flav[0]]<< std::endl;
+                // if (m_debug) std::cout << "Pair 0 is H!" <<std::endl;
+                // if (m_debug) std::cout<<"Z_flav " <<flavours[jet_pair_flav[1]]<< std::endl;
+                // if (m_debug) std::cout<<"H_flav " <<flavours[jet_pair_flav[0]]<< std::endl;
                 z_idx=jet_pair[1];
                 Z_flav=jet_pair_flav[1];
                 h_idx=jet_pair[0];
@@ -629,45 +580,49 @@ void AnalysisZHAllHad::run()
         float m_zjj = (LVjets[z_idx[0]]+LVjets[z_idx[1]]).M();
         float m_hjj = (LVjets[h_idx[0]]+LVjets[h_idx[1]]).M();
 
-//         float m_zjj_nc = (LVjets_nc[z_idx[0]]+LVjets_nc[z_idx[1]]).M();
-//         float m_hjj_nc = (LVjets_nc[h_idx[0]]+LVjets_nc[h_idx[1]]).M();
-
-
         float H_flav_sc = flavMap[h_idx[0]][H_flav]+flavMap[h_idx[1]][H_flav];
         float Z_flav_sc = flavMap[z_idx[0]][Z_flav]+flavMap[z_idx[1]][Z_flav];
         if (m_debug) {
-            std::cout << "H_flav_sc: " <<H_flav_sc<<std::endl;
-            std::cout << "Z_flav_sc: " <<Z_flav_sc<<std::endl;}
-
+            std::cout <<"H: " << m_hjj <<" sc: " <<H_flav_sc<<std::endl;
+            std::cout << "Z: "<< m_zjj<< " sc: "<<Z_flav_sc<<std::endl;
+        }
         NafterPairing++;
         Incl_obsHist->Fill(m_zjj,m_hjj);
+        //correcte m_hjj
+        float m_hjj_corr = m_hjj + m_zjj - Z_mass;
 
         //A bit of selection 
         float WW_cuts = sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2));
         float ZZ_cuts = sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2));
-        if (m_debug) {
-            std::cout << "WW_cuts: " <<sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2))<<std::endl;
-            std::cout << "ZZ_cuts: " <<sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2))<<std::endl;}
-        if(sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2))<=10) continue;
-        if(sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2))<=10) continue;
-        if (m_debug) {
-            std::cout << "Passed WW_cuts and ZZ_cuts!"<<std::endl;}
+        // if (m_debug) {
+        //     std::cout << "WW_cuts: " <<sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2))<<std::endl;
+        //     std::cout << "ZZ_cuts: " <<sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2))<<std::endl;}
+        if(WW_cuts<=10) continue;
+        if(ZZ_cuts<=10) continue;
         NjjMassCut++;
         if (50. >= m_zjj)continue; 
         if (m_zjj >= H_mass) continue; 
         //Fix
-        if (m_hjj<=Z_mass) continue;
-        if (m_debug) {
-            std::cout << "m_hjj: " <<m_hjj<<std::endl;
-            std::cout << "m_zjj: " <<m_zjj<<std::endl;}
+        if (m_hjj_corr<=Z_mass) continue;
         // For now remove the Htautau as a cat, only bkg....
         // if (flavours[H_flav]=="TAU") continue;
         //After parining and cuts 
+        //The flag e correction falg...
+        float flag_ecorr = 0.0;
+        for (size_t je = 0; je < 4; ++je) { 
+            if (jet_e.at(je) > 240.0 || jet_e.at(je) < 0.0) {
+                flag_ecorr += 1000.0;}
+        }
+        if (flag_ecorr>=1000.) continue;
+
+        
+
         NafterSel++;
         ZZ_cut->Fill(ZZ_cuts);
         WW_cut->Fill(WW_cuts);
         mZ->Fill(m_zjj);
         mH->Fill(m_hjj);
+        mH_corr->Fill(m_hjj_corr);
         h_vis_M->Fill(vis_M());
         h_vis_E->Fill(vis_E());
         h_vis_theta->Fill(vis_theta());
@@ -696,9 +651,7 @@ void AnalysisZHAllHad::run()
         }
         
         if (flavours[Z_flav]=="G" || flavours[Z_flav]=="TAU" || flavours[H_flav]=="TAU" || flavours[H_flav]=="U" || flavours[H_flav]=="D") continue;
-        //Corrected mh_jj
-        float m_hjj_corr = m_hjj+m_zjj-Z_mass;
-//         if (m_hjj_corr<=Z_mass) continue;
+        Nfit++; 
         if (flavours[H_flav]=="B"){
             BlikeEvents++;
             // Hbb_obsHist->Fill(m_zjj,m_hjj);
@@ -1018,6 +971,7 @@ void AnalysisZHAllHad::run()
     cutFlowHist->SetBinContent(7,NafterPairing);
     cutFlowHist->SetBinContent(8,NjjMassCut);
     cutFlowHist->SetBinContent(9,NafterSel);
+    cutFlowHist->SetBinContent(10,Nfit);
 
     for(int i = 0; i < 3; i++)
     {
@@ -1028,11 +982,11 @@ void AnalysisZHAllHad::run()
         scoreMapFitCatHist->SetBinContent(5+i*5, QlikeEvents_cat[i]*100./NafterSel);
         // scoreMapFitCatHist->SetBinContent(6+i*6, TAUlikeEvents_cat[i]*100./NafterSel);
 
-        CountsFitCatHist->SetBinContent(1+i*5, BlikeEvents_cat[i]);
-        CountsFitCatHist->SetBinContent(2+i*5, ClikeEvents_cat[i]);
-        CountsFitCatHist->SetBinContent(3+i*5, SlikeEvents_cat[i]);
-        CountsFitCatHist->SetBinContent(4+i*5, GlikeEvents_cat[i]);
-        CountsFitCatHist->SetBinContent(5+i*5, QlikeEvents_cat[i]);
+        CountsFitCatHist->SetBinContent(1+i*4, BlikeEvents_cat[i]);
+        CountsFitCatHist->SetBinContent(2+i*4, ClikeEvents_cat[i]);
+        CountsFitCatHist->SetBinContent(3+i*4, SlikeEvents_cat[i]);
+        CountsFitCatHist->SetBinContent(4+i*4, GlikeEvents_cat[i]);
+//         CountsFitCatHist->SetBinContent(5+i*5, QlikeEvents_cat[i]);
         // CountsFitCatHist->SetBinContent(6+i*6, TAUlikeEvents_cat[i]);
     }
 

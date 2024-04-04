@@ -88,7 +88,7 @@ bool cmdline(int argc, char** argv, map<TString,std::string>& opts)
     opts["analType"]            = "vvjj";
     opts["SOWJSONfile"]         = "../source/CharmCutCode/data/FCCee_procDict_winter2023_IDEA.json";
     opts["CustomSOWJSONfile"]   = "../source/CharmCutCode/data/SumOfWeightsCustom.json";
-    opts["DetectorVarFile"] = "../source/CharmCutCode/data/s_score_baseline_CLD.root";
+    opts["DetectorVarFile"] = "../source/CharmCutCode/data/bcs_scores_baseline_idealVXDCalo_lighter_heavierVXD_100pc_CLD_worse_better_singlehitReso_65pc.root";
     opts["DetectorVar"] = "baseline";
 
 
