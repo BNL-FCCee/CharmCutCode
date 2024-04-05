@@ -603,7 +603,7 @@ void AnalysisZHAllHad::run()
         //Fix
         if (m_hjj_corr<=Z_mass) continue;
         // For now remove the Htautau as a cat, only bkg....
-        // if (flavours[H_flav]=="TAU") continue;
+        // if (H_flav == 6) continue;
         //After parining and cuts 
         //The flag e correction falg...
         float flag_ecorr = 0.0;
@@ -632,25 +632,25 @@ void AnalysisZHAllHad::run()
         h_d_23->Fill(d_23());
         h_d_34->Fill(d_34());
         
-        if (flavours[Z_flav]=="B"){
+        if (Z_flav == 0){
             Z_Bscore->Fill(Z_flav_sc);
         }
-        else if (flavours[Z_flav]=="C"){
+        else if (Z_flav == 1){
             Z_Cscore->Fill(Z_flav_sc);
         }
-        else if (flavours[Z_flav]=="S"){
+        else if (Z_flav == 2){
             Z_Sscore->Fill(Z_flav_sc);
         }
-        else if (flavours[Z_flav]=="G"){
+        else if (Z_flav == 5){
             Z_Gscore->Fill(Z_flav_sc);
         }
-        else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D"){
+        else if (Z_flav == 4 || Z_flav == 3){
             Z_Qscore->Fill(Z_flav_sc);
         }
         
-        if (flavours[Z_flav]=="G" || flavours[Z_flav]=="TAU" || flavours[H_flav]=="TAU" || flavours[H_flav]=="U" || flavours[H_flav]=="D") continue;
+        if (Z_flav == 5 || Z_flav == 6 || H_flav == 6 || H_flav == 4 || H_flav == 3) continue;
         Nfit++; 
-        if (flavours[H_flav]=="B"){
+        if (H_flav == 0){
             BlikeEvents++;
             // Hbb_obsHist->Fill(m_zjj,m_hjj);
             // std::cout << "B Flav" << std::endl;
@@ -658,23 +658,23 @@ void AnalysisZHAllHad::run()
             if (H_flav_sc < 1.1)
             {
                 // std::cout << "B Low Cat" << std::endl;
-                if (flavours[Z_flav]=="B"){
+                if (Z_flav == 0){
 //                     Low_bbZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Low_bbZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="C"){
+                else if (Z_flav == 1){
 //                     Low_ccZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Low_ccZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
 
                 }
-                else if (flavours[Z_flav]=="S"){
+                else if (Z_flav == 2){
 //                     Low_ssZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Low_ssZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+                else if (Z_flav == 4 || Z_flav == 3 ){
 //                     Low_qqZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Low_qqZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
@@ -686,23 +686,23 @@ void AnalysisZHAllHad::run()
             {
                 // std::cout << "B Mid Cat" << std::endl;
                 // MidB_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
+                if (Z_flav == 0){
 //                     Mid_bbZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Mid_bbZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
 
                 }
-                else if (flavours[Z_flav]=="C"){
+                else if (Z_flav == 1){
 //                     Mid_ccZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Mid_ccZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="S"){
+                else if (Z_flav == 2){
 //                     Mid_ssZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Mid_ssZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+                else if (Z_flav == 4 || Z_flav == 3 ){
 //                     Mid_qqZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Mid_qqZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
@@ -712,52 +712,52 @@ void AnalysisZHAllHad::run()
             {
                 // std::cout << "B Hi Cat" << std::endl;
                 // HiB_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
+                if (Z_flav == 0){
 //                     Hi_bbZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Hi_bbZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="C"){
+                else if (Z_flav == 1){
 //                     Hi_ccZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Hi_ccZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="S"){
+                else if (Z_flav == 2){
 //                     Hi_ssZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                     Hi_ssZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+                else if (Z_flav == 4 || Z_flav == 3 ){
 //                     Hi_qqZ_Hbb_obsHist->Fill(m_zjj,m_hjj);
                      Hi_qqZ_Hbb_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
                 BlikeEvents_cat[2]++;
             }
         }
-        else if (flavours[H_flav]=="C"){
+        else if (H_flav == 1){
             ClikeEvents++;
             Cscore->Fill(H_flav_sc);
             // Hcc_obsHist->Fill(m_zjj,m_hjj);
             if (H_flav_sc < 1.1)
             {
                 // LowC_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
+                if (Z_flav == 0){
 //                     Low_bbZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                         Low_bbZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
 
                 }
-                else if (flavours[Z_flav]=="C"){
+                else if (Z_flav == 1){
 //                     Low_ccZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Low_ccZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="S"){
+                else if (Z_flav == 2){
 //                     Low_ssZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Low_ssZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+                else if (Z_flav == 4 || Z_flav == 3 ){
 //                     Low_qqZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Low_qqZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
@@ -766,22 +766,22 @@ void AnalysisZHAllHad::run()
             else if ((H_flav_sc >= 1.1) && (H_flav_sc <= 1.8))
             {
                 // MidC_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
+                if (Z_flav == 0){
 //                     Mid_bbZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Mid_bbZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="C"){
+                else if (Z_flav == 1){
 //                     Mid_ccZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                      Mid_ccZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="S"){
+                else if (Z_flav == 2){
 //                     Mid_ssZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Mid_ssZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+                else if (Z_flav == 4 || Z_flav == 3 ){
 //                     Mid_qqZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Mid_qqZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
@@ -790,29 +790,29 @@ void AnalysisZHAllHad::run()
             else if (H_flav_sc > 1.8)
             {
                 // HiC_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
+                if (Z_flav == 0){
 //                     Hi_bbZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Hi_bbZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="C"){
+                else if (Z_flav == 1){
 //                     Hi_ccZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Hi_ccZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="S"){
+                else if (Z_flav == 2){
 //                     Hi_ssZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Hi_ssZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+                else if (Z_flav == 4 || Z_flav == 3 ){
 //                     Hi_qqZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Hi_qqZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
                 ClikeEvents_cat[2]++;
             }
         }
-        else if (flavours[H_flav]=="S"){
+        else if (H_flav == 2){
             Sscore->Fill(H_flav_sc);
             SlikeEvents++;
             // Hss_obsHist->Fill(m_zjj,m_hjj);
@@ -835,29 +835,29 @@ void AnalysisZHAllHad::run()
                 SlikeEvents_cat[2]++;
             }
         }
-        else if (flavours[H_flav]=="G"){
+        else if (H_flav == 5){
             GlikeEvents++;
             Gscore->Fill(H_flav_sc);
             // Hgg_obsHist->Fill(m_zjj,m_hjj);
             if (H_flav_sc < 1.1)
             {
                 // LowG_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
+                if (Z_flav == 0){
 //                     Low_bbZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Low_bbZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="C"){
+                else if (Z_flav == 1){
 //                     Low_ccZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Low_ccZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="S"){
+                else if (Z_flav == 2){
 //                     Low_ssZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Low_ssZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+                else if (Z_flav == 4 || Z_flav == 3 ){
 //                     Low_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Low_qqZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
@@ -866,22 +866,22 @@ void AnalysisZHAllHad::run()
             else if ((H_flav_sc >= 1.1) && (H_flav_sc <= 1.8))
             {
                 // MidG_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
+                if (Z_flav == 0){
 //                     Mid_bbZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Mid_bbZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="C"){
+                else if (Z_flav == 1){
 //                     Mid_ccZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Mid_ccZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="S"){
+                else if (Z_flav == 2){
 //                     Mid_ssZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Mid_ssZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+                else if (Z_flav == 4 || Z_flav == 3 ){
 //                     Mid_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Mid_qqZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
@@ -890,22 +890,22 @@ void AnalysisZHAllHad::run()
             else if (H_flav_sc > 1.8)
             {
                 // HiG_obsHist->Fill(m_zjj,m_hjj);
-                if (flavours[Z_flav]=="B"){
+                if (Z_flav == 0){
 //                     Hi_bbZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Hi_bbZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="C"){
+                else if (Z_flav == 1){
 //                     Hi_ccZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Hi_ccZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="S"){
+                else if (Z_flav == 2){
 //                     Hi_ssZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Hi_ssZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (flavours[Z_flav]=="U" || flavours[Z_flav]=="D" ){
+                else if (Z_flav == 4 || Z_flav == 3 ){
 //                     Hi_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Hi_qqZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
@@ -921,7 +921,7 @@ void AnalysisZHAllHad::run()
         }
         // }
         // Step 2: check efficiency ~ 60-70%, for each cat you fit you need to check eff 
-                // else if (flavours[H_flav]=="TAU"){
+                // else if (H_flav == 6){
         //     TAUlikeEvents++;
         //     TAUscore->Fill(H_flav_sc);
         //     // Htautau_obsHist->Fill(m_zjj,m_hjj);
