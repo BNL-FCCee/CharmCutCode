@@ -19,7 +19,7 @@ using namespace std;
 
 AnalysisZHAllHad::AnalysisZHAllHad():
     AnalysisBase(),
-    m_debug(true)
+    m_debug(false)
 {}
 AnalysisZHAllHad::~AnalysisZHAllHad()
 {}
