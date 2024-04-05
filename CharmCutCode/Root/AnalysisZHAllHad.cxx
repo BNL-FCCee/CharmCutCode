@@ -31,7 +31,6 @@ void AnalysisZHAllHad::run()
     float Z_mass = 91.1876;
     float H_mass = 125.11;
     float W_mass = 80.377;
-//     std::map<int, std::string> char_jet_flav = {{1, 'q'}, {2, 'q'}, {3, 's'}, {4, 'c'}, {5, 'b'}};
     std::map<int, std::string> char_jet_flav = {
         {1, "q"},
         {2, "q"},
