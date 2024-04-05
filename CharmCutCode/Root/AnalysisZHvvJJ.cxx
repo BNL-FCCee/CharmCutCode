@@ -184,7 +184,7 @@ void AnalysisZHvvJJ::run()
                 ClikeEvents_cat[2]++;
             }
         }
-        else if (max_value == S())
+        else if (max_value == S_new)
         {  
 
             SlikeEvents++;
