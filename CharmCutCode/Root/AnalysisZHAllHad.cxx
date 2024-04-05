@@ -245,7 +245,6 @@ void AnalysisZHAllHad::run()
         int H_flav = -1;
         int Z_flav = -1;
 
-//         if(i % 10000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
         if(i % 1000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
         // Add some basic selection        
         if(event_njet() != 4) continue; //Require EXACTLY 4 jet! This SHOULD be the case!
