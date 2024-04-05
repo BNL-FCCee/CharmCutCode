@@ -42,6 +42,7 @@ class WSMaker
           void parseConfig();
           nlohmann::json m_jsonConfigData;
           std::vector<CatName> m_categoryList;
+          std::vector<CatName> m_categoryForStatErrorList;
           std::vector<ProcessName> m_processList;
           std::vector<CatName> m_processHeldConstantList;
 

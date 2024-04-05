@@ -31,7 +31,9 @@ void WSMaker::run()
         cat->setXRebin(m_jsonConfigData["xRebinFactor"]);
         cat->setYRebin(m_jsonConfigData["yRebinFactor"]);
         cat->setLumi(m_jsonConfigData["lumi"]);
-
+        cat->setMinYieldBinCut(m_jsonConfigData["minYieldBinCut"]);
+        cat->setRelStatError(m_jsonConfigData["relErrorThreshold"]);
+        if(std::find(m_categoryForStatErrorList.begin(), m_categoryForStatErrorList.end(), categoryName) != m_categoryForStatErrorList.end()) cat->addStatError();
         std::vector<std::string> constProc = m_jsonConfigData["processHeldConstant"];
         cat->setConstantProc(constProc);
         cat->setOutputDir(m_outputDir);
@@ -94,6 +96,13 @@ void WSMaker::WriteXML()
 
     for(const auto& cat: m_categoryCont)
     {
+        // Don't write out a category if it has zero events
+        if(!cat.second->hasEvents())
+        {
+            std::cout<<"\033[1;31mSKIPPING:\033[0m Skipping category due to no events "<<cat.first<<endl;
+            continue;
+        }
+
         oFile<<"<Input>"<<cat.second->getXMLFileName()<<"</Input>"<<endl;
     }
 
@@ -150,6 +159,9 @@ void WSMaker::parseConfig()
     m_processList = std::vector<std::string>{test1};
     std::vector<std::string> test2 = m_jsonConfigData["processHeldConstant"];
     m_processHeldConstantList = std::vector<std::string>{test2};
+    std::vector<std::string> test3 = m_jsonConfigData["categoryToAddStatError"];
+    m_categoryForStatErrorList = std::vector<std::string>{test3};
+
 }
 
 std::map<CatName, std::vector<TH1*>> WSMaker::readFile()

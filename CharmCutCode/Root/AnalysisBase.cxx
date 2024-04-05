@@ -43,7 +43,7 @@ void AnalysisBase::writeHistogram()
     {
         // if the keyword ObsHist is in the name, normalize it
         TString histName = h->GetTitle();
-        if(histName.Contains("ObsHist"))
+        if(!histName.Contains("counting"))
         {
             h->Scale(normWeight);
         }

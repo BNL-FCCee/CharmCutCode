@@ -67,7 +67,57 @@ class varMember<ROOT::VecOps::RVec<T>> {
         ROOT::VecOps::RVec<T>* var = NULL;
 
 };
+template <typename T>
+class varMemberMap {
+    public:
+        inline varMemberMap(TTree* tree, std::vector<std::string> nameList, T defaultVal)
+        {
+            // Initialize the map with default value
+            for(const auto& name: nameList) var[name]  = defaultVal;
 
+            for (const auto& name: nameList)
+            {
+                // make the branch active to be read
+                tree->SetBranchStatus(name.c_str(), true);
+                // Connect the branch
+                tree->SetBranchAddress(name.c_str(), &(var[name]));
+            }
+        };
+
+        // inline T operator();
+        T getVal(std::string name) {return var.at(name); }
+
+    private:
+        std::map<std::string, T> var;
+
+};
+
+template <typename T>
+class varMemberVector {
+    public:
+        inline varMemberVector(TTree* tree, std::vector<std::string> nameList, T defaultVal)
+        {
+            // Initialize the vector with default value
+            var.reserve(nameList.size());
+            for(const auto& name: nameList) var.push_back(defaultVal);
+
+            // Connect it
+            for (size_t i = 0; i < nameList.size(); i++)
+            {
+                // make the branch active to be read
+                tree->SetBranchStatus(nameList[i].c_str(), true);
+                // Connect the branch
+                tree->SetBranchAddress(nameList[i].c_str(), &(var.at(i)));
+            }
+        };
+
+        // inline T operator();
+        T getVal(int index) {return var.at(index); }
+
+    private:
+        std::vector<T> var;
+
+};
 
 class TreeContainer 
 {

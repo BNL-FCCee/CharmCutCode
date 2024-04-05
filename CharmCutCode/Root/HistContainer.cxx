@@ -1,8 +1,6 @@
 #include "CharmCutCode/HistContainer.h"
 
 
-
-
 HistContainer::HistContainer()
 {
 }
@@ -89,6 +87,24 @@ std::map<std::string, TH1F*> HistContainer::getObsHistinFitCategory(std::vector<
     }
 
     return histList;
+}
+
+std::map<std::string, TH3*> HistContainer::histo_DetVarsScoreSmear(std::vector<std::string> jetFlavs){
+    //Get Detector varianton 
+    auto DetectorVarF = TFile::Open(MDC::GetInstance()->getDetectorVarFile().c_str(), "read");
+    if (!DetectorVarF) {
+        std::cout << "Error: DetectorVar File not found!" << MDC::GetInstance()->getDetectorVarFile().c_str()<<std::endl;
+    }
+    static std::map<std::string, TH3*> histos_DetVars;
+    if(histos_DetVars.size() > 0) return histos_DetVars;
+    
+    for(const auto& c: jetFlavs){
+        auto name = "histo_" + MDC::GetInstance()->getDetectorVar() + "_H" + c + c;
+        std::cout << "Det var histo to get: " << name <<std::endl;
+        auto hist = (TH3*) (DetectorVarF->Get(name.c_str()));
+        histos_DetVars[c] = hist;
+    }
+    return histos_DetVars;
 }
 
 
