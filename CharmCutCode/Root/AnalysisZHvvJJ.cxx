@@ -124,8 +124,7 @@ void AnalysisZHvvJJ::run()
         float C_new = 0;
         float S_new = 0;
 //         float G_new = G();
-//         if (jet_flav == "X"){
-        if ("X" == "X"){
+        if (jet_flav == "X"){
             B_new = B();
             C_new = C(); 
             S_new = S(); 
