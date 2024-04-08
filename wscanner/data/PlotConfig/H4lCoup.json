@@ -1,0 +1,16 @@
+{
+    "analType": "H4lCoup",
+    "channelString": "H #rightarrow ZZ* #rightarrow 4l",
+    "lumiString": "13 TeV, 139 fb^{-1}",
+    "experimentString": "ATLAS"
+    "plotTypeString": "Internal",
+
+    "plotStyle": "Nominal",
+    "plotExtension": "pdf",
+    "do2sigErr": false,
+
+    "poiNameMap": {
+        "mu_ggF": "#mu_{ggF}",
+        "mu_VBF": "#mu_{VBF}"
+    }
+}

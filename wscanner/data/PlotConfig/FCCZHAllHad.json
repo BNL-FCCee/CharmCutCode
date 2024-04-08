@@ -1,0 +1,25 @@
+{
+    "analType": "ZHallHad",
+    "channelString": "ZH #rightarrow jjjj",
+    "lumiString": "240 GeV, 5 ab^{-1}",
+    "experimentString": "FCC-ee",
+    "plotTypeString": "Internal",
+
+    "plotStyle": "Nominal",
+    "plotExtension": "png",
+    "do2sigErr": false,
+
+    "poiNameMap": {
+        "mu_Hbb": "#mu_{Hbb}",
+        "mu_Hcc": "#mu_{Hcc}",
+        "mu_Hgg": "#mu_{Hgg}",
+        "mu_Htautau": "#mu_{H#tau#tau}",
+        "mu_HWW": "#mu_{HWW}",
+        "mu_HZZ": "#mu_{HZZ}",
+        "mu_Hss": "#mu_{Hss}",
+        "mu_qqH": "#mu_{qqH}",
+        "mu_WW": "#mu_{WW}",
+        "mu_ZZ": "#mu_{ZZ}",
+        "mu_Zqq": "#mu_{Zqq}"
+    }
+}
