@@ -1,0 +1,13 @@
+.DS_Store
+*.root
+*.tmp
+*.eps
+*.pdf
+*.png
+*.pyc
+utils/printTextFile.cxx
+utils/*.out
+*._*
+*.swp
+data/DCBParams/v1/
+*.o

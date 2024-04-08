@@ -1,0 +1,75 @@
+[POI]
+name:mu*, float:true, centralVal:1, lwrLim:-10, uprLim:10
+name:mu, float:false, centralVal:1, lwrLim:-10, uprLim:10
+name:r*, float:true, centralVal:1, lwrLim:-10, uprLim:10
+name:mu_ttH, lwrLim:0, uprLim:10
+name:XS*, float:False
+
+#######################
+# Systematics setup
+#######################
+[Sys - allSys] 
+name:*, float:true, centralVal:0
+#, lwrLim:-5, uprLim:5
+
+[Sys - statOnly] 
+name:*, float:False
+
+[Sys - bkgOnly] 
+name:*, float:False
+
+[Sys - theoryOnly] 
+name:alpha_ATLAS_LUMI*, float:False
+
+
+#######################
+# Compatibility setup
+#######################
+[Compatibility - muggHSig] 
+name:mu_gg2H, float:False, centralVal:0
+
+[Compatibility - singlePOI] 
+name:mu_*, float:False, centralVal:0
+
+
+#######################
+# Global Settings
+#######################
+[Global]
+workspaceName: combined
+modelConfigName: ModelConfig
+datasetName: obsData
+asimovName: asimovData
+fitStrategy: 1
+
+# NLL Offset
+applyOffset: false
+
+# Apply cache fix for roostarmoment fix
+applyRooStartMomentFix: true
+
+# Minimizer settings
+optimizeConst:2
+epsVal:0.01
+
+# If set to true, the code will load all snapshots right after opening ws
+# the snapshot name is a comma separated list
+# Typically used if conditional asimov is used
+# doSnapshotForData is set false, the snapshot is not loaded for data
+loadSnapshot: true
+snapshotName: noSnapshot
+doSnapshotForData: false
+
+# if this exists, will load the unconditional snapshot rather 
+unconditionalSnap: noSnapshot
+
+
+
+# Information on the workspace. To help with the plotting
+workspaceType: XS
+labelName: H #rightarrow ZZ* #rightarrow 4l
+
+
+
+
+

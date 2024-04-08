@@ -1,0 +1,36 @@
+[POI]
+name:mu*, float:true, centralVal:1, lwrLim:0, uprLim:5
+
+#######################
+# Systematics setup
+#######################
+[Sys - allSys] 
+name:*, float:True
+
+[Sys - statOnly] 
+name:*, float:False
+
+
+#######################
+# Compatibility setup
+#######################
+[Compatibility - singlePOI] 
+name:mu*, float:False, centralVal:1
+
+[Global]
+workspaceName: combined
+modelConfigName: ModelConfig
+datasetName: obsData
+asimovName: asimovData
+fitStrategy: 0
+applyOffset: true
+applyRooStartMomentFix: false
+loadSnapshot: false
+snapshotName: noSnapshot
+unconditionalSnap: noSnapshot
+optimizeConst: 2
+epsVal:0.01
+seed:0
+
+# Information on the workspace. To help with the plotting
+plotConfig: FCCZvhjj.json

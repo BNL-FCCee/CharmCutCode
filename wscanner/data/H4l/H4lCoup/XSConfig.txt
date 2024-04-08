@@ -1,0 +1,65 @@
+[POI]
+name:mu*, float:true, centralVal:1, lwrLim:0, uprLim:10
+name:mu_VBF, float:true, lwrLim:-5
+name:mu_VH,  float:true, lwrLim:-5
+name:mu,  float:true, centralVal:1, lwrLim:0, uprLim:10
+name:r*,  float:true, centralVal:1, lwrLim:-10, uprLim:10
+name:mu_ttH, lwrLim:0, uprLim:10
+name:mu_gg2H_1J_PTH_120_200, lwrLim:-5
+name:mu_gg2H_GE2J, lwrLim:-1
+name:mu_VBF_qq2qq_PTH_GT200, lwrLim:-5
+name:mu_VH, lwrLim:-1.5, uprLim:10
+name:mu_VBF, lwrLim:-1.5, uprLim:10
+name:mu_qq2Hqq_mJJ_GT350_PTH_GT200, lwrLim:-1
+
+
+name:XS*, float:False
+
+#######################
+# Systematics setup
+#######################
+[Sys - allSys] 
+name:*, float:True
+
+[Sys - statOnly] 
+name:*, float:False
+
+[Sys - modTheory] 
+name:*PDF*, float:false
+name:*pdf*, float:false
+name:*QCD*, float:false
+name:*UEPS*, float:false
+name:*ZZ_Nj*_modelling*, float:false
+name:*ATLAS_tXX*, float:false
+name:*HOEW*, float:false
+name:*ggF*Comp*, float:false
+name:*ggF_heavyFlavour*, float:false
+name:*ttV_genComp*, float:false
+name:*r_bbH_ggH*, float:false
+
+#######################
+# Compatibility setup
+#######################
+[Compatibility - singlePOI] 
+name:mu*, float:False, centralVal:1
+
+[Global]
+workspaceName: combined
+modelConfigName: ModelConfig
+datasetName: obsData
+asimovName: asimovData
+fitStrategy: 0
+applyOffset: true
+applyRooStartMomentFix: false
+loadSnapshot: false
+snapshotName: noSnapshot
+unconditionalSnap: noSnapshot
+optimizeConst: 2
+epsVal:0.01
+seed:0
+
+
+
+# Information on the workspace. To help with the plotting
+workspaceType: XS
+labelName: H #rightarrow ZZ* #rightarrow 4l
