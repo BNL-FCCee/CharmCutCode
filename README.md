@@ -10,11 +10,11 @@ This repository contains the code to perform a simple analyses for FCCee. It con
   
 
 ## Usage
-There are not crazy dependencies, only a semi recent version of root is required.
+There are no crazy dependencies, only a semi recent version of root is required.
 ```
 mkdir source run build
 cd source
-git clone --recursive https://github.com/BNL-FCCee/FCCeePostCutCode.git ./
+git clone --recursive git@github.com:BNL-FCCee/FCCeePostCutCode.git ./
 ```
 
 For first time usage:
