@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser()
 
 ## Analysis options
 parser.add_argument("--inputFolder",                default = "/Users/haider/FCC/data/ntuples/zh_vvjj/", type = str,      help = "Path to folder with all the input folder")
-parser.add_argument("--outputFolder",               default = "/Users/haider/FCC/CharmCutCode/run/root-files/", type = str,      help = "Path to folder with all the output")
+parser.add_argument("--outputFolder",               default = "/Users/haider/FCC/PostCutCode/run/root-files/", type = str,      help = "Path to folder with all the output")
 parser.add_argument("--doZHvvJJ",                   default = False, action='store_true',   help = "Run jobs for ZHvvjj analysis") 
 parser.add_argument("--doZHAllHad",                   default = False, action='store_true',   help = "Run jobs for ZHAllHad analysis") 
 

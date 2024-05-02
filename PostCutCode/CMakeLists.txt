@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 
 
-project(CharmCutCode)
-message("announcing CharmCutCode")
+project(PostCutCode)
+message("announcing PostCutCode")
 set(CMAKE_BUILD_TYPE Debug)
 
 add_compile_options(-std=c++17 -fPIC -Wall -Wextra -Wno-unused-parameter -O2)
@@ -27,16 +27,15 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 #---Create a shared library with generated dictionary
 file(GLOB sources "Root/*.cxx")
 
-add_library(CharmCutCodeLib SHARED ${sources})
-target_link_libraries(CharmCutCodeLib ${ROOT_LIBRARIES})
+add_library(PostCutCodeLib SHARED ${sources})
+target_link_libraries(PostCutCodeLib ${ROOT_LIBRARIES})
 
 #---Link the exe files
 file(GLOB_RECURSE exe_files "utils/*.cxx")
 foreach(_exe_file ${exe_files})
-    message(${_exe_file})
     get_filename_component(_theExec ${_exe_file} NAME_WE)
     add_executable(${_theExec} ${_exe_file})
-    target_link_libraries(${_theExec} CharmCutCodeLib)
+    target_link_libraries(${_theExec} PostCutCodeLib)
 endforeach()
 
 set(ENV{WSCANNER_DATADIR} ${CMAKE_CURRENT_SOURCE_DIR}/data/)

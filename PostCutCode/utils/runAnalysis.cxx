@@ -13,11 +13,11 @@
 
 
 // Class include
-#include "CharmCutCode/AnalysisBase.h"
-#include "CharmCutCode/AnalysisZHvvJJ.h"
-#include "CharmCutCode/AnalysisZHAllHad.h"
-#include "CharmCutCode/AnalysisSelfCouplingTest.h"
-#include "CharmCutCode/MetadataContainer.h"
+#include "PostCutCode/AnalysisBase.h"
+#include "PostCutCode/AnalysisZHvvJJ.h"
+#include "PostCutCode/AnalysisZHAllHad.h"
+#include "PostCutCode/AnalysisSelfCouplingTest.h"
+#include "PostCutCode/MetadataContainer.h"
 
 using namespace std;
 
@@ -86,9 +86,9 @@ bool cmdline(int argc, char** argv, map<TString,std::string>& opts)
     opts["sampleName"]          = "wzp6_ee_nunuH_HZZ_ecm240";
     opts["processName"]         = "qqH";
     opts["analType"]            = "vvjj";
-    opts["SOWJSONfile"]         = "../source/CharmCutCode/data/FCCee_procDict_winter2023_IDEA.json";
-    opts["CustomSOWJSONfile"]   = "../source/CharmCutCode/data/SumOfWeightsCustom.json";
-    opts["DetectorVarFile"] = "../source/CharmCutCode/data/bcs_scores_baseline_idealVXDCalo_lighter_heavierVXD_100pc_CLD_worse_better_singlehitReso_65pc.root";
+    opts["SOWJSONfile"]         = "../source/PostCutCode/data/FCCee_procDict_winter2023_IDEA.json";
+    opts["CustomSOWJSONfile"]   = "../source/PostCutCode/data/SumOfWeightsCustom.json";
+    opts["DetectorVarFile"] = "../source/PostCutCode/data/bcs_scores_baseline_idealVXDCalo_lighter_heavierVXD_100pc_CLD_worse_better_singlehitReso_65pc.root";
     opts["DetectorVar"] = "baseline";
 
 

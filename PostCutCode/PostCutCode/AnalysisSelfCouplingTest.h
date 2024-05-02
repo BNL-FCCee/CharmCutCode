@@ -9,7 +9,7 @@
 #include <algorithm>
 
 // local include
-#include "CharmCutCode/AnalysisBase.h"
+#include "PostCutCode/AnalysisBase.h"
 
 class AnalysisSelfCouplingTest: public AnalysisBase
 {

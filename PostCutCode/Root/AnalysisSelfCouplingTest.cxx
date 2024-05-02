@@ -1,6 +1,6 @@
 // Local includes
-#include "CharmCutCode/AnalysisSelfCouplingTest.h"
-#include "CharmCutCode/TreeContainer.h"
+#include "PostCutCode/AnalysisSelfCouplingTest.h"
+#include "PostCutCode/TreeContainer.h"
 #include <iomanip>
 #include <TFile.h>
 #include <fstream>

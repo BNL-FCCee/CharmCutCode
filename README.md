@@ -1,9 +1,9 @@
 
-# CharmCutCode
+# PostCutCode
 
 This repository contains the code to perform a simple analyses for FCCee. It contains the 3 parts
 
--  **CharmCutCode**: A simple ttree that apply selection cuts and organizes the histograms that can be used for the next step. This is a relatively hard-coded setup. While the analysis categories and observable hists are defined in a Common area, the selection cuts which fill each category is coded by the user in the .cxx file. This code base also provides a relatively flexible setup to submit batch jobs on a variety of different clusters
+-  **PostCutCode**: A simple ttree that apply selection cuts and organizes the histograms that can be used for the next step. This is a relatively hard-coded setup. While the analysis categories and observable hists are defined in a Common area, the selection cuts which fill each category is coded by the user in the .cxx file. This code base also provides a relatively flexible setup to submit batch jobs on a variety of different clusters
 -  **WSMaker**: This code uses the inputs from above to make files that then feed into HistFactory to make the workspace. This code is intended to be dynamic and controlled through JSON configuration files
 -  **Wscanner**: This code is to come, that will do the statistical analysis on the input ws from above
 
@@ -14,7 +14,7 @@ There are not crazy dependencies, only a semi recent version of root is required
 ```
 mkdir source run build
 cd source
-git clone --recursive https://gitlab.cern.ch/sabidi/CharmCutCode.git ./
+git clone --recursive https://github.com/BNL-FCCee/FCCeePostCutCode.git ./
 ```
 
 For first time usage:
@@ -36,7 +36,7 @@ source ../build/setup.sh
 
 **Do remember to compile again if you edit any of the c++ code :)**
 
-## CharmCutCode
+## PostCutCode
 
 The starting point of this code is ```runAnalysis.cxx```. This code is designed to parse the input options, create the correct analysis running, and call the required function on that. Do note that this is relatively hard-written process, in the sense that categories and their filling are left to be implemented in c++. This is done to ensure the greatest flexibility, since we don't know what is required to implemeted a FCCee analysis. A couple things to note:
 - AnalysisXXX.cxx: This code must implement the simple event loop and apply selection and fill the relevant hist. Only this code needs to know what is the exact definition of the category
@@ -47,12 +47,12 @@ The starting point of this code is ```runAnalysis.cxx```. This code is designed 
 ### Usage: Local running for testing
 This is typically going to used for local testing
 ```
-runAnalysis --inputFileList file1,file2 --outputFileName test.root --sampleName wzp6_ee_nunuH_HZZ_ecm240 --processName HZZ --analType vvjj --SOWJSONfile ../source/CharmCutCode/data/FCCee_procDict_winter2023_IDEA.json
+runAnalysis --inputFileList file1,file2 --outputFileName test.root --sampleName wzp6_ee_nunuH_HZZ_ecm240 --processName HZZ --analType vvjj --SOWJSONfile ../source/PostCutCode/data/FCCee_procDict_winter2023_IDEA.json
 ```
 
 ### Usage: Batch running for processing all samples
 ```
-python3 ../source/CharmCutCode/submission/submit.py --inputFolder <folder/with/inputs> --outputFolder <folderToSaveOutput> --doZHvvjj --<runLocal/runInteractive/submitCondor/...> #pick one option and remove the <brackets>
+python3 ../source/PostCutCode/submission/submit.py --inputFolder <folder/with/inputs> --outputFolder <folderToSaveOutput> --doZHvvjj --<runLocal/runInteractive/submitCondor/...> #pick one option and remove the <brackets>
 ```
 
 This will submit the jobs to be run in the choosen way. It will run multiple files in one job, as specified by the 'mergeFile' option. 
