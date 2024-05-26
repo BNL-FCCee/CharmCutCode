@@ -19,7 +19,7 @@ using namespace std;
 
 AnalysisZHAllHad::AnalysisZHAllHad():
     AnalysisBase(),
-    m_debug(false)
+    m_debug(true)
 {}
 AnalysisZHAllHad::~AnalysisZHAllHad()
 {}
@@ -39,7 +39,7 @@ void AnalysisZHAllHad::run()
         {5, "b"}
     };
     std::vector<std::string> flavourJets {"b", "c", "s", "g", "q"};
-    std::vector<std::string> flavours{"B","C","S","D","U","G","TAU"};
+    std::vector<std::string> flavours{"B","C","S","Q","G","TAU"};
     std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G","TAU"};
     std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","Incl"};
     std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "d123Cut", "d34Cut","Pairing","jjMassCut","ZHmassCut","YieldsFit" };
@@ -284,7 +284,8 @@ void AnalysisZHAllHad::run()
 //             std::cout<<"Jet: "<< lv <<std::endl; 
             // if (m_debug) std::cout<<"Truth Flav: "<< abs(truth_flav.at(lv)) <<std::endl;
             std::vector<int> set = {1, 2, 3, 4, 5};
-            if ((std::find(set.begin(), set.end(), abs(truth_flav.at(lv))) == set.end())){
+            if (1 == 0){
+            //if ((std::find(set.begin(), set.end(), abs(truth_flav.at(lv))) == set.end())){
                 // if (m_debug) std::cout<<"EMPTY truth_flav.at(lv): "<< truth_flav.at(lv) <<std::endl;
                 NEWrecojet_isB.push_back(recojet_isB.at(lv));
                 NEWrecojet_isC.push_back(recojet_isC.at(lv));
@@ -300,18 +301,22 @@ void AnalysisZHAllHad::run()
                 NEWrecojet_isS.push_back(s_score);
             } 
         }
-      
        // Flav scores of each jet
-       std::array<float,7> j0_flav {NEWrecojet_isB.at(0), NEWrecojet_isC.at(0), NEWrecojet_isS.at(0), recojet_isD.at(0), recojet_isU.at(0), recojet_isG.at(0), recojet_isTAU.at(0)};
-       std::array<float,7> j1_flav {NEWrecojet_isB.at(1), NEWrecojet_isC.at(1), NEWrecojet_isS.at(1), recojet_isD.at(1), recojet_isU.at(1), recojet_isG.at(1), recojet_isTAU.at(1)};
-       std::array<float,7> j2_flav {NEWrecojet_isB.at(2), NEWrecojet_isC.at(2), NEWrecojet_isS.at(2), recojet_isD.at(2), recojet_isU.at(2), recojet_isG.at(2), recojet_isTAU.at(2)};
-       std::array<float,7> j3_flav {NEWrecojet_isB.at(3), NEWrecojet_isC.at(3), NEWrecojet_isS.at(3), recojet_isD.at(3), recojet_isU.at(3), recojet_isG.at(3), recojet_isTAU.at(3)};
+        std::vector<float> recojet_isQ;
+        for (unsigned int i = 0; i < 4; i++) {
+            recojet_isQ.push_back((recojet_isD.at(i) > recojet_isU.at(i)) ? recojet_isD.at(i) : recojet_isU.at(i));
+        }
+
+       std::array<float,6> j0_flav {NEWrecojet_isB.at(0), NEWrecojet_isC.at(0), NEWrecojet_isS.at(0), recojet_isQ.at(0), recojet_isG.at(0), recojet_isTAU.at(0)};
+       std::array<float,6> j1_flav {NEWrecojet_isB.at(1), NEWrecojet_isC.at(1), NEWrecojet_isS.at(1), recojet_isQ.at(1), recojet_isG.at(1), recojet_isTAU.at(1)};
+       std::array<float,6> j2_flav {NEWrecojet_isB.at(2), NEWrecojet_isC.at(2), NEWrecojet_isS.at(2), recojet_isQ.at(2), recojet_isG.at(2), recojet_isTAU.at(2)};
+       std::array<float,6> j3_flav {NEWrecojet_isB.at(3), NEWrecojet_isC.at(3), NEWrecojet_isS.at(3), recojet_isQ.at(3), recojet_isG.at(3), recojet_isTAU.at(3)};
 
         // - look for max score of jet 
-       std::array<float,7>::iterator j0_maxScore;
-       std::array<float,7>::iterator j1_maxScore;
-       std::array<float,7>::iterator j2_maxScore; 
-       std::array<float,7>::iterator j3_maxScore; 
+       std::array<float,6>::iterator j0_maxScore;
+       std::array<float,6>::iterator j1_maxScore;
+       std::array<float,6>::iterator j2_maxScore; 
+       std::array<float,6>::iterator j3_maxScore; 
 
        j0_maxScore = std::max_element(j0_flav.begin(), j0_flav.end());
        j1_maxScore = std::max_element(j1_flav.begin(), j1_flav.end());
@@ -323,7 +328,7 @@ void AnalysisZHAllHad::run()
        int j2_maxScoreIdx = std::distance(j2_flav.begin(),std::max_element(j2_flav.begin(), j2_flav.end()));
        int j3_maxScoreIdx = std::distance(j3_flav.begin(),std::max_element(j3_flav.begin(), j3_flav.end()));
 
-       std::map<int, std::array<float,7>> flavMap;
+       std::map<int, std::array<float,6>> flavMap;
        flavMap[0]=j0_flav;
        flavMap[1]=j1_flav;
        flavMap[2]=j2_flav;
@@ -332,7 +337,7 @@ void AnalysisZHAllHad::run()
        std::array<int, 4> maxScoreIdx {j0_maxScoreIdx,j1_maxScoreIdx,j2_maxScoreIdx,j3_maxScoreIdx};
 
        if (m_debug) {
-            std::cout<<"j0_flav: "<<" Max score: "<< *j0_maxScore<< " maxScoreIdx: "<< maxScoreIdx[0]<<std::endl;
+            std::cout<<"j0_flav: "<<" Max score: "<< *j0_maxScore<< " maxScoreIdx: "<<  maxScoreIdx[0]<<std::endl;
             std::cout<<"j1_flav: "<<" Max score: "<< *j1_maxScore<< " maxScoreIdx: "<< maxScoreIdx[1]<<std::endl;
             std::cout<<"j2_flav: "<<" Max score: "<< *j2_maxScore<< " maxScoreIdx: "<< maxScoreIdx[2]<<std::endl;
             std::cout<<"j3_flav: "<<" Max score: "<< *j3_maxScore<< " maxScoreIdx: "<< maxScoreIdx[3]<<std::endl;
@@ -433,7 +438,7 @@ void AnalysisZHAllHad::run()
                 //Maybe this should be a a function! Outside this mess defined... Because you will need to call it again...
                 float max_score = 0;
                 int new_fl = -1;
-                for (int fl = 0; fl < 7; ++fl) {
+                for (int fl = 0; fl < 6; ++fl) {
                     if (flavMap[missing_pair[0]][fl]+flavMap[missing_pair[1]][fl]>max_score){
                         new_fl=fl;
                         max_score=flavMap[missing_pair[0]][fl]+flavMap[missing_pair[1]][fl];
@@ -486,7 +491,7 @@ void AnalysisZHAllHad::run()
                 //Maybe this should be a a function! Outside this mess defined... Because you will need to call it again...
                 float max_score = 0;
                 int new_fl = -1;
-                for (int fla = 0; fla < 7; ++fla) {
+                for (int fla = 0; fla < 6; ++fla) {
                     if (flavMap[missing_p[0]][fla]+flavMap[missing_p[1]][fla]>max_score){
                         new_fl=fla;
                         max_score=flavMap[missing_p[0]][fla]+flavMap[missing_p[1]][fla];
@@ -641,14 +646,14 @@ void AnalysisZHAllHad::run()
         else if (Z_flav == 2){
             Z_Sscore->Fill(Z_flav_sc);
         }
-        else if (Z_flav == 5){
+        else if (Z_flav == 4){
             Z_Gscore->Fill(Z_flav_sc);
         }
-        else if (Z_flav == 4 || Z_flav == 3){
+        else if (Z_flav == 3){
             Z_Qscore->Fill(Z_flav_sc);
         }
         
-        if (Z_flav == 5 || Z_flav == 6 || H_flav == 6 || H_flav == 4 || H_flav == 3) continue;
+        if (Z_flav == 4 || Z_flav == 5 || H_flav == 5 || H_flav == 3) continue;
         Nfit++; 
         if (H_flav == 0){
             BlikeEvents++;
@@ -805,7 +810,7 @@ void AnalysisZHAllHad::run()
                     Hi_ssZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (Z_flav == 4 || Z_flav == 3 ){
+                else if (Z_flav == 3 ){
 //                     Hi_qqZ_Hcc_obsHist->Fill(m_zjj,m_hjj);
                     Hi_qqZ_Hcc_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
@@ -835,7 +840,7 @@ void AnalysisZHAllHad::run()
                 SlikeEvents_cat[2]++;
             }
         }
-        else if (H_flav == 5){
+        else if (H_flav == 4){
             GlikeEvents++;
             Gscore->Fill(H_flav_sc);
             // Hgg_obsHist->Fill(m_zjj,m_hjj);
@@ -857,7 +862,7 @@ void AnalysisZHAllHad::run()
                     Low_ssZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (Z_flav == 4 || Z_flav == 3 ){
+                else if (Z_flav == 3 ){
 //                     Low_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Low_qqZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
@@ -905,7 +910,7 @@ void AnalysisZHAllHad::run()
                     Hi_ssZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
 
                 }
-                else if (Z_flav == 4 || Z_flav == 3 ){
+                else if (Z_flav == 3 ){
 //                     Hi_qqZ_Hgg_obsHist->Fill(m_zjj,m_hjj);
                     Hi_qqZ_Hgg_obsHist->Fill(m_hjj_corr,m_zjj);
                 }
