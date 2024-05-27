@@ -178,22 +178,48 @@ void AnalysisZHAllHad::run()
     // assuming you have vectors as input (should also save option to run w/o vectors)
   
     // flavor scores
-    varMember<ROOT::VecOps::RVec<float>> recojet_isB {tree, "recojet_isB"};
-    varMember<ROOT::VecOps::RVec<float>> recojet_isC {tree, "recojet_isC"};
-    varMember<ROOT::VecOps::RVec<float>> recojet_isG {tree, "recojet_isG"};
-    varMember<ROOT::VecOps::RVec<float>> recojet_isU {tree, "recojet_isU"};
-    varMember<ROOT::VecOps::RVec<float>> recojet_isTAU {tree, "recojet_isTAU"};
-    varMember<ROOT::VecOps::RVec<float>> recojet_isD {tree, "recojet_isD"};
-    varMember<ROOT::VecOps::RVec<float>> recojet_isS {tree, "recojet_isS"};
-    //add truth jet flav
-    varMember<ROOT::VecOps::RVec<int>> truth_flav {tree, "jets_truth"};
+       // Connect branches to trees
+    auto tree = treeCont->getTree();
+    varMemberVector<double> jet_px{tree, { "jet0_px_corr","jet1_px_corr", "jet2_px_corr", "jet3_px_corr"}, -999};
+    varMemberVector<double> jet_py{tree, { "jet0_py_corr","jet1_py_corr", "jet2_py_corr", "jet3_py_corr"}, -999};
+    varMemberVector<double> jet_pz{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
+    varMemberVector<double> jet_e{tree, { "jet0_e_corr","jet1_e_corr", "jet2_e_corr", "jet3_e_corr"}, -999};
+
+    varMember<float> jet0_scoreB {tree, "jet0_scoreB"};
+    varMember<float> jet1_scoreB {tree, "jet1_scoreB"};
+    varMember<float> jet2_scoreB {tree, "jet2_scoreB"};
+    varMember<float> jet3_scoreB {tree, "jet3_scoreB"};
+
+    varMember<float> jet0_scoreC {tree, "jet0_scoreC"};
+    varMember<float> jet1_scoreC {tree, "jet1_scoreC"};
+    varMember<float> jet2_scoreC {tree, "jet2_scoreC"};
+    varMember<float> jet3_scoreC {tree, "jet3_scoreC"};
+
+    varMember<float> jet0_scoreG {tree, "jet0_scoreG"};
+    varMember<float> jet1_scoreG {tree, "jet1_scoreG"};
+    varMember<float> jet2_scoreG {tree, "jet2_scoreG"};
+    varMember<float> jet3_scoreG {tree, "jet3_scoreG"};
+
+    varMember<float> jet0_scoreU {tree, "jet0_scoreU"};
+    varMember<float> jet1_scoreU {tree, "jet1_scoreU"};
+    varMember<float> jet2_scoreU {tree, "jet2_scoreU"};
+    varMember<float> jet3_scoreU {tree, "jet3_scoreU"};
+
+    varMember<float> jet0_scoreTAU {tree, "jet0_scoreTAU"};
+    varMember<float> jet1_scoreTAU {tree, "jet1_scoreTAU"};
+    varMember<float> jet2_scoreTAU {tree, "jet2_scoreTAU"};
+    varMember<float> jet3_scoreTAU {tree, "jet3_scoreTAU"};
+
+    varMember<float> jet0_scoreD {tree, "jet0_scoreD"};
+    varMember<float> jet1_scoreD {tree, "jet1_scoreD"};
+    varMember<float> jet2_scoreD {tree, "jet2_scoreD"};
+    varMember<float> jet3_scoreD{tree, "jet3_scoreD"};
+
+    varMember<float> jet0_scoreS {tree, "jet0_scoreS"};
+    varMember<float> jet1_scoreS {tree, "jet1_scoreS"};
+    varMember<float> jet2_scoreS {tree, "jet2_scoreS"};
+    varMember<float> jet3_scoreS {tree, "jet3_scoreS"};
     
-  
-    // corrected momentum
-    varMember<ROOT::VecOps::RVec<float>> jet_px {tree, "jet_px_corr"};
-    varMember<ROOT::VecOps::RVec<float>> jet_py {tree, "jet_py_corr"}; 
-    varMember<ROOT::VecOps::RVec<float>> jet_pz {tree, "jet_pz_corr"};
-    varMember<ROOT::VecOps::RVec<float>> jet_e {tree, "jet_e_corr"}; 
 
     varMember<int> event_njet {tree, "event_njet"};
     varMember<ulong> event_nmu {tree, "event_nmu"};
@@ -267,50 +293,18 @@ void AnalysisZHAllHad::run()
         if ((d_23()<=400.) || (d_23()>=18000.))continue;
         NdCutd123++;
         if ((d_34()<=100.) || (d_34()>=6000.))continue;
-        NdCutd34++;
-        // ALL GOOD UP TO HERE!!!!!!
-        // Step 1: check efficiency ~ 80%
-        // increment counter of events that pass the cuts!
-       //make lorentz vectors
-//        std::cout<<"Passed intial selection!" << std::endl; 
+        NdCutd34++; 
        std::vector<TLorentzVector> LVjets;    
-       std::vector<float> NEWrecojet_isB;
-       std::vector<float> NEWrecojet_isC;
-       std::vector<float> NEWrecojet_isS;
-       for (size_t lv = 0; lv < 4; ++lv) {  
-            TLorentzVector LVjet(jet_px.at(lv), jet_py.at(lv), jet_pz.at(lv), jet_e.at(lv));
-            LVjets.push_back(LVjet);
-            std::string jet_flav = char_jet_flav[abs(truth_flav.at(lv))];
-//             std::cout<<"Jet: "<< lv <<std::endl; 
-            // if (m_debug) std::cout<<"Truth Flav: "<< abs(truth_flav.at(lv)) <<std::endl;
-            std::vector<int> set = {1, 2, 3, 4, 5};
-            if (1 == 1){
-            //if ((std::find(set.begin(), set.end(), abs(truth_flav.at(lv))) == set.end())){
-                // if (m_debug) std::cout<<"EMPTY truth_flav.at(lv): "<< truth_flav.at(lv) <<std::endl;
-                NEWrecojet_isB.push_back(recojet_isB.at(lv));
-                NEWrecojet_isC.push_back(recojet_isC.at(lv));
-                NEWrecojet_isS.push_back(recojet_isS.at(lv));
-            }
-            else{
-                double b_score;
-                double c_score;
-                double s_score;
-                histo_DetVars[jet_flav]->GetRandom3(b_score, c_score,s_score);
-                NEWrecojet_isB.push_back(b_score);
-                NEWrecojet_isC.push_back(c_score);
-                NEWrecojet_isS.push_back(s_score);
-            } 
-        }
        // Flav scores of each jet
-        std::vector<float> recojet_isQ;
-        for (unsigned int i = 0; i < 4; i++) {
-            recojet_isQ.push_back((recojet_isD.at(i) > recojet_isU.at(i)) ? recojet_isD.at(i) : recojet_isU.at(i));
-        }
+       float jet0_scoreQ = jet0_scoreU() > jet0_scoreD() ? jet0_scoreD() :jet0_scoreU();
+       float jet1_scoreQ = jet1_scoreU() > jet1_scoreD() ? jet1_scoreD() :jet1_scoreU();
+       float jet2_scoreQ = jet2_scoreU() > jet2_scoreD() ? jet2_scoreD() :jet2_scoreU();
+       float jet2_scoreQ = jet3_scoreU() > jet3_scoreD() ? jet3_scoreD() :jet3_scoreU();
 
-       std::array<float,6> j0_flav {NEWrecojet_isB.at(0), NEWrecojet_isC.at(0), NEWrecojet_isS.at(0), recojet_isQ.at(0), recojet_isG.at(0), recojet_isTAU.at(0)};
-       std::array<float,6> j1_flav {NEWrecojet_isB.at(1), NEWrecojet_isC.at(1), NEWrecojet_isS.at(1), recojet_isQ.at(1), recojet_isG.at(1), recojet_isTAU.at(1)};
-       std::array<float,6> j2_flav {NEWrecojet_isB.at(2), NEWrecojet_isC.at(2), NEWrecojet_isS.at(2), recojet_isQ.at(2), recojet_isG.at(2), recojet_isTAU.at(2)};
-       std::array<float,6> j3_flav {NEWrecojet_isB.at(3), NEWrecojet_isC.at(3), NEWrecojet_isS.at(3), recojet_isQ.at(3), recojet_isG.at(3), recojet_isTAU.at(3)};
+       std::array<float,6> j0_flav {jet0_scoreB(), jet0_scoreC(), jet0_scoreS(), jet0_scoreQ, jet0_scoreG(), jet0_scoreTAU()};
+       std::array<float,6> j1_flav {jet1_scoreB(), jet1_scoreC(), jet1_scoreS(), jet1_scoreQ, jet1_scoreG(), jet1_scoreTAU()};
+       std::array<float,6> j2_flav {jet2_scoreB(), jet2_scoreC(), jet2_scoreS(), jet2_scoreQ, jet2_scoreG(), jet2_scoreTAU()};
+       std::array<float,6> j3_flav {jet3_scoreB(), jet3_scoreC(), jet3_scoreS(), jet3_scoreQ, jet3_scoreG(), jet3_scoreTAU()};
 
         // - look for max score of jet 
        std::array<float,6>::iterator j0_maxScore;
