@@ -179,7 +179,6 @@ void AnalysisZHAllHad::run()
   
     // flavor scores
        // Connect branches to trees
-    auto tree = treeCont->getTree();
     varMemberVector<double> jet_px{tree, { "jet0_px_corr","jet1_px_corr", "jet2_px_corr", "jet3_px_corr"}, -999};
     varMemberVector<double> jet_py{tree, { "jet0_py_corr","jet1_py_corr", "jet2_py_corr", "jet3_py_corr"}, -999};
     varMemberVector<double> jet_pz{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
@@ -232,6 +231,7 @@ void AnalysisZHAllHad::run()
     varMember<float> d_12 {tree, "d_12"};
     varMember<float> d_23 {tree, "d_23"};
     varMember<float> d_34 {tree, "d_34"};
+    varMember<double> flag_corr {tree, "flag_corr"};
 
     // varMember<double> costhetainv {tree, "costhetainv"};
     int NjetCut = 0;
@@ -295,11 +295,15 @@ void AnalysisZHAllHad::run()
         if ((d_34()<=100.) || (d_34()>=6000.))continue;
         NdCutd34++; 
        std::vector<TLorentzVector> LVjets;    
+       for (size_t lv = 0; lv < 4; ++lv) {
+            TLorentzVector LVjet(jet_px.getVal(lv), jet_py.getVal(lv), jet_pz.getVal(lv), jet_e.getVal(lv));
+            LVjets.push_back(LVjet);
+        }
        // Flav scores of each jet
        float jet0_scoreQ = jet0_scoreU() > jet0_scoreD() ? jet0_scoreD() :jet0_scoreU();
        float jet1_scoreQ = jet1_scoreU() > jet1_scoreD() ? jet1_scoreD() :jet1_scoreU();
        float jet2_scoreQ = jet2_scoreU() > jet2_scoreD() ? jet2_scoreD() :jet2_scoreU();
-       float jet2_scoreQ = jet3_scoreU() > jet3_scoreD() ? jet3_scoreD() :jet3_scoreU();
+       float jet3_scoreQ = jet3_scoreU() > jet3_scoreD() ? jet3_scoreD() :jet3_scoreU();
 
        std::array<float,6> j0_flav {jet0_scoreB(), jet0_scoreC(), jet0_scoreS(), jet0_scoreQ, jet0_scoreG(), jet0_scoreTAU()};
        std::array<float,6> j1_flav {jet1_scoreB(), jet1_scoreC(), jet1_scoreS(), jet1_scoreQ, jet1_scoreG(), jet1_scoreTAU()};
@@ -608,12 +612,7 @@ void AnalysisZHAllHad::run()
         // if (H_flav == 6) continue;
         //After parining and cuts 
         //The flag e correction falg...
-        float flag_ecorr = 0.0;
-        for (size_t je = 0; je < 4; ++je) { 
-            if (jet_e.at(je) > 240.0 || jet_e.at(je) < 0.0) {
-                flag_ecorr += 1000.0;}
-        }
-        if (flag_ecorr>=1000.) continue;
+        if (flag_corr()>=1000.) continue;
         NafterSel++;
         ZZ_cut->Fill(ZZ_cuts);
         WW_cut->Fill(WW_cuts);
