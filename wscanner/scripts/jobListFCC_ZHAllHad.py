@@ -22,7 +22,7 @@ inputDict["config"]         = "${wscanner_data}/FCC/ZHAllHad.txt"
 inputDict["scanType"]       = ["statOnly"]
 inputDict["dimension"]      = "1D"
 inputDict["doData"]         = [False]
-inputDict["fileName"]       = ["/usatlas/u/ivelisce/FCC/CharmCut/run/wsfolder/WS_combined_wsfolder_model.root"]
+inputDict["fileName"]       = ["/usatlas/u/ivelisce/FCCeePostCutCodeDir/run/wsfolder/WS_combined_wsfolder_model.root"]
 inputDict["outputDir"]      = ["WS_comb"] 
 inputDict["nSplitJob"]      = 1
 buildList(inputDict, scan1D)
@@ -41,7 +41,7 @@ inputDict["scanType"] 	    = ["statOnly"]
 inputDict["dimension"] 	    = "correlationHist"
 inputDict["saveCorrHist"]   = True 
 inputDict["doData"] 	    = [False]
-inputDict["fileName"]       = ["/usatlas/u/ivelisce/FCC/CharmCut/run/wsfolder/WS_combined_wsfolder_model.root"]
+inputDict["fileName"]       = ["/usatlas/u/ivelisce/FCCeePostCutCodeDir/run/wsfolder/WS_combined_wsfolder_model.root"]
 inputDict["outputDir"]      = ["WS_comb"] 
 inputDict["nSplitJob"]      = 1
 buildList(inputDict, correlationHist)

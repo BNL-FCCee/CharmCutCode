@@ -19,7 +19,7 @@ using namespace std;
 
 AnalysisZHAllHad::AnalysisZHAllHad():
     AnalysisBase(),
-    m_debug(true)
+    m_debug(false)
 {}
 AnalysisZHAllHad::~AnalysisZHAllHad()
 {}
@@ -284,7 +284,7 @@ void AnalysisZHAllHad::run()
 //             std::cout<<"Jet: "<< lv <<std::endl; 
             // if (m_debug) std::cout<<"Truth Flav: "<< abs(truth_flav.at(lv)) <<std::endl;
             std::vector<int> set = {1, 2, 3, 4, 5};
-            if (1 == 0){
+            if (1 == 1){
             //if ((std::find(set.begin(), set.end(), abs(truth_flav.at(lv))) == set.end())){
                 // if (m_debug) std::cout<<"EMPTY truth_flav.at(lv): "<< truth_flav.at(lv) <<std::endl;
                 NEWrecojet_isB.push_back(recojet_isB.at(lv));
@@ -586,20 +586,23 @@ void AnalysisZHAllHad::run()
         float H_flav_sc = flavMap[h_idx[0]][H_flav]+flavMap[h_idx[1]][H_flav];
         float Z_flav_sc = flavMap[z_idx[0]][Z_flav]+flavMap[z_idx[1]][Z_flav];
         if (m_debug) {
-            std::cout <<"H: " << m_hjj <<" sc: " <<H_flav_sc<<std::endl;
-            std::cout << "Z: "<< m_zjj<< " sc: "<<Z_flav_sc<<std::endl;
+            std::cout <<"H: " << m_hjj <<" sc: " <<H_flav_sc<<" flav: "<< H_flav <<std::endl;
+            std::cout << "Z: "<< m_zjj<< " sc: "<<Z_flav_sc<< " flav: "<< Z_flav <<std::endl;
         }
         NafterPairing++;
         Incl_obsHist->Fill(m_zjj,m_hjj);
         //correcte m_hjj
         float m_hjj_corr = m_hjj + m_zjj - Z_mass;
+        if (m_debug) {
+            std::cout <<"m_hjj_corr: " << m_hjj_corr <<std::endl;  
+        }
 
         //A bit of selection 
         float WW_cuts = sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2));
         float ZZ_cuts = sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2));
-        // if (m_debug) {
-        //     std::cout << "WW_cuts: " <<sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2))<<std::endl;
-        //     std::cout << "ZZ_cuts: " <<sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2))<<std::endl;}
+        if (m_debug) {
+            std::cout << "WW_cuts: " <<sqrt(pow( m_zjj-W_mass ,2) + pow( m_hjj-W_mass ,2))<<std::endl;
+            std::cout << "ZZ_cuts: " <<sqrt(pow( m_zjj-Z_mass ,2) + pow( m_hjj-Z_mass ,2))<<std::endl;}
         if(WW_cuts<=10) continue;
         if(ZZ_cuts<=10) continue;
         NjjMassCut++;
@@ -617,9 +620,6 @@ void AnalysisZHAllHad::run()
                 flag_ecorr += 1000.0;}
         }
         if (flag_ecorr>=1000.) continue;
-
-        
-
         NafterSel++;
         ZZ_cut->Fill(ZZ_cuts);
         WW_cut->Fill(WW_cuts);
@@ -655,6 +655,7 @@ void AnalysisZHAllHad::run()
         
         if (Z_flav == 4 || Z_flav == 5 || H_flav == 5 || H_flav == 3) continue;
         Nfit++; 
+        std::cout<<"Prep Fit!"<<std::endl;
         if (H_flav == 0){
             BlikeEvents++;
             // Hbb_obsHist->Fill(m_zjj,m_hjj);
@@ -820,24 +821,29 @@ void AnalysisZHAllHad::run()
         else if (H_flav == 2){
             Sscore->Fill(H_flav_sc);
             SlikeEvents++;
+            std::cout<<"Strange Hss Fit!"<<std::endl;
             // Hss_obsHist->Fill(m_zjj,m_hjj);
             if (H_flav_sc < 0.8)
             {
 //                 LowS_obsHist->Fill(m_zjj,m_hjj);
+                std::cout<<"Low Hss !"<<std::endl;
                 LowS_obsHist->Fill(m_hjj_corr,m_zjj);
                 SlikeEvents_cat[0]++;
             }
             else if ((H_flav_sc >= 0.8) && (H_flav_sc <= 1.4))
             {
 //                 MidS_obsHist->Fill(m_zjj,m_hjj);
+                std::cout<<"Mid Hss !"<<std::endl;
                 MidS_obsHist->Fill(m_hjj_corr,m_zjj);
                 SlikeEvents_cat[1]++;
             }
             else if (H_flav_sc > 1.4)
             {
 //                 HiS_obsHist->Fill(m_zjj,m_hjj);
+                std::cout<<"High Hss !"<<std::endl;
                 HiS_obsHist->Fill(m_hjj_corr,m_zjj);
                 SlikeEvents_cat[2]++;
+                std::cout<<"Done High Hss !"<<std::endl;
             }
         }
         else if (H_flav == 4){
@@ -946,8 +952,9 @@ void AnalysisZHAllHad::run()
         //         TAUlikeEvents_cat[2]++;
         //     }
         // }
-
+        std::cout<<"Done with  Fit cats !"<<std::endl;
     }
+    
     scoreMapHist->SetBinContent(1, BlikeEvents*100./NafterSel);
     scoreMapHist->SetBinContent(2, ClikeEvents*100./NafterSel);
     scoreMapHist->SetBinContent(3, SlikeEvents*100./NafterSel);
@@ -992,6 +999,7 @@ void AnalysisZHAllHad::run()
 //         CountsFitCatHist->SetBinContent(5+i*5, QlikeEvents_cat[i]);
         // CountsFitCatHist->SetBinContent(6+i*6, TAUlikeEvents_cat[i]);
     }
+    std::cout<<"Done with event!"<<std::endl;
 
 
     //Make histograms for the cats 
