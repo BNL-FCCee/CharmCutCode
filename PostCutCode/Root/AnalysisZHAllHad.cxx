@@ -39,7 +39,8 @@ void AnalysisZHAllHad::run()
         {5, "b"}
     };
     std::vector<std::string> flavourJets {"b", "c", "s", "g", "q"};
-    std::vector<std::string> flavours{"B","C","S","Q","G","TAU"};
+    // std::vector<std::string> flavours{"B","C","S","Q","G","TAU"};
+    std::vector<std::string> flavours{"B","C","S","U","D","G","TAU"};
     std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G","TAU"};
     std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","Incl"};
     std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "d123Cut", "d34Cut","Pairing","jjMassCut","ZHmassCut","YieldsFit" };
@@ -305,16 +306,26 @@ void AnalysisZHAllHad::run()
        float jet2_scoreQ = jet2_scoreU() > jet2_scoreD() ? jet2_scoreD() :jet2_scoreU();
        float jet3_scoreQ = jet3_scoreU() > jet3_scoreD() ? jet3_scoreD() :jet3_scoreU();
 
-       std::array<float,6> j0_flav {jet0_scoreB(), jet0_scoreC(), jet0_scoreS(), jet0_scoreQ, jet0_scoreG(), jet0_scoreTAU()};
-       std::array<float,6> j1_flav {jet1_scoreB(), jet1_scoreC(), jet1_scoreS(), jet1_scoreQ, jet1_scoreG(), jet1_scoreTAU()};
-       std::array<float,6> j2_flav {jet2_scoreB(), jet2_scoreC(), jet2_scoreS(), jet2_scoreQ, jet2_scoreG(), jet2_scoreTAU()};
-       std::array<float,6> j3_flav {jet3_scoreB(), jet3_scoreC(), jet3_scoreS(), jet3_scoreQ, jet3_scoreG(), jet3_scoreTAU()};
+    //    std::array<float,6> j0_flav {jet0_scoreB(), jet0_scoreC(), jet0_scoreS(), jet0_scoreQ, jet0_scoreG(), jet0_scoreTAU()};
+    //    std::array<float,6> j1_flav {jet1_scoreB(), jet1_scoreC(), jet1_scoreS(), jet1_scoreQ, jet1_scoreG(), jet1_scoreTAU()};
+    //    std::array<float,6> j2_flav {jet2_scoreB(), jet2_scoreC(), jet2_scoreS(), jet2_scoreQ, jet2_scoreG(), jet2_scoreTAU()};
+    //    std::array<float,6> j3_flav {jet3_scoreB(), jet3_scoreC(), jet3_scoreS(), jet3_scoreQ, jet3_scoreG(), jet3_scoreTAU()};
 
         // - look for max score of jet 
-       std::array<float,6>::iterator j0_maxScore;
-       std::array<float,6>::iterator j1_maxScore;
-       std::array<float,6>::iterator j2_maxScore; 
-       std::array<float,6>::iterator j3_maxScore; 
+    //    std::array<float,6>::iterator j0_maxScore;
+    //    std::array<float,6>::iterator j1_maxScore;
+    //    std::array<float,6>::iterator j2_maxScore; 
+    //    std::array<float,6>::iterator j3_maxScore; 
+
+
+       std::array<float,7> j0_flav {jet0_scoreB(), jet0_scoreC(), jet0_scoreS(), jet0_scoreU(),jet0_scoreD(), jet0_scoreG(), jet0_scoreTAU()};
+       std::array<float,7> j1_flav {jet1_scoreB(), jet1_scoreC(), jet1_scoreS(), jet1_scoreU(),jet1_scoreD(), jet1_scoreG(), jet1_scoreTAU()};
+       std::array<float,7> j2_flav {jet2_scoreB(), jet2_scoreC(), jet2_scoreS(), jet2_scoreU(),jet2_scoreD(), jet2_scoreG(), jet2_scoreTAU()};
+       std::array<float,7> j3_flav {jet3_scoreB(), jet3_scoreC(), jet3_scoreS(), jet3_scoreU(),jet3_scoreD(), jet3_scoreG(), jet3_scoreTAU()};
+       std::array<float,7>::iterator j0_maxScore;
+       std::array<float,7>::iterator j1_maxScore;
+       std::array<float,7>::iterator j2_maxScore; 
+       std::array<float,7>::iterator j3_maxScore; 
 
        j0_maxScore = std::max_element(j0_flav.begin(), j0_flav.end());
        j1_maxScore = std::max_element(j1_flav.begin(), j1_flav.end());
@@ -326,7 +337,7 @@ void AnalysisZHAllHad::run()
        int j2_maxScoreIdx = std::distance(j2_flav.begin(),std::max_element(j2_flav.begin(), j2_flav.end()));
        int j3_maxScoreIdx = std::distance(j3_flav.begin(),std::max_element(j3_flav.begin(), j3_flav.end()));
 
-       std::map<int, std::array<float,6>> flavMap;
+       std::map<int, std::array<float,7>> flavMap;
        flavMap[0]=j0_flav;
        flavMap[1]=j1_flav;
        flavMap[2]=j2_flav;
@@ -436,7 +447,7 @@ void AnalysisZHAllHad::run()
                 //Maybe this should be a a function! Outside this mess defined... Because you will need to call it again...
                 float max_score = 0;
                 int new_fl = -1;
-                for (int fl = 0; fl < 6; ++fl) {
+                for (int fl = 0; fl < 7; ++fl) {
                     if (flavMap[missing_pair[0]][fl]+flavMap[missing_pair[1]][fl]>max_score){
                         new_fl=fl;
                         max_score=flavMap[missing_pair[0]][fl]+flavMap[missing_pair[1]][fl];
@@ -489,7 +500,7 @@ void AnalysisZHAllHad::run()
                 //Maybe this should be a a function! Outside this mess defined... Because you will need to call it again...
                 float max_score = 0;
                 int new_fl = -1;
-                for (int fla = 0; fla < 6; ++fla) {
+                for (int fla = 0; fla < 7; ++fla) {
                     if (flavMap[missing_p[0]][fla]+flavMap[missing_p[1]][fla]>max_score){
                         new_fl=fla;
                         max_score=flavMap[missing_p[0]][fla]+flavMap[missing_p[1]][fla];
@@ -588,7 +599,6 @@ void AnalysisZHAllHad::run()
             std::cout << "Z: "<< m_zjj<< " sc: "<<Z_flav_sc<< " flav: "<< Z_flav <<std::endl;
         }
         NafterPairing++;
-        Incl_obsHist->Fill(m_zjj,m_hjj);
         //correcte m_hjj
         float m_hjj_corr = m_hjj + m_zjj - Z_mass;
         if (m_debug) {
@@ -607,7 +617,7 @@ void AnalysisZHAllHad::run()
         if (50. >= m_zjj)continue; 
         if (m_zjj >= H_mass) continue; 
         //Fix
-        if (m_hjj_corr<=Z_mass) continue;
+        if (m_hjj<=Z_mass) continue;
         // For now remove the Htautau as a cat, only bkg....
         // if (H_flav == 6) continue;
         //After parining and cuts 
@@ -646,8 +656,11 @@ void AnalysisZHAllHad::run()
             Z_Qscore->Fill(Z_flav_sc);
         }
         
-        if (Z_flav == 4 || Z_flav == 5 || H_flav == 5 || H_flav == 3) continue;
+        // if (Z_flav == 4 || Z_flav == 5 || H_flav == 5 || H_flav == 3) continue;
+        if (Z_flav == 5 || Z_flav == 6 || H_flav == 6 || H_flav == 3 || H_flav == 4 ) continue;
         Nfit++; 
+        Incl_obsHist->Fill(m_hjj,m_zjj);
+        
         std::cout<<"Prep Fit!"<<std::endl;
         if (H_flav == 0){
             BlikeEvents++;
