@@ -87,7 +87,7 @@ bool cmdline(int argc, char** argv, map<TString,std::string>& opts)
     opts["processName"]         = "qqH";
     opts["analType"]            = "vvjj";
     opts["SOWJSONfile"]         = "../source/PostCutCode/data/FCCee_procDict_winter2023_IDEA.json";
-    opts["CustomSOWJSONfile"]   = "../source/PostCutCode/data/SumOfWeightsCustom.json";
+    opts["CustomSOWJSONfile"]   = "../source/PostCutCode/data/SoWcustom_ZHall.json";
     opts["DetectorVarFile"] = "../source/PostCutCode/data/bcs_scores_baseline_idealVXDCalo_lighter_heavierVXD_100pc_CLD_worse_better_singlehitReso_65pc.root";
     opts["DetectorVar"] = "baseline";
 

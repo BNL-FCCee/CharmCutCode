@@ -18,6 +18,10 @@ class AnalysisZHAllHad: public AnalysisBase
       AnalysisZHAllHad();
       virtual ~AnalysisZHAllHad();
 
+      int getMaxScoreFlav(const std::vector<int>& vec, const std::map<int, std::vector<float>>& mapFlav);
+      void getMissingPair(const std::vector<int>& foundPair, std::vector<int>& missingPair);
+
+
       // std::vector<unsigned int> missing_pair(std::vector<int>);
 
       void run() override;
