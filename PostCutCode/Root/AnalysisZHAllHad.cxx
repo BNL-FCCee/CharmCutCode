@@ -829,6 +829,9 @@ void AnalysisZHAllHad::run()
     cutFlowHist->SetBinContent(10,NafterFlagSel);
     cutFlowHist->SetBinContent(11,Nfit);
 
+    if (m_debug) std::cout<<"NEventsInt: "<<NEventsInt<<", pre sel: "<< NdCutd34 << " all sel: "<<NafterFlagSel <<"Nfit"<<Nfit<<std::endl;
+
+
     for(int i = 0; i < 3; i++){
         scoreMapFitCatHist->SetBinContent(1+i*5, BlikeEvents_cat[i]*100./NafterSel);
         scoreMapFitCatHist->SetBinContent(2+i*5, ClikeEvents_cat[i]*100./NafterSel);

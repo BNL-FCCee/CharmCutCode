@@ -1,6 +1,6 @@
 {
     "category":["LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HiqqHgg","HibbHgg","HiccHgg","HissHgg"],
-    "process":["WW","ZZ", "Zqq","HZa","HZZ","Hbb","Hcc","Hgg","Hss","HWW", "Htautau"],
+    "process":["WW","ZZ", "Zqq","HZa","HZZ","Hbb","Hcc","Hgg","Hss","HWW", "Htautau","ecm240"],
     "processHeldConstant":["HZa"],
     "xRebinFactor":1,
     "yRebinFactor":5,

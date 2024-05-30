@@ -43,9 +43,10 @@ void AnalysisBase::writeHistogram()
     {
         // if the keyword ObsHist is in the name, normalize it
         TString histName = h->GetTitle();
-        if(!histName.Contains("counting") && !histName.Contains("CutFlow"))
+        if(!histName.Contains("counting"))
         {
             h->Scale(normWeight);
+            //h->Scale(data[sName]["crossSection"]* hist->Integral() / h->Integral());
         }
         h->Write();
     } 

@@ -1,15 +1,15 @@
 {
      "p8_ee_Zqq_ecm240": {
-        "numberOfEvents": 93635880,
-        "sumOfWeights": 93635880
+        "numberOfEvents": 95624808,
+        "sumOfWeights": 95624808
     },
-    "p8_ee_WW_ecm240": {
-        "numberOfEvents": 337911620,
-        "sumOfWeights": 337911620
+    "p8_ee_WW_ecm240": { 
+        "numberOfEvents": 339760994,
+        "sumOfWeights": 339760994
     },
-    "p8_ee_ZZ_ecm240": {
-        "numberOfEvents": 50491876,
-        "sumOfWeights": 50491876
+    "p8_ee_ZZ_ecm240": { 
+        "numberOfEvents": 50491868,
+        "sumOfWeights": 50491868
     },
     "wzp6_ee_nunuH_ecm240": {
         "numberOfEvents": 3301731,
