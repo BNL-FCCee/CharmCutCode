@@ -35,7 +35,7 @@ void AnalysisBase::writeHistogram()
     
     // get all the hist
     auto histList = m_histContainer->getHistList();
-
+    my_tree->Write();
     outFile->mkdir("Nominal");
     outFile->cd("Nominal");
     
@@ -43,7 +43,7 @@ void AnalysisBase::writeHistogram()
     {
         // if the keyword ObsHist is in the name, normalize it
         TString histName = h->GetTitle();
-        if(!histName.Contains("counting"))
+        if(!histName.Contains("counting") || !histName.Contains("CutFlow"))
         {
             h->Scale(normWeight);
             //h->Scale(data[sName]["crossSection"]* hist->Integral() / h->Integral());

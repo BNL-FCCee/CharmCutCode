@@ -198,6 +198,19 @@ void AnalysisZHAllHad::run()
 
     // Connect branches to trees
     auto tree = treeCont->getTree();
+
+    //Define ttree for analysis
+    TTree* t = new TTree("analysis","my analysis tree");
+    my_tree = (TTree*) t;
+    //define the output branches 
+    my_tree->Branch("b_mH_jj",&mH_jj);
+    my_tree->Branch("b_mZ_jj",&mZ_jj);
+    my_tree->Branch("b_Hscore",&Hscore);
+    my_tree->Branch("b_Zscore",&Zscore);
+    my_tree->Branch("b_Hflav",&Hflav);
+    my_tree->Branch("b_Zflav",&Zflav);
+    my_tree->Branch("b_ChiH",&ChiH);
+    my_tree->Branch("b_ChiZ",&ChiZ);
   
     // assuming you have vectors as input (should also save option to run w/o vectors)
   
@@ -283,6 +296,8 @@ void AnalysisZHAllHad::run()
     int SlikeEvents = 0;
     int GlikeEvents = 0;
     int QlikeEvents = 0;
+
+    int NPassed = -1 ;
 //     int TAUlikeEvents = 0;
 
     std::array<int, 3> BlikeEvents_cat {0, 0, 0};
@@ -298,6 +313,10 @@ void AnalysisZHAllHad::run()
     for(int i = 0; i < nEntries; i++)
     // for(int i = 0; i < 10; i++)
     {
+        // if (i==13890){
+        //      m_debug=true;}
+        // else {
+        //     m_debug=false;}
         treeCont->getEntry(i);
         // Just to store how many events were run over
         countingHist->Fill(1);
@@ -610,12 +629,27 @@ void AnalysisZHAllHad::run()
         if (flag_corr()>=10.) continue;
         NafterFlagSel++;
         // if (m_debug) std::cout << "Passed flag_corr cut "  <<std::endl; || flav_H == 6 
-        
+        NPassed ++;
+        mH_jj= mjj_H;
+        mZ_jj = mjj_Z;
+        Hscore = flavSc_H;
+        Zscore = flavSc_Z;
+        Hflav = flav_H;
+        Zflav = flav_Z;
+        ChiH = pow((mjj_H-H_mass), 2);
+        ChiZ = pow((mjj_Z-Z_mass), 2);
+        my_tree->Fill();
+        //if (flav_H == 6 || flav_H == 3 || flav_H == 4  ) continue;
         if (flav_Z == 5 || flav_Z == 6  || flav_H == 6 || flav_H == 3 || flav_H == 4  ) continue;
         Incl_obsHist->Fill(mjj_H,mjj_Z);
         if (flav_H == 0){
             if (m_debug) std::cout << "Hbb"  <<std::endl;
         //Fill in Hbb cats
+            // if (NPassed == 8735){
+            //     std::cout << "flavSc_H: "<< flavSc_H << " mjj_H: "<<mjj_H <<std::endl;
+            //     std::cout << "flav_Z: "<< flav_Z<< " mjj_Z: " <<mjj_Z <<std::endl;
+            //     std::cout << "i: "<< i<<std::endl;
+            // }
             if (flav_Z == 0){
                 if (flavSc_H > 1.8){
                     Hi_bbZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
@@ -626,6 +660,7 @@ void AnalysisZHAllHad::run()
                     
                 } 
                 else if (flavSc_H <= 1.1){
+                    // std::cout << "i: " << NPassed << ", flavSc_H: " <<flavSc_H<<std::endl;
                     Low_bbZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
 
                 }
@@ -829,7 +864,7 @@ void AnalysisZHAllHad::run()
     cutFlowHist->SetBinContent(10,NafterFlagSel);
     cutFlowHist->SetBinContent(11,Nfit);
 
-    if (m_debug) std::cout<<"NEventsInt: "<<NEventsInt<<", pre sel: "<< NdCutd34 << " all sel: "<<NafterFlagSel <<"Nfit"<<Nfit<<std::endl;
+    std::cout<<"NEventsInt: "<<NEventsInt<<", pre sel: "<< NdCutd34 << " all sel: "<<NafterFlagSel <<" Nfit: "<<Nfit<<std::endl;
 
 
     for(int i = 0; i < 3; i++){

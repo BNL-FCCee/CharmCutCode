@@ -11,10 +11,11 @@
 // local include
 #include "PostCutCode/MetadataContainer.h"
 #include "PostCutCode/HistContainer.h"
-
+#include <TTree.h>
 class AnalysisBase 
 {
     public:
+        TTree* my_tree;
         AnalysisBase() {};
         virtual ~AnalysisBase() {};
 
@@ -36,7 +37,6 @@ class AnalysisBase
 
     protected:
         std::shared_ptr<HistContainer> m_histContainer;
-
         void writeHistogram();
 
 
