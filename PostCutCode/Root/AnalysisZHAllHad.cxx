@@ -211,6 +211,7 @@ void AnalysisZHAllHad::run()
     my_tree->Branch("b_Zflav",&Zflav);
     my_tree->Branch("b_ChiH",&ChiH);
     my_tree->Branch("b_ChiZ",&ChiZ);
+    my_tree->Branch("b_flag",&flag);
   
     // assuming you have vectors as input (should also save option to run w/o vectors)
   
@@ -626,10 +627,6 @@ void AnalysisZHAllHad::run()
         //The flag e correction falg...
         if (m_debug) std::cout << "Passed pairing and kine selection "  <<std::endl;
         NafterSel++;
-        if (flag_corr()>=10.) continue;
-        NafterFlagSel++;
-        // if (m_debug) std::cout << "Passed flag_corr cut "  <<std::endl; || flav_H == 6 
-        NPassed ++;
         mH_jj= mjj_H;
         mZ_jj = mjj_Z;
         Hscore = flavSc_H;
@@ -638,7 +635,12 @@ void AnalysisZHAllHad::run()
         Zflav = flav_Z;
         ChiH = pow((mjj_H-H_mass), 2);
         ChiZ = pow((mjj_Z-Z_mass), 2);
+        flag = flag_corr();
         my_tree->Fill();
+        if (flag_corr()>=10.) continue;
+        NafterFlagSel++;
+        // if (m_debug) std::cout << "Passed flag_corr cut "  <<std::endl; || flav_H == 6 
+        NPassed ++;
         //if (flav_H == 6 || flav_H == 3 || flav_H == 4  ) continue;
         if (flav_Z == 5 || flav_Z == 6  || flav_H == 6 || flav_H == 3 || flav_H == 4  ) continue;
         Incl_obsHist->Fill(mjj_H,mjj_Z);

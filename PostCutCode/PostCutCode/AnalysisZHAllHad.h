@@ -37,6 +37,7 @@ class AnalysisZHAllHad: public AnalysisBase
       int Zflav;
       double ChiH;
       double ChiZ;
+      double flag;
 
 
 };
