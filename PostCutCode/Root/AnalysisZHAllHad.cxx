@@ -30,7 +30,7 @@ int AnalysisZHAllHad::getMaxScoreFlav(const std::vector<int>& vec, const std::ma
     int j1 = vec[0];
     int j2 = vec[1];
     if (m_debug) std::cout<<"getMaxScoreFlav!"<<std::endl;
-    for(int i = 0; i < 7; i++){
+    for(int i = 0; i < 5; i++){
         if (m_debug){
             std::cout<<"max_score: "<< max_score<<", new_score: "<< mapFlav.at(j1)[i] + mapFlav.at(j2)[i]<<std::endl;
         }
@@ -63,9 +63,12 @@ void AnalysisZHAllHad::run()
     float Z_mass = 91.1876;
     float H_mass = 125.11;
     float W_mass = 80.377;
+    // std::vector<std::string> flavourJets {"b", "c", "s", "g", "q"};
+    // std::vector<std::string> flavours{"B","C","S","U","D","G","TAU"};
+    // std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G","TAU"};
     std::vector<std::string> flavourJets {"b", "c", "s", "g", "q"};
-    std::vector<std::string> flavours{"B","C","S","U","D","G","TAU"};
-    std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G","TAU"};
+    std::vector<std::string> flavours{"B","C","S","Q","G"};
+    std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G"};
     std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","Incl"};
     std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "d123Cut", "d34Cut","Pairing","jjMassCut","ZHmassCut","YieldsFit" };
     std::vector<std::string> fitCategorySimple  {"LowHbb","LowHcc","LowHss","LowHgg","MidHbb","MidHcc","MidHss","MidHgg","HiHbb","HiHcc", "HiHss","HiHgg"};
@@ -84,40 +87,6 @@ void AnalysisZHAllHad::run()
     auto countingHist = m_histContainer->getCountingHist();
     auto cutFlowHist =  m_histContainer->get1DHist("CutFlow", cutFlowMap.size(), 0, 13,cutFlowMap);
 
-    // auto Bscore =  m_histContainer->get1DHist("Higgs_Bscore", 100, 0, 2);
-    // auto Cscore =  m_histContainer->get1DHist("Higgs_Cscore", 100, 0, 2);
-    // auto Sscore =  m_histContainer->get1DHist("Higgs_Sscore", 100, 0, 2);
-    // auto Qscore =  m_histContainer->get1DHist("Higgs_Qscore", 100, 0, 2);
-    // auto Gscore =  m_histContainer->get1DHist("Higgs_Gscore", 100, 0, 2);
-    
-    // auto Z_Bscore =  m_histContainer->get1DHist("Z_Bscore", 100, 0, 2);
-    // auto Z_Cscore =  m_histContainer->get1DHist("Z_Cscore", 100, 0, 2);
-    // auto Z_Sscore =  m_histContainer->get1DHist("Z_Sscore", 100, 0, 2);
-    // auto Z_Qscore =  m_histContainer->get1DHist("Z_Qscore", 100, 0, 2);
-    // auto Z_Gscore =  m_histContainer->get1DHist("Z_Gscore", 100, 0, 2);
-//     auto TAUscore =  m_histContainer->get1DHist("TAUscore", 100, 0, 2);
-        // auto Uscore =  m_histContainer->get1DHist("Uscore", 100, 0, 2);
-
-
-    // auto mZ =  m_histContainer->get1DHist("mZ",250, 0., 250.);
-    // auto mH =  m_histContainer->get1DHist("mH", 250, 0., 250.);
-    // auto mH_corr = m_histContainer->get1DHist("mH_corr", 250, 0., 250.);
-
-    // auto ZZ_cut =  m_histContainer->get1DHist("ZZ_cut",250, 0., 250.);
-    // auto WW_cut =  m_histContainer->get1DHist("WW_cut", 250, 0., 250.);
-
-    // auto h_vis_M =  m_histContainer->get1DHist("vis_M",250, 0., 250.);
-    // auto h_vis_E =  m_histContainer->get1DHist("vis_e", 250, 0., 250.);
-    // auto h_vis_theta =  m_histContainer->get1DHist("vis_theta", 80, 0., 4.);
-
-    // auto h_muons_p =  m_histContainer->get1DHist("muons_p", 125, 0., 250.);
-    // auto h_electrons_p =  m_histContainer->get1DHist("electrons_p", 125, 0., 250.);
-    // auto h_event_nmu =  m_histContainer->get1DHist("event_nmu", 10, 0., 10.);
-    // auto h_event_nel =  m_histContainer->get1DHist("event_nel", 10, 0., 10.);
-
-    // auto h_d_12 =  m_histContainer->get1DHist("d_12", 1000,14000, 60000.);
-    // auto h_d_23 =  m_histContainer->get1DHist("d_23", 1000,200, 20000.);
-    // auto h_d_34 =  m_histContainer->get1DHist("d_34", 1000,50, 6500.);
 
         // Extra hist for easy fill up
     auto Incl_obsHist = obsHist["Incl"];
@@ -213,48 +182,71 @@ void AnalysisZHAllHad::run()
     my_tree->Branch("b_ChiZ",&ChiZ);
   
     // assuming you have vectors as input (should also save option to run w/o vectors)
+  //New ntuple setup
+   // flavor scores
+    varMember<ROOT::VecOps::RVec<float>> recojet_isB {tree, "recojet_isB_base1"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isC {tree, "recojet_isC_base1"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isS {tree, "recojet_isS_base1"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isG {tree, "recojet_isQ_base1"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isQ {tree, "recojet_isG_base1"};
+    //New Tagger
+    // varMember<ROOT::VecOps::RVec<float>> recojet_isB {tree, "recojet_isB"};
+    // varMember<ROOT::VecOps::RVec<float>> recojet_isC {tree, "recojet_isC"};
+    // varMember<ROOT::VecOps::RVec<float>> recojet_isS {tree, "recojet_isS"};
+    // varMember<ROOT::VecOps::RVec<float>> recojet_isU {tree, "recojet_isU"};
+    // varMember<ROOT::VecOps::RVec<float>> recojet_isD {tree, "recojet_isD"};
+    // varMember<ROOT::VecOps::RVec<float>> recojet_isG {tree, "recojet_isG"};
+    // varMember<ROOT::VecOps::RVec<float>> recojet_isTAU {tree, "recojet_isTAU"};
+    //add truth jet flav
+    varMember<ROOT::VecOps::RVec<int>> truth_flav {tree, "jets_truth"};
+    
   
-    // flavor scores
-       // Connect branches to trees
-    varMemberVector<double> jet_px{tree, { "jet0_px_corr","jet1_px_corr", "jet2_px_corr", "jet3_px_corr"}, -999};
-    varMemberVector<double> jet_py{tree, { "jet0_py_corr","jet1_py_corr", "jet2_py_corr", "jet3_py_corr"}, -999};
-    varMemberVector<double> jet_pz{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
-    varMemberVector<double> jet_e{tree, { "jet0_e_corr","jet1_e_corr", "jet2_e_corr", "jet3_e_corr"}, -999};
+    // corrected momentum
+    varMember<ROOT::VecOps::RVec<float>> jet_px {tree, "jet_px_corr"};
+    varMember<ROOT::VecOps::RVec<float>> jet_py {tree, "jet_py_corr"}; 
+    varMember<ROOT::VecOps::RVec<float>> jet_pz {tree, "jet_pz_corr"};
+    varMember<ROOT::VecOps::RVec<float>> jet_e {tree, "jet_e_corr"}; 
+    // // flavor scores
+    //    // Connect branches to trees, old ntuples setup
+    // varMemberVector<double> jet_px{tree, { "jet0_px_corr","jet1_px_corr", "jet2_px_corr", "jet3_px_corr"}, -999};
+    // varMemberVector<double> jet_py{tree, { "jet0_py_corr","jet1_py_corr", "jet2_py_corr", "jet3_py_corr"}, -999};
+    // varMemberVector<double> jet_pz{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
+    // varMemberVector<double> jet_e{tree, { "jet0_e_corr","jet1_e_corr", "jet2_e_corr", "jet3_e_corr"}, -999};
 
-    varMember<float> jet0_scoreB {tree, "jet0_scoreB"};
-    varMember<float> jet1_scoreB {tree, "jet1_scoreB"};
-    varMember<float> jet2_scoreB {tree, "jet2_scoreB"};
-    varMember<float> jet3_scoreB {tree, "jet3_scoreB"};
+    // varMember<float> jet0_scoreB {tree, "jet0_scoreB"};
+    // varMember<float> jet1_scoreB {tree, "jet1_scoreB"};
+    // varMember<float> jet2_scoreB {tree, "jet2_scoreB"};
+    // varMember<float> jet3_scoreB {tree, "jet3_scoreB"};
 
-    varMember<float> jet0_scoreC {tree, "jet0_scoreC"};
-    varMember<float> jet1_scoreC {tree, "jet1_scoreC"};
-    varMember<float> jet2_scoreC {tree, "jet2_scoreC"};
-    varMember<float> jet3_scoreC {tree, "jet3_scoreC"};
+    // varMember<float> jet0_scoreC {tree, "jet0_scoreC"};
+    // varMember<float> jet1_scoreC {tree, "jet1_scoreC"};
+    // varMember<float> jet2_scoreC {tree, "jet2_scoreC"};
+    // varMember<float> jet3_scoreC {tree, "jet3_scoreC"};
 
-    varMember<float> jet0_scoreG {tree, "jet0_scoreG"};
-    varMember<float> jet1_scoreG {tree, "jet1_scoreG"};
-    varMember<float> jet2_scoreG {tree, "jet2_scoreG"};
-    varMember<float> jet3_scoreG {tree, "jet3_scoreG"};
+    // varMember<float> jet0_scoreG {tree, "jet0_scoreG"};
+    // varMember<float> jet1_scoreG {tree, "jet1_scoreG"};
+    // varMember<float> jet2_scoreG {tree, "jet2_scoreG"};
+    // varMember<float> jet3_scoreG {tree, "jet3_scoreG"};
 
-    varMember<float> jet0_scoreU {tree, "jet0_scoreU"};
-    varMember<float> jet1_scoreU {tree, "jet1_scoreU"};
-    varMember<float> jet2_scoreU {tree, "jet2_scoreU"};
-    varMember<float> jet3_scoreU {tree, "jet3_scoreU"};
+    // varMember<float> jet0_scoreU {tree, "jet0_scoreU"};
+    // varMember<float> jet1_scoreU {tree, "jet1_scoreU"};
+    // varMember<float> jet2_scoreU {tree, "jet2_scoreU"};
+    // varMember<float> jet3_scoreU {tree, "jet3_scoreU"};
 
-    varMember<float> jet0_scoreTAU {tree, "jet0_scoreTAU"};
-    varMember<float> jet1_scoreTAU {tree, "jet1_scoreTAU"};
-    varMember<float> jet2_scoreTAU {tree, "jet2_scoreTAU"};
-    varMember<float> jet3_scoreTAU {tree, "jet3_scoreTAU"};
+    // varMember<float> jet0_scoreTAU {tree, "jet0_scoreTAU"};
+    // varMember<float> jet1_scoreTAU {tree, "jet1_scoreTAU"};
+    // varMember<float> jet2_scoreTAU {tree, "jet2_scoreTAU"};
+    // varMember<float> jet3_scoreTAU {tree, "jet3_scoreTAU"};
 
-    varMember<float> jet0_scoreD {tree, "jet0_scoreD"};
-    varMember<float> jet1_scoreD {tree, "jet1_scoreD"};
-    varMember<float> jet2_scoreD {tree, "jet2_scoreD"};
-    varMember<float> jet3_scoreD{tree, "jet3_scoreD"};
+    // varMember<float> jet0_scoreD {tree, "jet0_scoreD"};
+    // varMember<float> jet1_scoreD {tree, "jet1_scoreD"};
+    // varMember<float> jet2_scoreD {tree, "jet2_scoreD"};
+    // varMember<float> jet3_scoreD{tree, "jet3_scoreD"};
 
-    varMember<float> jet0_scoreS {tree, "jet0_scoreS"};
-    varMember<float> jet1_scoreS {tree, "jet1_scoreS"};
-    varMember<float> jet2_scoreS {tree, "jet2_scoreS"};
-    varMember<float> jet3_scoreS {tree, "jet3_scoreS"};
+    // varMember<float> jet0_scoreS {tree, "jet0_scoreS"};
+    // varMember<float> jet1_scoreS {tree, "jet1_scoreS"};
+    // varMember<float> jet2_scoreS {tree, "jet2_scoreS"};
+    // varMember<float> jet3_scoreS {tree, "jet3_scoreS"};
     
 
     varMember<int> event_njet {tree, "event_njet"};
@@ -268,7 +260,7 @@ void AnalysisZHAllHad::run()
     varMember<float> d_12 {tree, "d_12"};
     varMember<float> d_23 {tree, "d_23"};
     varMember<float> d_34 {tree, "d_34"};
-    varMember<double> flag_corr {tree, "flag_corr"};
+    // varMember<double> flag_corr {tree, "flag_corr"};
 
     // varMember<double> M_j0_j1_corr {tree, "M_j0_j1_corr"};
     // varMember<double> M_j0_j2_corr {tree, "M_j0_j2_corr"};
@@ -356,7 +348,8 @@ void AnalysisZHAllHad::run()
         for (size_t lv = 0; lv < 4; ++lv) {
             // TLorentzVector LVjet(jet_px.getVal(lv), jet_py.getVal(lv), jet_pz.getVal(lv), jet_e.getVal(lv));
             TLorentzVector LVjet;
-            LVjet.SetPxPyPzE(jet_px.getVal(lv), jet_py.getVal(lv), jet_pz.getVal(lv), jet_e.getVal(lv));
+            // LVjet.SetPxPyPzE(jet_px.getVal(lv), jet_py.getVal(lv), jet_pz.getVal(lv), jet_e.getVal(lv));
+            LVjet.SetPxPyPzE(jet_px.at(lv), jet_py.at(lv), jet_pz.at(lv), jet_e.at(lv));
             LVjets.push_back(LVjet);
         }
        // Flav scores of each jet
@@ -367,10 +360,19 @@ void AnalysisZHAllHad::run()
 
         // - look for max score of jet 
 
-        std::vector<float> j0_flav {jet0_scoreB(), jet0_scoreC(), jet0_scoreS(), jet0_scoreU(),jet0_scoreD(), jet0_scoreG(), jet0_scoreTAU()};
-        std::vector<float> j1_flav {jet1_scoreB(), jet1_scoreC(), jet1_scoreS(), jet1_scoreU(),jet1_scoreD(), jet1_scoreG(), jet1_scoreTAU()};
-        std::vector<float> j2_flav {jet2_scoreB(), jet2_scoreC(), jet2_scoreS(), jet2_scoreU(),jet2_scoreD(), jet2_scoreG(), jet2_scoreTAU()};
-        std::vector<float> j3_flav {jet3_scoreB(), jet3_scoreC(), jet3_scoreS(), jet3_scoreU(),jet3_scoreD(), jet3_scoreG(), jet3_scoreTAU()};
+        // std::vector<float> j0_flav {jet0_scoreB(), jet0_scoreC(), jet0_scoreS(), jet0_scoreU(),jet0_scoreD(), jet0_scoreG(), jet0_scoreTAU()};
+        // std::vector<float> j1_flav {jet1_scoreB(), jet1_scoreC(), jet1_scoreS(), jet1_scoreU(),jet1_scoreD(), jet1_scoreG(), jet1_scoreTAU()};
+        // std::vector<float> j2_flav {jet2_scoreB(), jet2_scoreC(), jet2_scoreS(), jet2_scoreU(),jet2_scoreD(), jet2_scoreG(), jet2_scoreTAU()};
+        // std::vector<float> j3_flav {jet3_scoreB(), jet3_scoreC(), jet3_scoreS(), jet3_scoreU(),jet3_scoreD(), jet3_scoreG(), jet3_scoreTAU()};
+        // std::vector<float> j0_flav {recojet_isB.at(0), recojet_isC.at(0), recojet_isS.at(0), recojet_isD.at(0), recojet_isU.at(0), recojet_isG.at(0), recojet_isTAU.at(0)};
+        // std::vector<float> j1_flav {recojet_isB.at(1), recojet_isC.at(1), recojet_isS.at(1), recojet_isD.at(1), recojet_isU.at(1), recojet_isG.at(1), recojet_isTAU.at(1)};
+        // std::vector<float> j2_flav {recojet_isB.at(2), recojet_isC.at(2), recojet_isS.at(2), recojet_isD.at(2), recojet_isU.at(2), recojet_isG.at(2), recojet_isTAU.at(2)};
+        // std::vector<float> j3_flav {recojet_isB.at(3), recojet_isC.at(3), recojet_isS.at(3), recojet_isD.at(3), recojet_isU.at(3), recojet_isG.at(3), recojet_isTAU.at(3)};
+
+        std::vector<float> j0_flav {recojet_isB.at(0), recojet_isC.at(0), recojet_isS.at(0), recojet_isQ.at(0),recojet_isG.at(0)};
+        std::vector<float> j1_flav {recojet_isB.at(1), recojet_isC.at(1), recojet_isS.at(1), recojet_isQ.at(1),recojet_isG.at(1)};
+        std::vector<float> j2_flav {recojet_isB.at(2), recojet_isC.at(2), recojet_isS.at(2), recojet_isQ.at(2),recojet_isG.at(2)};
+        std::vector<float> j3_flav {recojet_isB.at(3), recojet_isC.at(3), recojet_isS.at(3), recojet_isQ.at(3),recojet_isG.at(3)};
 
         std::map<int,std::vector<float>> jetFlavScores;
         jetFlavScores[0] = j0_flav;
@@ -626,7 +628,15 @@ void AnalysisZHAllHad::run()
         //The flag e correction falg...
         if (m_debug) std::cout << "Passed pairing and kine selection "  <<std::endl;
         NafterSel++;
-        if (flag_corr()>=10.) continue;
+        float flag_ecorr = 0.0;
+        //Add flag 
+        for (size_t je = 0; je < 4; ++je) { 
+            if (jet_e.at(je) > 240.0 || jet_e.at(je) < 0.0) {
+                flag_ecorr += 1000.0;}
+        }
+        if (flag_ecorr>=1000.) continue;
+
+        // if (flag_corr()>=10.) continue;
         NafterFlagSel++;
         // if (m_debug) std::cout << "Passed flag_corr cut "  <<std::endl; || flav_H == 6 
         NPassed ++;
@@ -639,12 +649,13 @@ void AnalysisZHAllHad::run()
         ChiH = pow((mjj_H-H_mass), 2);
         ChiZ = pow((mjj_Z-Z_mass), 2);
         my_tree->Fill();
-        //if (flav_H == 6 || flav_H == 3 || flav_H == 4  ) continue;
-        if (flav_Z == 5 || flav_Z == 6  || flav_H == 6 || flav_H == 3 || flav_H == 4  ) continue;
+        if (flav_H == 3 || flav_Z == 4) continue;
+        //For new tagger, with 7 flavoure 
+        // if (flav_Z == 5 || flav_Z == 6  || flav_H == 6 || flav_H == 3 || flav_H == 4  ) continue;
         Incl_obsHist->Fill(mjj_H,mjj_Z);
+        //Fill in Hbb cats
         if (flav_H == 0){
             if (m_debug) std::cout << "Hbb"  <<std::endl;
-        //Fill in Hbb cats
             // if (NPassed == 8735){
             //     std::cout << "flavSc_H: "<< flavSc_H << " mjj_H: "<<mjj_H <<std::endl;
             //     std::cout << "flav_Z: "<< flav_Z<< " mjj_Z: " <<mjj_Z <<std::endl;
@@ -665,8 +676,8 @@ void AnalysisZHAllHad::run()
 
                 }
 
-            }
-            else if (flav_Z == 1){
+            }//Zbb 
+            else if (flav_Z == 1){ 
                 if (flavSc_H > 1.8){
                     Hi_ccZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
 
@@ -679,8 +690,7 @@ void AnalysisZHAllHad::run()
                     Low_ccZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
                     
                 }
-
-            }
+            }//Zcc
             else if (flav_Z == 2){
                 if (flavSc_H > 1.8){
                     Hi_ssZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
@@ -694,9 +704,8 @@ void AnalysisZHAllHad::run()
                     Low_ssZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
                     
                 }
-
-            }
-            else if (flav_Z == 3 || flav_Z == 4){
+            }//Zss
+            else if (flav_Z == 3){
                 if (flavSc_H > 1.8){
                     Hi_qqZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
 
@@ -709,11 +718,11 @@ void AnalysisZHAllHad::run()
                     Low_qqZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
                     
                 }
-            }
+            }//Zqq
         }
         else if ( flav_H == 1){
         //Fill in Hcc cats
-        if (m_debug) std::cout << "Hcc"  <<std::endl;
+            if (m_debug) std::cout << "Hcc"  <<std::endl;
             if (flav_Z == 0){
                 if (flavSc_H > 1.8){
                     Hi_bbZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
@@ -727,8 +736,7 @@ void AnalysisZHAllHad::run()
                     Low_bbZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
 
                 }
-
-            }
+            }//Zbb
             else if (flav_Z == 1){
                 if (flavSc_H > 1.8){
                     Hi_ccZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
@@ -741,8 +749,7 @@ void AnalysisZHAllHad::run()
                     
                     
                 }
-
-            }
+            }//Zcc
             else if (flav_Z == 2){
                 if (flavSc_H > 1.8){
                     Hi_ssZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
@@ -753,9 +760,8 @@ void AnalysisZHAllHad::run()
                 else if (flavSc_H <= 1.1){
                     Low_ssZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);   
                 }
-
-            }
-            else if (flav_Z == 3 || flav_Z == 4){
+            }//Zss
+            else if (flav_Z == 3){
                 if (flavSc_H > 1.8){
                     Hi_qqZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);
                 } 
@@ -765,12 +771,11 @@ void AnalysisZHAllHad::run()
                 else if (flavSc_H <= 1.1){
                     Low_qqZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);           
                 }
-            }
-
+            }//Zqq
         }
         else if ( flav_H == 2){
             if (m_debug) std::cout << "Hss"  <<std::endl;
-        //Fill in Hss cats
+        //Fill in Hss cats, maybe update to all Z?
             if (flavSc_H > 1.4){
                 HiS_obsHist->Fill(mjj_H,mjj_Z); 
                 } 
@@ -781,7 +786,7 @@ void AnalysisZHAllHad::run()
                 LowS_obsHist->Fill(mjj_H,mjj_Z);    
                 }
         }
-        else if ( flav_H == 5){
+        else if ( flav_H == 4){
             if (m_debug) std::cout << "Hgg"  <<std::endl;
         //Fill in Hss cats
             if (flav_Z == 0){
@@ -794,7 +799,7 @@ void AnalysisZHAllHad::run()
                 else if (flavSc_H <= 1.1){
                     Low_bbZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
                 }
-            }
+            }//Zbb
             else if (flav_Z == 1){
                 if (flavSc_H > 1.8){
                     Hi_ccZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
@@ -805,7 +810,7 @@ void AnalysisZHAllHad::run()
                 else if (flavSc_H <= 1.1){
                     Low_ccZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
                 }
-            }
+            }//Zcc
             else if (flav_Z == 2){
                 if (flavSc_H > 1.8){
                     Hi_ssZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
@@ -816,8 +821,8 @@ void AnalysisZHAllHad::run()
                 else if (flavSc_H <= 1.1){
                     Low_ssZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
                 }
-            }
-            else if (flav_Z == 3 || flav_Z == 4){
+            }//Zss
+            else if (flav_Z == 3){
                 if (flavSc_H > 1.8){
                     Hi_qqZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
                 } 
@@ -827,10 +832,12 @@ void AnalysisZHAllHad::run()
                 else if (flavSc_H <= 1.1){
                     Low_qqZ_Hgg_obsHist->Fill(mjj_H,mjj_Z); 
                 }
-            }
+            }//Zqq
         }
         else{
             std::cout << "Event should be but is not included in the fit!"  <<std::endl;
+            std::cout << "flav_H: "<< flav_H <<std::endl;
+            std::cout << "flav_Z: "<< flav_Z <<std::endl;
             break;
         }
         Nfit++;

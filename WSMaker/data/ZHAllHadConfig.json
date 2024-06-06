@@ -4,7 +4,7 @@
     "processHeldConstant":["HZa"],
     "xRebinFactor":1,
     "yRebinFactor":5,
-    "lumi": 7200000.0,
+    "lumi": 5000000.0,
     "minYieldBinCut": 0.000000001,
     "relErrorThreshold":0.1,
     "categoryToAddStatError": []
