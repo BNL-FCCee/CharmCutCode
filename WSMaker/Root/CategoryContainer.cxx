@@ -76,7 +76,7 @@ void CategoryContainer::cleanHist()
         if(m_yieldList["Nominal"][proc] < m_minYieldBinCut)
         { 
             processToRemove.insert(proc);
-            cout<<"\033[1;31mStupid Removal:\033[0m Removing process due to zero yeild: "<<m_catName<<" "<<proc<<endl;
+            cout<<"\033[1;31mStupid Removal:\033[0m Removing process due to zero yeild: "<<m_catName<<" "<<proc<<" "<<m_yieldList["Nominal"][proc]<<endl;
         }
         // else
         // {
@@ -137,7 +137,7 @@ void CategoryContainer::createFlatNonEmptyHist()
         if(fabs(m_sumHist->GetBinContent(i+1)) > m_minYieldBinCut) nNonZeroBins++;
     }
 
-    std::cout<<m_catName<<" found bins passing the minimum yield Cut: "<<nNonZeroBins<<std::endl;
+    std::cout<<m_catName<<" found bins passing the minimum yield Cut: "<<nNonZeroBins<<" out of "<<m_sumHist->GetNcells()<<std::endl;
 
     // Create flat versions of the hist
     // First get the number of nonEmpty bins
