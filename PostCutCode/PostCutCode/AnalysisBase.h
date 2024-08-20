@@ -35,6 +35,8 @@ class AnalysisBase
             writeHistogram();
         }
 
+        double getNormWeight();
+
     protected:
         std::shared_ptr<HistContainer> m_histContainer;
         void writeHistogram();

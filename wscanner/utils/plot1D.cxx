@@ -358,9 +358,10 @@ int main(int argc, char** argv)
             TLatex* fitXInfo =  0;
 
             int precisionToDisplay = 3;
-            if(fabs(maxXF - minXF) < 0.005) precisionToDisplay = 5;
-            if(fabs(maxXF - minXF) < 0.0005) precisionToDisplay = 6;
-            if(fabs(maxXF - minXF) < 0.00005) precisionToDisplay = 7;
+            if(fabs(maxXF - minXF) < 0.1) precisionToDisplay = 4;
+            if(fabs(maxXF - minXF) < 0.01) precisionToDisplay = 5;
+            if(fabs(maxXF - minXF) < 0.001) precisionToDisplay = 6;
+            if(fabs(maxXF - minXF) < 0.0001) precisionToDisplay = 7;
             if(opts["doUpperLim"].Contains("true"))
             {
                 outMinValXStr << std::setprecision(precisionToDisplay) << fixed <<" < "<< outMinValXList[graph.first] + outRightErrList[graph.first];
@@ -552,17 +553,16 @@ void setPrettyStuff()
     vector<TColor*> TColors;
     new TColor(ci, 62/255.,    153/255.,    247/255.); //54
     ci++;
-
-    new TColor(ci, 0,    0.4470,    0.7410); //56
-    ci++;
     
     new TColor(ci, 254/255., 139/255., 113/255.); //55
     ci++;
 
 
 
-    new TColor(ci, 0.8500,    0.3250,    0.0980); //57
-    ci++;          
+    // new TColor(ci, 0.8500,    0.3250,    0.0980); //57
+    // ci++;          
+    // new TColor(ci, 0,    0.4470,    0.7410); //56
+    // ci++;
     new TColor(ci, 0.4940,    0.1840,    0.5560); //58
     ci++;
     new TColor(ci, 0.9290,    0.6940,    0.1250); //59

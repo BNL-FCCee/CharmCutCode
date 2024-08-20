@@ -234,6 +234,7 @@ void AnalysisZHAllHad::run()
     my_tree->Branch("b_ChiH",&ChiH);
     my_tree->Branch("b_ChiZ",&ChiZ);
     my_tree->Branch("b_flag",&flag);
+    my_tree->Branch("weight", &weight);
   
     // assuming you have vectors as input (should also save option to run w/o vectors)
   
@@ -321,6 +322,7 @@ void AnalysisZHAllHad::run()
     int QlikeEvents = 0;
 
     int NPassed = -1 ;
+    double normWeight = getNormWeight();
 //     int TAUlikeEvents = 0;
 
     std::array<int, 3> BlikeEvents_cat {0, 0, 0};
@@ -649,7 +651,7 @@ void AnalysisZHAllHad::run()
         //The flag e correction falg...
         if (m_debug) std::cout << "Passed pairing and kine selection "  <<std::endl;
         NafterSel++;
-        mH_jj= mjj_H;
+        mH_jj = mjj_H;
         mZ_jj = mjj_Z;
         Hscore = flavSc_H;
         Zscore = flavSc_Z;
@@ -658,6 +660,7 @@ void AnalysisZHAllHad::run()
         ChiH = pow((mjj_H-H_mass), 2);
         ChiZ = pow((mjj_Z-Z_mass), 2);
         flag = flag_corr();
+        weight = normWeight;
         my_tree->Fill();
         if (flag_corr()>=10.) continue;
         NafterFlagSel++;

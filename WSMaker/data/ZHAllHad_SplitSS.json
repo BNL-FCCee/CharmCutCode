@@ -1,0 +1,11 @@
+{
+    "category":["LowbbHss","LowccHss","LowssHss","LowqqHss","MidbbHss","MidccHss","MidssHss","MidqqHss","HibbHss", "HiccHss", "HissHss", "HiqqHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb", "HiccHbb", "HissHbb", "HiqqHbb", "HibbHcc", "HiccHcc", "HissHcc", "HiqqHcc", "HibbHgg", "HiccHgg", "HissHgg", "HiqqHgg"],
+    "process":["WW","ZZ", "Zqq","HZa","HZZ","Hbb","Hcc","Hgg","Hss","HWW", "Htautau","ecm240"],
+    "processHeldConstant":["HZa", "Htautau","ecm240"],
+    "xRebinFactor":2,
+    "yRebinFactor":10,
+    "lumi": 7200000.0,
+    "minYieldBinCut": 0.000000001,
+    "relErrorThreshold":0.1,
+    "categoryToAddStatError": []
+}

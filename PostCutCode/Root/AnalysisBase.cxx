@@ -10,7 +10,7 @@
 using namespace std;
 
 
-void AnalysisBase::writeHistogram()
+double AnalysisBase::getNormWeight()
 {
     // using json = nlohmann::json;
     std::ifstream f(MDC::GetInstance()->getSOWJSONFile());
@@ -22,6 +22,7 @@ void AnalysisBase::writeHistogram()
 
     auto sName = MDC::GetInstance()->getSampleName();
 
+
     double normWeight = (double)data[sName]["crossSection"]/(double)data[sName]["sumOfWeights"];
     
     // If the information is in the custom file, scale it
@@ -29,6 +30,13 @@ void AnalysisBase::writeHistogram()
     {
         normWeight = (double)data[sName]["crossSection"]/(double)customData[sName]["sumOfWeights"];
     }
+    
+    return normWeight;
+}
+
+void AnalysisBase::writeHistogram()
+{
+    double normWeight = getNormWeight();
     
     // Close the outputFile
     auto outFile = TFile::Open(MDC::GetInstance()->getOutputFileName().c_str(), "recreate");

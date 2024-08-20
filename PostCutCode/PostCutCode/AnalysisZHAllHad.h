@@ -38,6 +38,7 @@ class AnalysisZHAllHad: public AnalysisBase
       double ChiH;
       double ChiZ;
       double flag;
+      double weight;
 
 
 };
