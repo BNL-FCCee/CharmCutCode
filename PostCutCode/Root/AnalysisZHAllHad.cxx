@@ -7,6 +7,7 @@
 #include <set>
 #include "TLorentzVector.h"
 #include <TRandom.h>
+#include <nlohmann/json.hpp>
 
 // DEFINE sel_visMtheta, sel_d123, sel_d34! WHICH SEL TO PICK! CAREFUL!
 using namespace std;
@@ -19,7 +20,7 @@ using namespace std;
 
 AnalysisZHAllHad::AnalysisZHAllHad():
     AnalysisBase(),
-    m_debug(false)
+    m_debug(false)    
 {}
 AnalysisZHAllHad::~AnalysisZHAllHad()
 {}
@@ -59,71 +60,84 @@ void AnalysisZHAllHad::getMissingPair(const std::vector<int>& foundPair, std::ve
 
 void AnalysisZHAllHad::run()
 {       
-    // gRandom->SetSeed(42); 
+
+    // using json = nlohmann::json;
+    std::ifstream f(MDC::GetInstance()->getSOWJSONFile());
+    nlohmann::json data = nlohmann::json::parse(f);
+
+    // override the sum of weights, if it is inside the extra files that we built by hand
+    std::ifstream customF(MDC::GetInstance()->getCustomSOWJSONFile());
+    nlohmann::json customData = nlohmann::json::parse(customF);
+
+    auto sName = MDC::GetInstance()->getSampleName();
+
+    double norm_weight = (double)data[sName]["crossSection"]/(double)data[sName]["sumOfWeights"];
+    
+    // If the information is in the custom file, scale it
+    if(customData.contains(sName))
+    {
+        norm_weight = (double)data[sName]["crossSection"]/(double)customData[sName]["sumOfWeights"];
+    }
+
+
     float Z_mass = 91.1876;
     float H_mass = 125.11;
     float W_mass = 80.377;
-    // std::vector<std::string> flavourJets {"b", "c", "s", "g", "q"};
-    // std::vector<std::string> flavours{"B","C","S","U","D","G","TAU"};
-    // std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G","TAU"};
-    std::vector<std::string> flavourJets {"b", "c", "s", "g", "q"};
-    std::vector<std::string> flavours{"B","C","S","Q","G"};
+
     std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G"};
     std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","Incl"};
-    std::vector<std::string> cutFlowMap {"NoCut","njet=4","leptonCut","KineCut", "d123Cut", "d34Cut","Pairing","jjMassCut","ZHmassCut","YieldsFit" };
+    std::vector<std::string> cutFlowMap {"NoCut","NoNaNFlavScore","njet=4","leptonCut","KineCut", "d123Cut", "d34Cut","Pairing","jjMassCut","ZHmassCut","YieldsFit" };
     std::vector<std::string> fitCategorySimple  {"LowHbb","LowHcc","LowHss","LowHgg","MidHbb","MidHcc","MidHss","MidHgg","HiHbb","HiHcc", "HiHss","HiHgg"};
 
     
     // Get the histograms
-    // auto histo_DetVars = m_histContainer->histo_DetVarsScoreSmear(flavourJets);
-
-    auto scoreMapHist = m_histContainer->get1DHist("scoreMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
-    auto scoreMapFitCatHist = m_histContainer->get1DHist("scoreMapFitCategory_1D", fitCategorySimple.size(), 0, fitCategorySimple.size(), fitCategorySimple);
-    auto CountsMapHist = m_histContainer->get1DHist("CountsMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
-    auto CountsFitCatHist = m_histContainer->get1DHist("CountsFitCategory_1D", fitCategorySimple.size(), 0, fitCategorySimple.size(), fitCategorySimple);
-    auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0., 250.,250, 0., 250);
-//     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 90,90.,180.,70,50.,120.);
-//     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0., 250.);
+//     auto scoreMapHist = m_histContainer->get1DHist("scoreMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
+//     auto scoreMapFitCatHist = m_histContainer->get1DHist("scoreMapFitCategory_1D", fitCategorySimple.size(), 0, fitCategorySimple.size(), fitCategorySimple);
+//     auto CountsMapHist = m_histContainer->get1DHist("CountsMap_1D", flavourCategory.size(), 0, flavourCategory.size(), flavourCategory);
+//     auto CountsFitCatHist = m_histContainer->get1DHist("CountsFitCategory_1D", fitCategorySimple.size(), 0, fitCategorySimple.size(), fitCategorySimple);
+//     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0., 250.,250, 0., 250);
+// //     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 90,90.,180.,70,50.,120.);
+// //     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0., 250.);
     auto countingHist = m_histContainer->getCountingHist();
     auto cutFlowHist =  m_histContainer->get1DHist("CutFlow", cutFlowMap.size(), 0, 13,cutFlowMap);
 
 
         // Extra hist for easy fill up
-    auto Incl_obsHist = obsHist["Incl"];
-    // H->bb
-    auto Low_bbZ_Hbb_obsHist = obsHist["LowbbHbb"];
-    auto Low_ccZ_Hbb_obsHist = obsHist["LowccHbb"];
-    auto Low_ssZ_Hbb_obsHist = obsHist["LowssHbb"];
-    auto Low_qqZ_Hbb_obsHist = obsHist["LowqqHbb"];
+    // auto Incl_obsHist = obsHist["Incl"];
+    // // H->bb
+    // auto Low_bbZ_Hbb_obsHist = obsHist["LowbbHbb"];
+    // auto Low_ccZ_Hbb_obsHist = obsHist["LowccHbb"];
+    // auto Low_ssZ_Hbb_obsHist = obsHist["LowssHbb"];
+    // auto Low_qqZ_Hbb_obsHist = obsHist["LowqqHbb"];
 
-    auto Mid_bbZ_Hbb_obsHist = obsHist["MidbbHbb"];
-    auto Mid_ccZ_Hbb_obsHist = obsHist["MidccHbb"];
-    auto Mid_ssZ_Hbb_obsHist = obsHist["MidssHbb"];
-    auto Mid_qqZ_Hbb_obsHist = obsHist["MidqqHbb"];
+    // auto Mid_bbZ_Hbb_obsHist = obsHist["MidbbHbb"];
+    // auto Mid_ccZ_Hbb_obsHist = obsHist["MidccHbb"];
+    // auto Mid_ssZ_Hbb_obsHist = obsHist["MidssHbb"];
+    // auto Mid_qqZ_Hbb_obsHist = obsHist["MidqqHbb"];
 
-    auto Hi_bbZ_Hbb_obsHist = obsHist["HibbHbb"];
-    auto Hi_ccZ_Hbb_obsHist = obsHist["HiccHbb"];
-    auto Hi_ssZ_Hbb_obsHist = obsHist["HissHbb"];
-    auto Hi_qqZ_Hbb_obsHist = obsHist["HiqqHbb"];
-    // // H->cc
-    auto Low_bbZ_Hcc_obsHist = obsHist["LowbbHcc"];
-    auto Low_ccZ_Hcc_obsHist = obsHist["LowccHcc"];
-    auto Low_ssZ_Hcc_obsHist = obsHist["LowssHcc"];
-    auto Low_qqZ_Hcc_obsHist = obsHist["LowqqHcc"];
+    // auto Hi_bbZ_Hbb_obsHist = obsHist["HibbHbb"];
+    // auto Hi_ccZ_Hbb_obsHist = obsHist["HiccHbb"];
+    // auto Hi_ssZ_Hbb_obsHist = obsHist["HissHbb"];
+    // auto Hi_qqZ_Hbb_obsHist = obsHist["HiqqHbb"];
+    // // // H->cc
+    // auto Low_bbZ_Hcc_obsHist = obsHist["LowbbHcc"];
+    // auto Low_ccZ_Hcc_obsHist = obsHist["LowccHcc"];
+    // auto Low_ssZ_Hcc_obsHist = obsHist["LowssHcc"];
+    // auto Low_qqZ_Hcc_obsHist = obsHist["LowqqHcc"];
 
-    auto Mid_bbZ_Hcc_obsHist = obsHist["MidbbHcc"];
-    auto Mid_ccZ_Hcc_obsHist = obsHist["MidccHcc"];
-    auto Mid_ssZ_Hcc_obsHist = obsHist["MidssHcc"];
-    auto Mid_qqZ_Hcc_obsHist = obsHist["MidqqHcc"];
+    // auto Mid_bbZ_Hcc_obsHist = obsHist["MidbbHcc"];
+    // auto Mid_ccZ_Hcc_obsHist = obsHist["MidccHcc"];
+    // auto Mid_ssZ_Hcc_obsHist = obsHist["MidssHcc"];
+    // auto Mid_qqZ_Hcc_obsHist = obsHist["MidqqHcc"];
 
-    auto Hi_bbZ_Hcc_obsHist = obsHist["HibbHcc"];
-    auto Hi_ccZ_Hcc_obsHist = obsHist["HiccHcc"];
-    auto Hi_ssZ_Hcc_obsHist = obsHist["HissHcc"];
-    auto Hi_qqZ_Hcc_obsHist = obsHist["HiqqHcc"];
-    // //H->ss
-    auto LowS_obsHist = obsHist["LowHss"];
-    auto MidS_obsHist = obsHist["MidHss"];
-    auto HiS_obsHist = obsHist["HiHss"];
+    // auto Hi_bbZ_Hcc_obsHist = obsHist["HibbHcc"];
+    // auto Hi_ccZ_Hcc_obsHist = obsHist["HiccHcc"];
+    // auto Hi_ssZ_Hcc_obsHist = obsHist["HissHcc"];
+    // auto Hi_qqZ_Hcc_obsHist = obsHist["HiqqHcc"];
+    // // //H->ss
+    // auto LowS_obsHist = obsHist["LowHss"];
+    // auto MidS_obsHist = obsHist["MidHss"];
+    // auto HiS_obsHist = obsHist["HiHss"];
 
 //     // H->qq
 //     auto Low_bbZ_Hqq_obsHist = obsHist["LowbbHqq"];
@@ -141,20 +155,20 @@ void AnalysisZHAllHad::run()
 //     auto Hi_ssZ_Hqq_obsHist = obsHist["HissHqq"];
 //     auto Hi_qqZ_Hqq_obsHist = obsHist["HiqqHqq"];
     // // H->gg
-    auto Low_bbZ_Hgg_obsHist = obsHist["LowbbHgg"];
-    auto Low_ccZ_Hgg_obsHist = obsHist["LowccHgg"];
-    auto Low_ssZ_Hgg_obsHist = obsHist["LowssHgg"];
-    auto Low_qqZ_Hgg_obsHist = obsHist["LowqqHgg"];
+    // auto Low_bbZ_Hgg_obsHist = obsHist["LowbbHgg"];
+    // auto Low_ccZ_Hgg_obsHist = obsHist["LowccHgg"];
+    // auto Low_ssZ_Hgg_obsHist = obsHist["LowssHgg"];
+    // auto Low_qqZ_Hgg_obsHist = obsHist["LowqqHgg"];
 
-    auto Mid_bbZ_Hgg_obsHist = obsHist["MidbbHgg"];
-    auto Mid_ccZ_Hgg_obsHist = obsHist["MidccHgg"];
-    auto Mid_ssZ_Hgg_obsHist = obsHist["MidssHgg"];
-    auto Mid_qqZ_Hgg_obsHist = obsHist["MidqqHgg"];
+    // auto Mid_bbZ_Hgg_obsHist = obsHist["MidbbHgg"];
+    // auto Mid_ccZ_Hgg_obsHist = obsHist["MidccHgg"];
+    // auto Mid_ssZ_Hgg_obsHist = obsHist["MidssHgg"];
+    // auto Mid_qqZ_Hgg_obsHist = obsHist["MidqqHgg"];
 
-    auto Hi_bbZ_Hgg_obsHist = obsHist["HibbHgg"];
-    auto Hi_ccZ_Hgg_obsHist = obsHist["HiccHgg"];
-    auto Hi_ssZ_Hgg_obsHist = obsHist["HissHgg"];
-    auto Hi_qqZ_Hgg_obsHist = obsHist["HiqqHgg"];
+    // auto Hi_bbZ_Hgg_obsHist = obsHist["HibbHgg"];
+    // auto Hi_ccZ_Hgg_obsHist = obsHist["HiccHgg"];
+    // auto Hi_ssZ_Hgg_obsHist = obsHist["HissHgg"];
+    // auto Hi_qqZ_Hgg_obsHist = obsHist["HiqqHgg"];
     
 
     // Get the trees
@@ -180,23 +194,18 @@ void AnalysisZHAllHad::run()
     my_tree->Branch("b_Zflav",&Zflav);
     my_tree->Branch("b_ChiH",&ChiH);
     my_tree->Branch("b_ChiZ",&ChiZ);
+    my_tree->Branch("b_w",&mc_weight);
+
   
     // assuming you have vectors as input (should also save option to run w/o vectors)
-  //New ntuple setup
-   // flavor scores
-    varMember<ROOT::VecOps::RVec<float>> recojet_isB {tree, "recojet_isB_base1"};
-    varMember<ROOT::VecOps::RVec<float>> recojet_isC {tree, "recojet_isC_base1"};
-    varMember<ROOT::VecOps::RVec<float>> recojet_isS {tree, "recojet_isS_base1"};
-    varMember<ROOT::VecOps::RVec<float>> recojet_isG {tree, "recojet_isQ_base1"};
-    varMember<ROOT::VecOps::RVec<float>> recojet_isQ {tree, "recojet_isG_base1"};
     //New Tagger
-    // varMember<ROOT::VecOps::RVec<float>> recojet_isB {tree, "recojet_isB"};
-    // varMember<ROOT::VecOps::RVec<float>> recojet_isC {tree, "recojet_isC"};
-    // varMember<ROOT::VecOps::RVec<float>> recojet_isS {tree, "recojet_isS"};
-    // varMember<ROOT::VecOps::RVec<float>> recojet_isU {tree, "recojet_isU"};
-    // varMember<ROOT::VecOps::RVec<float>> recojet_isD {tree, "recojet_isD"};
-    // varMember<ROOT::VecOps::RVec<float>> recojet_isG {tree, "recojet_isG"};
-    // varMember<ROOT::VecOps::RVec<float>> recojet_isTAU {tree, "recojet_isTAU"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isB {tree, "recojet_isB"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isC {tree, "recojet_isC"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isS {tree, "recojet_isS"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isU {tree, "recojet_isU"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isD {tree, "recojet_isD"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isG {tree, "recojet_isG"};
+    varMember<ROOT::VecOps::RVec<float>> recojet_isTAU {tree, "recojet_isTAU"};
     //add truth jet flav
     varMember<ROOT::VecOps::RVec<int>> truth_flav {tree, "jets_truth"};
     
@@ -206,48 +215,6 @@ void AnalysisZHAllHad::run()
     varMember<ROOT::VecOps::RVec<float>> jet_py {tree, "jet_py_corr"}; 
     varMember<ROOT::VecOps::RVec<float>> jet_pz {tree, "jet_pz_corr"};
     varMember<ROOT::VecOps::RVec<float>> jet_e {tree, "jet_e_corr"}; 
-    // // flavor scores
-    //    // Connect branches to trees, old ntuples setup
-    // varMemberVector<double> jet_px{tree, { "jet0_px_corr","jet1_px_corr", "jet2_px_corr", "jet3_px_corr"}, -999};
-    // varMemberVector<double> jet_py{tree, { "jet0_py_corr","jet1_py_corr", "jet2_py_corr", "jet3_py_corr"}, -999};
-    // varMemberVector<double> jet_pz{tree, { "jet0_pz_corr","jet1_pz_corr", "jet2_pz_corr", "jet3_pz_corr"}, -999};
-    // varMemberVector<double> jet_e{tree, { "jet0_e_corr","jet1_e_corr", "jet2_e_corr", "jet3_e_corr"}, -999};
-
-    // varMember<float> jet0_scoreB {tree, "jet0_scoreB"};
-    // varMember<float> jet1_scoreB {tree, "jet1_scoreB"};
-    // varMember<float> jet2_scoreB {tree, "jet2_scoreB"};
-    // varMember<float> jet3_scoreB {tree, "jet3_scoreB"};
-
-    // varMember<float> jet0_scoreC {tree, "jet0_scoreC"};
-    // varMember<float> jet1_scoreC {tree, "jet1_scoreC"};
-    // varMember<float> jet2_scoreC {tree, "jet2_scoreC"};
-    // varMember<float> jet3_scoreC {tree, "jet3_scoreC"};
-
-    // varMember<float> jet0_scoreG {tree, "jet0_scoreG"};
-    // varMember<float> jet1_scoreG {tree, "jet1_scoreG"};
-    // varMember<float> jet2_scoreG {tree, "jet2_scoreG"};
-    // varMember<float> jet3_scoreG {tree, "jet3_scoreG"};
-
-    // varMember<float> jet0_scoreU {tree, "jet0_scoreU"};
-    // varMember<float> jet1_scoreU {tree, "jet1_scoreU"};
-    // varMember<float> jet2_scoreU {tree, "jet2_scoreU"};
-    // varMember<float> jet3_scoreU {tree, "jet3_scoreU"};
-
-    // varMember<float> jet0_scoreTAU {tree, "jet0_scoreTAU"};
-    // varMember<float> jet1_scoreTAU {tree, "jet1_scoreTAU"};
-    // varMember<float> jet2_scoreTAU {tree, "jet2_scoreTAU"};
-    // varMember<float> jet3_scoreTAU {tree, "jet3_scoreTAU"};
-
-    // varMember<float> jet0_scoreD {tree, "jet0_scoreD"};
-    // varMember<float> jet1_scoreD {tree, "jet1_scoreD"};
-    // varMember<float> jet2_scoreD {tree, "jet2_scoreD"};
-    // varMember<float> jet3_scoreD{tree, "jet3_scoreD"};
-
-    // varMember<float> jet0_scoreS {tree, "jet0_scoreS"};
-    // varMember<float> jet1_scoreS {tree, "jet1_scoreS"};
-    // varMember<float> jet2_scoreS {tree, "jet2_scoreS"};
-    // varMember<float> jet3_scoreS {tree, "jet3_scoreS"};
-    
 
     varMember<int> event_njet {tree, "event_njet"};
     varMember<ulong> event_nmu {tree, "event_nmu"};
@@ -262,16 +229,8 @@ void AnalysisZHAllHad::run()
     varMember<float> d_34 {tree, "d_34"};
     // varMember<double> flag_corr {tree, "flag_corr"};
 
-    // varMember<double> M_j0_j1_corr {tree, "M_j0_j1_corr"};
-    // varMember<double> M_j0_j2_corr {tree, "M_j0_j2_corr"};
-    // varMember<double> M_j0_j3_corr {tree, "M_j0_j3_corr"};
-    // varMember<double> M_j1_j2_corr {tree, "M_j1_j2_corr"};
-    // varMember<double> M_j1_j3_corr {tree, "M_j1_j3_corr"};
-    // varMember<double> M_j2_j3_corr {tree, "M_j2_j3_corr"};
-
-    
-
     // varMember<double> costhetainv {tree, "costhetainv"};
+    int NokFlav = 0;
     int NjetCut = 0;
     int NleptonCut = 0;
     int NkineCut = 0;
@@ -283,37 +242,35 @@ void AnalysisZHAllHad::run()
     int NafterFlagSel = 0;
     int Nfit = 0;
     int NEventsInt = 0;
-    int BlikeEvents = 0;
-    int ClikeEvents = 0;
-    int SlikeEvents = 0;
-    int GlikeEvents = 0;
-    int QlikeEvents = 0;
+    // int BlikeEvents = 0;
+    // int ClikeEvents = 0;
+    // int SlikeEvents = 0;
+    // int GlikeEvents = 0;
+    // int QlikeEvents = 0;
+    // int TAUlikeEvents = 0;
+
 
     int NPassed = -1 ;
-//     int TAUlikeEvents = 0;
 
-    std::array<int, 3> BlikeEvents_cat {0, 0, 0};
-    std::array<int, 3> ClikeEvents_cat {0, 0, 0};
-    std::array<int, 3> SlikeEvents_cat {0, 0, 0};
-    std::array<int, 3> GlikeEvents_cat {0, 0, 0};
-    std::array<int, 3> QlikeEvents_cat {0, 0, 0};
+    // std::array<int, 3> BlikeEvents_cat {0, 0, 0};
+    // std::array<int, 3> ClikeEvents_cat {0, 0, 0};
+    // std::array<int, 3> SlikeEvents_cat {0, 0, 0};
+    // std::array<int, 3> GlikeEvents_cat {0, 0, 0};
+    // std::array<int, 3> QlikeEvents_cat {0, 0, 0};
 //     std::array<int, 3> TAUlikeEvents_cat {0, 0, 0};
 
 //     int debug = 1;
   
     // Loop over the trees here
     for(int i = 0; i < nEntries; i++)
-    // for(int i = 0; i < 10; i++)
     {
-        // if (i==13890){
-        //      m_debug=true;}
-        // else {
-        //     m_debug=false;}
+        if(i % 1000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
+
         treeCont->getEntry(i);
         // Just to store how many events were run over
         countingHist->Fill(1);
         NEventsInt++;
-        // if (1 == 1) continue;
+
         double mjj_H = -1;
         double mjj_Z = -1;
         double flavSc_H = -1;
@@ -321,7 +278,52 @@ void AnalysisZHAllHad::run()
         int flav_H = -1;
         int flav_Z = -1;
 
-        if(i % 1000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
+        bool flage_toss = false;
+        if (recojet_isB.size() == 0){
+            flage_toss = true;
+        }
+        if (flage_toss) continue;
+
+        // Flav scores of each jet, determine to consider D or U score.
+        float jet0_scoreQ = recojet_isU.at(0) < recojet_isD.at(0)? recojet_isD.at(0) :recojet_isU.at(0);
+        float jet1_scoreQ = recojet_isU.at(1) < recojet_isD.at(1)? recojet_isD.at(1) :recojet_isU.at(1);
+        float jet2_scoreQ = recojet_isU.at(2) < recojet_isD.at(2)? recojet_isD.at(2) :recojet_isU.at(2);
+        float jet3_scoreQ = recojet_isU.at(3) < recojet_isD.at(3)? recojet_isD.at(3) :recojet_isU.at(3);
+
+        // - look for max score of jet 
+        std::vector<float> j0_flav {recojet_isB.at(0), recojet_isC.at(0), recojet_isS.at(0), jet0_scoreQ, recojet_isG.at(0), recojet_isTAU.at(0)};
+        std::vector<float> j1_flav {recojet_isB.at(1), recojet_isC.at(1), recojet_isS.at(1), jet1_scoreQ, recojet_isG.at(1), recojet_isTAU.at(1)};
+        std::vector<float> j2_flav {recojet_isB.at(2), recojet_isC.at(2), recojet_isS.at(2), jet2_scoreQ, recojet_isG.at(2), recojet_isTAU.at(2)};
+        std::vector<float> j3_flav {recojet_isB.at(3), recojet_isC.at(3), recojet_isS.at(3), jet3_scoreQ, recojet_isG.at(3), recojet_isTAU.at(3)};
+        
+        for (float j0_f : j0_flav) {
+            if (std::isnan(j0_f)) {
+                flage_toss = true;
+                continue;
+            }
+        }
+        for (float j1_f : j1_flav) {
+            if (std::isnan(j1_f)) {
+                flage_toss = true;
+                continue;
+            }
+        }
+        for (float j2_f : j2_flav) {
+            if (std::isnan(j2_f)) {
+                flage_toss = true;
+                continue;
+            }
+        }
+        for (float j3_f : j3_flav) {
+            if (std::isnan(j3_f)) {
+                flage_toss = true;
+                continue;
+            }
+        }
+        
+        NokFlav++;
+        // std::cout<<"Nan toss away!"<<std::endl;
+
         // Add some basic selection        
         if(event_njet() != 4) continue; //Require EXACTLY 4 jet! This SHOULD be the case!
         NjetCut++;
@@ -352,27 +354,6 @@ void AnalysisZHAllHad::run()
             LVjet.SetPxPyPzE(jet_px.at(lv), jet_py.at(lv), jet_pz.at(lv), jet_e.at(lv));
             LVjets.push_back(LVjet);
         }
-       // Flav scores of each jet
-    //    float jet0_scoreQ = jet0_scoreU() > jet0_scoreD() ? jet0_scoreD() :jet0_scoreU();
-    //    float jet1_scoreQ = jet1_scoreU() > jet1_scoreD() ? jet1_scoreD() :jet1_scoreU();
-    //    float jet2_scoreQ = jet2_scoreU() > jet2_scoreD() ? jet2_scoreD() :jet2_scoreU();
-    //    float jet3_scoreQ = jet3_scoreU() > jet3_scoreD() ? jet3_scoreD() :jet3_scoreU();
-
-        // - look for max score of jet 
-
-        // std::vector<float> j0_flav {jet0_scoreB(), jet0_scoreC(), jet0_scoreS(), jet0_scoreU(),jet0_scoreD(), jet0_scoreG(), jet0_scoreTAU()};
-        // std::vector<float> j1_flav {jet1_scoreB(), jet1_scoreC(), jet1_scoreS(), jet1_scoreU(),jet1_scoreD(), jet1_scoreG(), jet1_scoreTAU()};
-        // std::vector<float> j2_flav {jet2_scoreB(), jet2_scoreC(), jet2_scoreS(), jet2_scoreU(),jet2_scoreD(), jet2_scoreG(), jet2_scoreTAU()};
-        // std::vector<float> j3_flav {jet3_scoreB(), jet3_scoreC(), jet3_scoreS(), jet3_scoreU(),jet3_scoreD(), jet3_scoreG(), jet3_scoreTAU()};
-        // std::vector<float> j0_flav {recojet_isB.at(0), recojet_isC.at(0), recojet_isS.at(0), recojet_isD.at(0), recojet_isU.at(0), recojet_isG.at(0), recojet_isTAU.at(0)};
-        // std::vector<float> j1_flav {recojet_isB.at(1), recojet_isC.at(1), recojet_isS.at(1), recojet_isD.at(1), recojet_isU.at(1), recojet_isG.at(1), recojet_isTAU.at(1)};
-        // std::vector<float> j2_flav {recojet_isB.at(2), recojet_isC.at(2), recojet_isS.at(2), recojet_isD.at(2), recojet_isU.at(2), recojet_isG.at(2), recojet_isTAU.at(2)};
-        // std::vector<float> j3_flav {recojet_isB.at(3), recojet_isC.at(3), recojet_isS.at(3), recojet_isD.at(3), recojet_isU.at(3), recojet_isG.at(3), recojet_isTAU.at(3)};
-
-        std::vector<float> j0_flav {recojet_isB.at(0), recojet_isC.at(0), recojet_isS.at(0), recojet_isQ.at(0),recojet_isG.at(0)};
-        std::vector<float> j1_flav {recojet_isB.at(1), recojet_isC.at(1), recojet_isS.at(1), recojet_isQ.at(1),recojet_isG.at(1)};
-        std::vector<float> j2_flav {recojet_isB.at(2), recojet_isC.at(2), recojet_isS.at(2), recojet_isQ.at(2),recojet_isG.at(2)};
-        std::vector<float> j3_flav {recojet_isB.at(3), recojet_isC.at(3), recojet_isS.at(3), recojet_isQ.at(3),recojet_isG.at(3)};
 
         std::map<int,std::vector<float>> jetFlavScores;
         jetFlavScores[0] = j0_flav;
@@ -432,7 +413,6 @@ void AnalysisZHAllHad::run()
             std::cout<<"j2_flav: "<<" Max score: "<< *j2_maxScore<< " maxScoreIdx: "<< maxScoreIdx[2]<<std::endl;
             std::cout<<"j3_flav: "<<" Max score: "<< *j3_maxScore<< " maxScoreIdx: "<< maxScoreIdx[3]<<std::endl;
         }
-        
         //Check how many jets have the same flavour highest score
         //Save the jet with same score 
         std::map<int,std::vector<int>> jetFlavMaxScore;
@@ -602,11 +582,6 @@ void AnalysisZHAllHad::run()
         if (m_debug){
             std::cout<<"Higgs m: "<< mjj_H<< " flav: "<< flav_H<<" flavSc_H: " <<flavSc_H<<std::endl;
             std::cout<<"Z m: "<< mjj_Z<< " flav: "<< flav_Z<<" flavSc_Z: " <<flavSc_Z<<std::endl;
-            // std::cout<<"M_j0_j1_corr: "<< M_j0_j1_corr()<<std::endl;
-            // std::cout<<"M_j0_j2_corr: "<< M_j0_j2_corr()<<std::endl;
-            // std::cout<<"M_j1_j2_corr: "<< M_j1_j2_corr()<<std::endl;
-            // std::cout<<"M_j1_j3_corr: "<< M_j1_j3_corr()<<std::endl;
-            // std::cout<<"M_j2_j3_corr: "<< M_j2_j3_corr()<<std::endl;
         }
         NafterPairing++;
          //A bit of selection 
@@ -648,247 +623,249 @@ void AnalysisZHAllHad::run()
         Zflav = flav_Z;
         ChiH = pow((mjj_H-H_mass), 2);
         ChiZ = pow((mjj_Z-Z_mass), 2);
+        mc_weight = norm_weight;
         my_tree->Fill();
-        if (flav_H == 3 || flav_Z == 4) continue;
-        //For new tagger, with 7 flavoure 
-        // if (flav_Z == 5 || flav_Z == 6  || flav_H == 6 || flav_H == 3 || flav_H == 4  ) continue;
-        Incl_obsHist->Fill(mjj_H,mjj_Z);
-        //Fill in Hbb cats
-        if (flav_H == 0){
-            if (m_debug) std::cout << "Hbb"  <<std::endl;
-            // if (NPassed == 8735){
-            //     std::cout << "flavSc_H: "<< flavSc_H << " mjj_H: "<<mjj_H <<std::endl;
-            //     std::cout << "flav_Z: "<< flav_Z<< " mjj_Z: " <<mjj_Z <<std::endl;
-            //     std::cout << "i: "<< i<<std::endl;
-            // }
-            if (flav_Z == 0){
-                if (flavSc_H > 1.8){
-                    Hi_bbZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        // if (flav_H == 3 || flav_Z == 4 ||flav_Z == -1 || flav_H == -1 ) continue;
+        // //For new tagger, with 7 flavoure 
+        // // if (flav_Z == 5 || flav_Z == 6  || flav_H == 6 || flav_H == 3 || flav_H == 4  ) continue;
+        // Incl_obsHist->Fill(mjj_H,mjj_Z);
+        // //Fill in Hbb cats
+        // if (flav_H == 0){
+        //     if (m_debug) std::cout << "Hbb"  <<std::endl;
+        //     // if (NPassed == 8735){
+        //     //     std::cout << "flavSc_H: "<< flavSc_H << " mjj_H: "<<mjj_H <<std::endl;
+        //     //     std::cout << "flav_Z: "<< flav_Z<< " mjj_Z: " <<mjj_Z <<std::endl;
+        //     //     std::cout << "i: "<< i<<std::endl;
+        //     // }
+        //     if (flav_Z == 0){
+        //         if (flavSc_H > 1.8){
+        //             Hi_bbZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
 
-                } 
-                else if (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_bbZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_bbZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
                     
-                } 
-                else if (flavSc_H <= 1.1){
-                    // std::cout << "i: " << NPassed << ", flavSc_H: " <<flavSc_H<<std::endl;
-                    Low_bbZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             // std::cout << "i: " << NPassed << ", flavSc_H: " <<flavSc_H<<std::endl;
+        //             Low_bbZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
 
-                }
+        //         }
 
-            }//Zbb 
-            else if (flav_Z == 1){ 
-                if (flavSc_H > 1.8){
-                    Hi_ccZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //     }//Zbb 
+        //     else if (flav_Z == 1){ 
+        //         if (flavSc_H > 1.8){
+        //             Hi_ccZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
 
-                } 
-                else if (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_ccZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_ccZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
                     
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_ccZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_ccZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
                     
-                }
-            }//Zcc
-            else if (flav_Z == 2){
-                if (flavSc_H > 1.8){
-                    Hi_ssZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //         }
+        //     }//Zcc
+        //     else if (flav_Z == 2){
+        //         if (flavSc_H > 1.8){
+        //             Hi_ssZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
 
-                } 
-                else if (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_ssZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_ssZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
                     
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_ssZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_ssZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
                     
-                }
-            }//Zss
-            else if (flav_Z == 3){
-                if (flavSc_H > 1.8){
-                    Hi_qqZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //         }
+        //     }//Zss
+        //     else if (flav_Z == 3){
+        //         if (flavSc_H > 1.8){
+        //             Hi_qqZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
 
-                } 
-                else if (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_qqZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_qqZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
                     
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_qqZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_qqZ_Hbb_obsHist->Fill(mjj_H,mjj_Z);
                     
-                }
-            }//Zqq
-        }
-        else if ( flav_H == 1){
-        //Fill in Hcc cats
-            if (m_debug) std::cout << "Hcc"  <<std::endl;
-            if (flav_Z == 0){
-                if (flavSc_H > 1.8){
-                    Hi_bbZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
+        //         }
+        //     }//Zqq
+        // }
+        // else if ( flav_H == 1){
+        // //Fill in Hcc cats
+        //     if (m_debug) std::cout << "Hcc"  <<std::endl;
+        //     if (flav_Z == 0){
+        //         if (flavSc_H > 1.8){
+        //             Hi_bbZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
 
-                } 
-                else if (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_bbZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
+        //         } 
+        //         else if (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_bbZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
                     
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_bbZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_bbZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
 
-                }
-            }//Zbb
-            else if (flav_Z == 1){
-                if (flavSc_H > 1.8){
-                    Hi_ccZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
-                } 
-                else if (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_ccZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_ccZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
+        //         }
+        //     }//Zbb
+        //     else if (flav_Z == 1){
+        //         if (flavSc_H > 1.8){
+        //             Hi_ccZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
+        //         } 
+        //         else if (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_ccZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_ccZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
                     
                     
-                }
-            }//Zcc
-            else if (flav_Z == 2){
-                if (flavSc_H > 1.8){
-                    Hi_ssZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
-                } 
-                else if (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_ssZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);   
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_ssZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);   
-                }
-            }//Zss
-            else if (flav_Z == 3){
-                if (flavSc_H > 1.8){
-                    Hi_qqZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);
-                } 
-                else if (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_qqZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);          
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_qqZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);           
-                }
-            }//Zqq
-        }
-        else if ( flav_H == 2){
-            if (m_debug) std::cout << "Hss"  <<std::endl;
-        //Fill in Hss cats, maybe update to all Z?
-            if (flavSc_H > 1.4){
-                HiS_obsHist->Fill(mjj_H,mjj_Z); 
-                } 
-            else if (0.8<flavSc_H && flavSc_H <= 1.4){
-                MidS_obsHist->Fill(mjj_H,mjj_Z);  
-                } 
-            else if (flavSc_H <= 0.8){
-                LowS_obsHist->Fill(mjj_H,mjj_Z);    
-                }
-        }
-        else if ( flav_H == 4){
-            if (m_debug) std::cout << "Hgg"  <<std::endl;
-        //Fill in Hss cats
-            if (flav_Z == 0){
-                if (flavSc_H > 1.8){
-                    Hi_bbZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
-                } 
-                else if (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_bbZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_bbZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
-                }
-            }//Zbb
-            else if (flav_Z == 1){
-                if (flavSc_H > 1.8){
-                    Hi_ccZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
-                } 
-                else if  (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_ccZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);  
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_ccZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
-                }
-            }//Zcc
-            else if (flav_Z == 2){
-                if (flavSc_H > 1.8){
-                    Hi_ssZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
-                } 
-                else if  (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_ssZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_ssZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
-                }
-            }//Zss
-            else if (flav_Z == 3){
-                if (flavSc_H > 1.8){
-                    Hi_qqZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
-                } 
-                else if (1.1<flavSc_H && flavSc_H <= 1.8){
-                    Mid_qqZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
-                } 
-                else if (flavSc_H <= 1.1){
-                    Low_qqZ_Hgg_obsHist->Fill(mjj_H,mjj_Z); 
-                }
-            }//Zqq
-        }
-        else{
-            std::cout << "Event should be but is not included in the fit!"  <<std::endl;
-            std::cout << "flav_H: "<< flav_H <<std::endl;
-            std::cout << "flav_Z: "<< flav_Z <<std::endl;
-            break;
-        }
-        Nfit++;
+        //         }
+        //     }//Zcc
+        //     else if (flav_Z == 2){
+        //         if (flavSc_H > 1.8){
+        //             Hi_ssZ_Hcc_obsHist->Fill(mjj_H,mjj_Z); 
+        //         } 
+        //         else if (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_ssZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);   
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_ssZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);   
+        //         }
+        //     }//Zss
+        //     else if (flav_Z == 3){
+        //         if (flavSc_H > 1.8){
+        //             Hi_qqZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_qqZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);          
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_qqZ_Hcc_obsHist->Fill(mjj_H,mjj_Z);           
+        //         }
+        //     }//Zqq
+        // }
+        // else if ( flav_H == 2){
+        //     if (m_debug) std::cout << "Hss"  <<std::endl;
+        // //Fill in Hss cats, maybe update to all Z?
+        //     if (flavSc_H > 1.4){
+        //         HiS_obsHist->Fill(mjj_H,mjj_Z); 
+        //         } 
+        //     else if (0.8<flavSc_H && flavSc_H <= 1.4){
+        //         MidS_obsHist->Fill(mjj_H,mjj_Z);  
+        //         } 
+        //     else if (flavSc_H <= 0.8){
+        //         LowS_obsHist->Fill(mjj_H,mjj_Z);    
+        //         }
+        // }
+        // else if ( flav_H == 4){
+        //     if (m_debug) std::cout << "Hgg"  <<std::endl;
+        // //Fill in Hss cats
+        //     if (flav_Z == 0){
+        //         if (flavSc_H > 1.8){
+        //             Hi_bbZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_bbZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_bbZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
+        //         }
+        //     }//Zbb
+        //     else if (flav_Z == 1){
+        //         if (flavSc_H > 1.8){
+        //             Hi_ccZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if  (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_ccZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);  
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_ccZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
+        //         }
+        //     }//Zcc
+        //     else if (flav_Z == 2){
+        //         if (flavSc_H > 1.8){
+        //             Hi_ssZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if  (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_ssZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_ssZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
+        //         }
+        //     }//Zss
+        //     else if (flav_Z == 3){
+        //         if (flavSc_H > 1.8){
+        //             Hi_qqZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (1.1<flavSc_H && flavSc_H <= 1.8){
+        //             Mid_qqZ_Hgg_obsHist->Fill(mjj_H,mjj_Z);
+        //         } 
+        //         else if (flavSc_H <= 1.1){
+        //             Low_qqZ_Hgg_obsHist->Fill(mjj_H,mjj_Z); 
+        //         }
+        //     }//Zqq
+        // }
+        // else{
+        //     std::cout << "Event should be but is not included in the fit!"  <<std::endl;
+        //     std::cout << "flav_H: "<< flav_H <<std::endl;
+        //     std::cout << "flav_Z: "<< flav_Z <<std::endl;
+        //     break;
+        // }
+        // Nfit++;
         
         if (m_debug) std::cout<<"---------------------- END OF EVENT PROC ---------------------- "<<std::endl;
     }
-    scoreMapHist->SetBinContent(1, BlikeEvents*100./NafterSel);
-    scoreMapHist->SetBinContent(2, ClikeEvents*100./NafterSel);
-    scoreMapHist->SetBinContent(3, SlikeEvents*100./NafterSel);
-    scoreMapHist->SetBinContent(4, QlikeEvents*100./NafterSel);
-    scoreMapHist->SetBinContent(5, GlikeEvents*100./NafterSel);
+    // scoreMapHist->SetBinContent(1, BlikeEvents*100./NafterSel);
+    // scoreMapHist->SetBinContent(2, ClikeEvents*100./NafterSel);
+    // scoreMapHist->SetBinContent(3, SlikeEvents*100./NafterSel);
+    // scoreMapHist->SetBinContent(4, QlikeEvents*100./NafterSel);
+    // scoreMapHist->SetBinContent(5, GlikeEvents*100./NafterSel);
     // scoreMapHist->SetBinContent(6, TAUlikeEvents*100./NafterSel);
 
-    CountsMapHist->SetBinContent(1, BlikeEvents);
-    CountsMapHist->SetBinContent(2, ClikeEvents);
-    CountsMapHist->SetBinContent(3, SlikeEvents);
-    CountsMapHist->SetBinContent(4, QlikeEvents);
-    CountsMapHist->SetBinContent(5, GlikeEvents);
+    // CountsMapHist->SetBinContent(1, BlikeEvents);
+    // CountsMapHist->SetBinContent(2, ClikeEvents);
+    // CountsMapHist->SetBinContent(3, SlikeEvents);
+    // CountsMapHist->SetBinContent(4, QlikeEvents);
+    // CountsMapHist->SetBinContent(5, GlikeEvents);
     // CountsMapHist->SetBinContent(6, TAUlikeEvents);  
     //CutFlow
 
     cutFlowHist->SetBinContent(1,NEventsInt);
-    cutFlowHist->SetBinContent(2,NjetCut);
-    cutFlowHist->SetBinContent(3,NleptonCut);
-    cutFlowHist->SetBinContent(4,NkineCut);
-    cutFlowHist->SetBinContent(5,NdCutd123);
-    cutFlowHist->SetBinContent(6,NdCutd34);
-    cutFlowHist->SetBinContent(7,NafterPairing);
-    cutFlowHist->SetBinContent(8,NjjMassCut);
-    cutFlowHist->SetBinContent(9,NafterSel);
-    cutFlowHist->SetBinContent(10,NafterFlagSel);
-    cutFlowHist->SetBinContent(11,Nfit);
-
-    std::cout<<"NEventsInt: "<<NEventsInt<<", pre sel: "<< NdCutd34 << " all sel: "<<NafterFlagSel <<" Nfit: "<<Nfit<<std::endl;
-
-
-    for(int i = 0; i < 3; i++){
-        scoreMapFitCatHist->SetBinContent(1+i*5, BlikeEvents_cat[i]*100./NafterSel);
-        scoreMapFitCatHist->SetBinContent(2+i*5, ClikeEvents_cat[i]*100./NafterSel);
-        scoreMapFitCatHist->SetBinContent(3+i*5, SlikeEvents_cat[i]*100./NafterSel);
-        scoreMapFitCatHist->SetBinContent(4+i*5, GlikeEvents_cat[i]*100./NafterSel);
-        scoreMapFitCatHist->SetBinContent(5+i*5, QlikeEvents_cat[i]*100./NafterSel);
-        // scoreMapFitCatHist->SetBinContent(6+i*6, TAUlikeEvents_cat[i]*100./NafterSel);
-
-        CountsFitCatHist->SetBinContent(1+i*4, BlikeEvents_cat[i]);
-        CountsFitCatHist->SetBinContent(2+i*4, ClikeEvents_cat[i]);
-        CountsFitCatHist->SetBinContent(3+i*4, SlikeEvents_cat[i]);
-        CountsFitCatHist->SetBinContent(4+i*4, GlikeEvents_cat[i]);
-//         CountsFitCatHist->SetBinContent(5+i*5, QlikeEvents_cat[i]);
-        // CountsFitCatHist->SetBinContent(6+i*6, TAUlikeEvents_cat[i]);
-    }
-    std::cout<<"Done with event!"<<std::endl;
-    //Make histograms for the cats 
+    cutFlowHist->SetBinContent(2,NokFlav);
+    cutFlowHist->SetBinContent(3,NjetCut);
+    cutFlowHist->SetBinContent(4,NleptonCut);
+    cutFlowHist->SetBinContent(5,NkineCut);
+    cutFlowHist->SetBinContent(6,NdCutd123);
+    cutFlowHist->SetBinContent(7,NdCutd34);
+    cutFlowHist->SetBinContent(8,NafterPairing);
+    cutFlowHist->SetBinContent(9,NjjMassCut);
+    cutFlowHist->SetBinContent(10,NafterSel);
+    cutFlowHist->SetBinContent(11,NafterFlagSel);
+    cutFlowHist->SetBinContent(12,Nfit);
 }
+    // std::cout<<"NEventsInt: "<<NEventsInt<<", pre sel: "<< NdCutd34 << " all sel: "<<NafterFlagSel <<" Nfit: "<<Nfit<<std::endl;
+
+
+//     for(int i = 0; i < 3; i++){
+//         scoreMapFitCatHist->SetBinContent(1+i*5, BlikeEvents_cat[i]*100./NafterSel);
+//         scoreMapFitCatHist->SetBinContent(2+i*5, ClikeEvents_cat[i]*100./NafterSel);
+//         scoreMapFitCatHist->SetBinContent(3+i*5, SlikeEvents_cat[i]*100./NafterSel);
+//         scoreMapFitCatHist->SetBinContent(4+i*5, GlikeEvents_cat[i]*100./NafterSel);
+//         scoreMapFitCatHist->SetBinContent(5+i*5, QlikeEvents_cat[i]*100./NafterSel);
+//         scoreMapFitCatHist->SetBinContent(6+i*6, TAUlikeEvents_cat[i]*100./NafterSel);
+
+//         CountsFitCatHist->SetBinContent(1+i*4, BlikeEvents_cat[i]);
+//         CountsFitCatHist->SetBinContent(2+i*4, ClikeEvents_cat[i]);
+//         CountsFitCatHist->SetBinContent(3+i*4, SlikeEvents_cat[i]);
+//         CountsFitCatHist->SetBinContent(4+i*4, GlikeEvents_cat[i]);
+//         CountsFitCatHist->SetBinContent(5+i*5, QlikeEvents_cat[i]);
+//         CountsFitCatHist->SetBinContent(6+i*6, TAUlikeEvents_cat[i]);
+// //     }
+//     std::cout<<"Done with event!"<<std::endl;
+//     //Make histograms for the cats 
+// }

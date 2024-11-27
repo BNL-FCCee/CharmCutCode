@@ -39,8 +39,6 @@ class HistContainer
       std::map<std::string, TH2F*> getObsHistinFitCategory(std::vector<std::string> fitCategories, int binX, double lwrX, double uprX, int binY, double lwrY, double uprY);
       // Create 1D histograms that will be used for fit observable
       std::map<std::string, TH1F*> getObsHistinFitCategory(std::vector<std::string> fitCategories, int binX, double lwrX, double uprX);
-      // Load TH2 for DecVar effect on the score
-      std::map<std::string, TH3*> histo_DetVarsScoreSmear(std::vector<std::string> jetFlavs);
 
 
 

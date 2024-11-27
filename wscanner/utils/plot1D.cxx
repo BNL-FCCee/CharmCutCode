@@ -197,6 +197,8 @@ int main(int argc, char** argv)
         if(plottingInfo.hasMultipleFolder) 
         {
             graph.second->SetLineColor(numDraw);
+            if (numDraw == 1755 ||numDraw == 1756  || numDraw == 1757){
+                graph.second->SetLineStyle(9);}
             numDraw++;
         }
         else
@@ -271,8 +273,7 @@ int main(int argc, char** argv)
     }
 
     TCanvas* c1 = new TCanvas("c1", "c1", 0, 0, 600, 600);
-
-    TLegend *elLeg =  new TLegend (0.6, 0.76, 0.90, 0.925);
+    TLegend *elLeg =  new TLegend (0.75, 0.76, 0.95, 0.925);
     elLeg->SetFillColor(0);
     elLeg->SetBorderSize(0);
     elLeg->SetTextFont(42);
@@ -498,7 +499,7 @@ bool cmdline(int argc, char** argv, map<TString,TString>& opts)
        
         if (opt=="--help") {
             cout<<"--fileName       : path to ttree containing the information"<<endl;
-            // cout<<"--label          : Label for the legend for the files"<<endl;
+            cout<<"--label          : Label for the legend for the files"<<endl;
             // cout<<"--outFile        : Name for the output file"<<endl;
             // cout<<"--doXS           : do XS poi"<<endl;
             // cout<<"--doNs           : do Ns poi"<<endl;
@@ -553,23 +554,21 @@ void setPrettyStuff()
     new TColor(ci, 62/255.,    153/255.,    247/255.); //54
     ci++;
 
-    new TColor(ci, 0,    0.4470,    0.7410); //56
+    new TColor(ci, 120., 198., 121); //
     ci++;
     
     new TColor(ci, 254/255., 139/255., 113/255.); //55
     ci++;
-
-
-
-    new TColor(ci, 0.8500,    0.3250,    0.0980); //57
+    
+    new TColor(ci, 136,86,167); //57
     ci++;          
-    new TColor(ci, 0.4940,    0.1840,    0.5560); //58
+    new TColor(ci, 136,86,167); //58
     ci++;
-    new TColor(ci, 0.9290,    0.6940,    0.1250); //59
+    new TColor(ci, 136,86,167); //59
     ci++; 
-    new TColor(ci, 0.4660,    0.6740,    0.1880); //60
+    new TColor(ci, 136,86,167); //60
     ci++;
-    new TColor(ci, 0.3010,    0.7450,    0.9330); //61
+    new TColor(ci, 136,86,167); //61
     ci++;
     //new TColor(ci, 0.6350,    0.0780,    0.1840); //62
     //ci++;
@@ -579,15 +578,15 @@ void setPrettyStuff()
     //ci++;
     //new TColor(ci, 92.0/255 , 174.0/255 , 0.0/255);
     //ci++;
-    new TColor(ci, 1.0/255 , 237.0/255 , 171.0/255);
+    new TColor(ci,136,86,167);
     ci++;
-    new TColor(ci, 50.0/255 , 134.0/255 , 255.0/255);
+    new TColor(ci,136,86,167);
     ci++;
-    new TColor(ci, 112.0/255 , 0.0/255 , 88.0/255);
+    new TColor(ci, 136,86,167);
     ci++;
-    new TColor(ci, 28.0/255 , 0.0/255 , 19.0/255);
+    new TColor(ci, 136,86,167);
     ci++;
-    new TColor(ci, 255.0/255 , 102.0/255 , 165.0/255);
+    new TColor(ci, 136,86,167);
     ci++;
 }
 

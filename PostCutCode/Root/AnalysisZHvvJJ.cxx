@@ -31,7 +31,6 @@ void AnalysisZHvvJJ::run()
     auto scoreMapFitCatHist = m_histContainer->get1DHist("scoreMapFitCategory_1D", fitCategory.size(), 0, fitCategory.size(), fitCategory);
     auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 250, 0, 250, 250, 0, 250);
     auto countingHist = m_histContainer->getCountingHist();
-    auto histo_DetVars = m_histContainer->histo_DetVarsScoreSmear(flavourJets);
     
     
     auto Bscore =  m_histContainer->get1DHist("Bscore", 100, 0, 2);
@@ -120,33 +119,14 @@ void AnalysisZHvvJJ::run()
         
         // increment counter
         NafterCut++;
-        float B_new = 0;
-        float C_new = 0;
-        float S_new = 0;
-//         float G_new = G();
-        if (jet_flav == "X"){
-            B_new = B();
-            C_new = C(); 
-            S_new = S(); 
-        }
-        else{
-            for(int j = 0; j < 2; j++){
-                double b_score;
-                double c_score;
-                double s_score;
-                histo_DetVars[jet_flav]->GetRandom3(b_score, c_score, s_score);
-                B_new += b_score;
-                C_new += c_score;
-                S_new += s_score;
-            }
-        }
-        Bscore->Fill(B_new);
-        Cscore->Fill(C_new);
+    
+        Bscore->Fill(B());
+        Cscore->Fill(C());
         // Find the max score
-        auto max_value = std::max({B_new, C_new, S_new, G()});
+        auto max_value = std::max({B(), C(), S(), G()});
         
         // if B is the highest score
-        if (max_value == B_new) 
+        if (max_value == B()) 
         {    
             BlikeEvents++;
             if (B() < 1.1)
@@ -165,7 +145,7 @@ void AnalysisZHvvJJ::run()
                 BlikeEvents_cat[2]++;
             }
         }
-        else if (max_value == C_new)
+        else if (max_value == C())
         {
             ClikeEvents++;
             if (C() < 1.0)
@@ -184,7 +164,7 @@ void AnalysisZHvvJJ::run()
                 ClikeEvents_cat[2]++;
             }
         }
-        else if (max_value == S_new)
+        else if (max_value == S())
         {  
 
             SlikeEvents++;
