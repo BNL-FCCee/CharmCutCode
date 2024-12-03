@@ -37,8 +37,6 @@ class MetadataContainer
       std::string getProcessName(){return m_processName;};
       std::string getSOWJSONFile(){return m_SOWJSONfile;};
       std::string getCustomSOWJSONFile(){return m_CustomSOWJSONfile;};
-      std::string getDetectorVarFile(){return m_DetectorVarFile;};
-      std::string getDetectorVar(){return m_DetectorVar;};
       int getNEvents(){return m_nEvents;};
       
       void setMetadata(std::string key, std::string value);
@@ -58,8 +56,6 @@ class MetadataContainer
       std::string m_processName;
       std::string m_SOWJSONfile;
       std::string m_CustomSOWJSONfile;
-      std::string m_DetectorVarFile;
-      std::string m_DetectorVar;
       int m_nEvents;
 };
 

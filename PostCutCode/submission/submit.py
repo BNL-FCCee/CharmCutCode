@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--inputFolder",                default = "/Users/haider/FCC/data/ntuples/zh_vvjj/", type = str,      help = "Path to folder with all the input folder")
 parser.add_argument("--outputFolder",               default = "/Users/haider/FCC/PostCutCode/run/root-files/", type = str,      help = "Path to folder with all the output")
 parser.add_argument("--doZHvvJJ",                   default = False, action='store_true',   help = "Run jobs for ZHvvjj analysis") 
-parser.add_argument("--doZHAllHad",                   default = False, action='store_true',   help = "Run jobs for ZHAllHad analysis") 
+parser.add_argument("--doZHAllHad",                  default = False, action='store_true',   help = "Run jobs for ZHAllHad analysis") 
 
 ## Batch options
 parser.add_argument("--mergeFile",                  default = 20,    type=int,              help = "Number of files to merge into one job")
@@ -24,7 +24,6 @@ parser.add_argument("--maxProcs",                   default = 4,     type=int,  
 
 parser.add_argument("--remergeResplit",             default = False, action='store_true',   help = "expert option to merge and split jobs")
 parser.add_argument("--remergeResplitSize",         default = 1,     type = int,            help = "expert option to find how many to merge jobs with")
-parser.add_argument("--DetectorVar",                default = "baseline", type = str,        help = "Detector variation to be considered, when updating the B/C tagging score.")
 
 
 
@@ -71,7 +70,7 @@ elif args.doZHAllHad:
     {"folderName" : "wzp6_ee_ccH_HWW_ecm240",       "processName" : "HWW"},
     {"folderName" : "wzp6_ee_ccH_HZa_ecm240",       "processName" : "HZa"},
     {"folderName" : "wzp6_ee_ccH_HZZ_ecm240",       "processName" : "HZZ"},
-    {"folderName" : "wzp6_ee_nunuH_ecm240",         "processName" : "ecm240"},
+    {"folderName" : "wzp6_ee_nunuH_ecm240",         "processName" : "nunuH"},
     {"folderName" : "wzp6_ee_qqH_Hbb_ecm240",       "processName" : "Hbb"},
     {"folderName" : "wzp6_ee_qqH_Hcc_ecm240",       "processName" : "Hcc"},
     {"folderName" : "wzp6_ee_qqH_Hgg_ecm240",       "processName" : "Hgg"},
@@ -87,19 +86,16 @@ elif args.doZHAllHad:
     {"folderName" : "wzp6_ee_ssH_Htautau_ecm240",   "processName" : "Htautau"},
     {"folderName" : "wzp6_ee_ssH_HWW_ecm240",       "processName" : "HWW"},
     {"folderName" : "wzp6_ee_ssH_HZa_ecm240",       "processName" : "HZa"},
-    {"folderName" : "wzp6_ee_ssH_HZZ_ecm240",       "processName" : "HZZ"},
+    {"folderName" : "wzp6_ee_ssH_HZZ_ecm240",       "processName" : "HZZ"}
 
-#     {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
-#     {"folderName" : "p8_ee_ZZ_ecm240",              "processName" : "ZZ"},
-#     {"folderName" : "p8_ee_Zqq_ecm240",             "processName" : "Zqq"},
-#     {"folderName" : "wzp6_ee_nunuH_HWW_ecm240",     "processName" : "HWW"},
-#     {"folderName" : "wzp6_ee_nunuH_HZZ_ecm240",     "processName" : "HZZ"},
-#     {"folderName" : "wzp6_ee_nunuH_Hbb_ecm240",     "processName" : "Hbb"},
-#     {"folderName" : "wzp6_ee_nunuH_Hcc_ecm240",     "processName" : "Hcc"},
-#     {"folderName" : "wzp6_ee_nunuH_Hgg_ecm240",     "processName" : "Hgg"},
-#     {"folderName" : "wzp6_ee_nunuH_Hss_ecm240",     "processName" : "Hss"},
-#     {"folderName" : "wzp6_ee_nunuH_Htautau_ecm240", "processName" : "Htautau"},
-#     {"folderName" : "wzp6_ee_qqH_ecm240",           "processName" : "qqH"},
+    # {"folderName" : "wzp6_ee_nunuH_HWW_ecm240",     "processName" : "HWW"},
+    # {"folderName" : "wzp6_ee_nunuH_HZZ_ecm240",     "processName" : "HZZ"},
+    # {"folderName" : "wzp6_ee_nunuH_Hbb_ecm240",     "processName" : "Hbb"},
+    # {"folderName" : "wzp6_ee_nunuH_Hcc_ecm240",     "processName" : "Hcc"},
+    # {"folderName" : "wzp6_ee_nunuH_Hgg_ecm240",     "processName" : "Hgg"},
+    # {"folderName" : "wzp6_ee_nunuH_Hss_ecm240",     "processName" : "Hss"},
+    # {"folderName" : "wzp6_ee_nunuH_Htautau_ecm240", "processName" : "Htautau"},
+    # {"folderName" : "wzp6_ee_qqH_ecm240",           "processName" : "qqH"},
 #     ]
 # elif args.doZHAllHad:
 #     submissionJobList = [
@@ -247,7 +243,6 @@ def _getRunCommand(exePath, currJob):
     cmd += ' --outputFileName %s' %(currJob['outputFileName'])
     cmd += ' --sampleName %s' %(currJob['sampleName'])
     cmd += ' --processName %s' %(currJob['processName'])
-    cmd += ' --DetectorVar %s' %(args.DetectorVar)
     
 
     if(args.doZHvvJJ):

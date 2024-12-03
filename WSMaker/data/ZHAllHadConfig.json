@@ -1,9 +1,9 @@
 {
-    "category":["LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HiqqHgg","HibbHgg","HiccHgg","HissHgg"],
-    "process":["WW","ZZ", "Zqq","HZa","HZZ","Hbb","Hcc","Hgg","Hss","HWW", "Htautau"],
+    "category": ["LbbHss","MibbHss","HibbHss","LccHss","MiccHss", "HiccHss","LssHss","MissHss", "HissHss","LqqHss","MiqqHss","HiqqHss","LbbHbb","LccHbb","LssHbb","LqqHbb","LbbHcc","LccHcc","LssHcc","LqqHcc","LbbHgg","LccHgg","LssHgg","LqqHgg","MibbHbb","MiccHbb","MissHbb","MiqqHbb","MibbHcc","MiccHcc","MissHcc","MiqqHcc","MibbHgg","MiccHgg","MissHgg","MiqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HiqqHgg","HibbHgg","HiccHgg","HissHgg"],    
+    "process":["WW","ZZ", "Zqq","HZa","HZZ","Hbb","Hcc","Hss","HWW", "Htautau","Hgg","nunuH"],
     "processHeldConstant":["HZa"],
     "xRebinFactor":1,
-    "yRebinFactor":5,
+    "yRebinFactor":1,
     "lumi": 5000000.0,
     "minYieldBinCut": 0.000000001,
     "relErrorThreshold":0.1,
