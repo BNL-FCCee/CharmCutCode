@@ -16,6 +16,7 @@
 #include "PostCutCode/AnalysisBase.h"
 #include "PostCutCode/AnalysisZHvvJJ.h"
 #include "PostCutCode/AnalysisZHAllHad.h"
+#include "PostCutCode/AnalysisZHAllHad6J.h"
 #include "PostCutCode/AnalysisSelfCouplingTest.h"
 #include "PostCutCode/MetadataContainer.h"
 
@@ -48,6 +49,10 @@ int main(int argc, char** argv)
     else if(opts["analType"] == "ZHAllHad") 
     {
         analysis =  std::make_shared<AnalysisZHAllHad>();
+    }
+    else if(opts["analType"] == "ZHAllHad6J") 
+    {
+        analysis =  std::make_shared<AnalysisZHAllHad6J>();
     }
     else if(opts["analType"] == "SelfCoupling") 
     {
