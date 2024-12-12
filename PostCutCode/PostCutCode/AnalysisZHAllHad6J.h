@@ -34,6 +34,17 @@ class AnalysisZHAllHad6J: public AnalysisBase
       double mZ1_jj;
       double mZ2_jj;
       double mZ3_jj;
+      int Z1_j1FlavorIdx;
+      int Z1_j2FlavorIdx;
+      int Z2_j1FlavorIdx;
+      int Z2_j2FlavorIdx;
+      int Zstar_j1FlavorIdx;
+      int Zstar_j2FlavorIdx;
+      double Z1_FlavorScoreCombined;
+      double Z2_FlavorScoreCombined;
+      double Z3_FlavorScoreCombined;
+      double DeltaR_HZZ_Z2;
+      double DeltaPhi_HZZ_Z2;
       double Hscore;
       double Zscore;
       int Hflav;
@@ -41,8 +52,13 @@ class AnalysisZHAllHad6J: public AnalysisBase
       double ChiH;
       double ChiZ;
       double mc_weight;
-
-
+      double v_d12;
+      double v_d23;
+      double v_d34;
+      double v_d45;
+      double v_d56;
+      double vis_E;
+      double vis_M;
 };
 
 

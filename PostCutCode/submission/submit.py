@@ -10,7 +10,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--inputFolder",                default = "/Users/haider/FCC/data/ntuples/zh_vvjj/", type = str,      help = "Path to folder with all the input folder")
 parser.add_argument("--outputFolder",               default = "/Users/haider/FCC/PostCutCode/run/root-files/", type = str,      help = "Path to folder with all the output")
 parser.add_argument("--doZHvvJJ",                   default = False, action='store_true',   help = "Run jobs for ZHvvjj analysis") 
-parser.add_argument("--doZHAllHad",                  default = False, action='store_true',   help = "Run jobs for ZHAllHad analysis") 
+parser.add_argument("--doZHAllHad",                  default = False, action='store_true',   help = "Run jobs for ZHAllHad analysis")
+parser.add_argument("--doZHAllHad6J",                  default = False, action='store_true',   help = "Run jobs for ZHAllHad 6J analysis")
+
 
 ## Batch options
 parser.add_argument("--mergeFile",                  default = 20,    type=int,              help = "Number of files to merge into one job")
@@ -87,6 +89,98 @@ elif args.doZHAllHad:
     {"folderName" : "wzp6_ee_ssH_HWW_ecm240",       "processName" : "HWW"},
     {"folderName" : "wzp6_ee_ssH_HZa_ecm240",       "processName" : "HZa"},
     {"folderName" : "wzp6_ee_ssH_HZZ_ecm240",       "processName" : "HZZ"}
+
+    # {"folderName" : "wzp6_ee_nunuH_HWW_ecm240",     "processName" : "HWW"},
+    # {"folderName" : "wzp6_ee_nunuH_HZZ_ecm240",     "processName" : "HZZ"},
+    # {"folderName" : "wzp6_ee_nunuH_Hbb_ecm240",     "processName" : "Hbb"},
+    # {"folderName" : "wzp6_ee_nunuH_Hcc_ecm240",     "processName" : "Hcc"},
+    # {"folderName" : "wzp6_ee_nunuH_Hgg_ecm240",     "processName" : "Hgg"},
+    # {"folderName" : "wzp6_ee_nunuH_Hss_ecm240",     "processName" : "Hss"},
+    # {"folderName" : "wzp6_ee_nunuH_Htautau_ecm240", "processName" : "Htautau"},
+    # {"folderName" : "wzp6_ee_qqH_ecm240",           "processName" : "qqH"},
+#     ]
+# elif args.doZHAllHad:
+#     submissionJobList = [
+    # {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
+    # {"folderName" : "p8_ee_Zqq_ecm240",             "processName" : "Zqq"},
+    # {"folderName" : "p8_ee_ZZ_ecm240",              "processName" : "ZZ"},
+    # {"folderName" : "wzp6_ee_bbH_Hbb_ecm240",       "processName" : "ZbbHbb"},
+    # {"folderName" : "wzp6_ee_bbH_Hcc_ecm240",       "processName" : "ZbbHcc"},
+    # {"folderName" : "wzp6_ee_bbH_Hgg_ecm240",       "processName" : "ZbbHgg"},
+    # {"folderName" : "wzp6_ee_bbH_Hss_ecm240",       "processName" : "ZbbHss"},
+    # {"folderName" : "wzp6_ee_bbH_Htautau_ecm240",   "processName" : "ZbbHtautau"},
+    # {"folderName" : "wzp6_ee_bbH_HWW_ecm240",       "processName" : "ZbbHWW"},
+    # {"folderName" : "wzp6_ee_bbH_HZa_ecm240",       "processName" : "ZbbHZa"},
+    # {"folderName" : "wzp6_ee_bbH_HZZ_ecm240",       "processName" : "ZbbHZZ"},
+    # {"folderName" : "wzp6_ee_ccH_Hbb_ecm240",       "processName" : "ZccHbb"},
+    # {"folderName" : "wzp6_ee_ccH_Hcc_ecm240",       "processName" : "ZccHcc"},
+    # {"folderName" : "wzp6_ee_ccH_Hgg_ecm240",       "processName" : "ZccHgg"},
+    # {"folderName" : "wzp6_ee_ccH_Hss_ecm240",       "processName" : "ZccHss"},
+    # {"folderName" : "wzp6_ee_ccH_Htautau_ecm240",   "processName" : "ZccHtautau"},
+    # {"folderName" : "wzp6_ee_ccH_HWW_ecm240",       "processName" : "ZccHWW"},
+    # {"folderName" : "wzp6_ee_ccH_HZa_ecm240",       "processName" : "ZccHZa"},
+    # {"folderName" : "wzp6_ee_ccH_HZZ_ecm240",       "processName" : "ZccHZZ"},
+    # {"folderName" : "wzp6_ee_nunuH_ecm240",         "processName" : "ecm240"},
+    # {"folderName" : "wzp6_ee_qqH_Hbb_ecm240",       "processName" : "ZqqHbb"},
+    # {"folderName" : "wzp6_ee_qqH_Hcc_ecm240",       "processName" : "ZqqHcc"},
+    # {"folderName" : "wzp6_ee_qqH_Hgg_ecm240",       "processName" : "ZqqHgg"},
+    # {"folderName" : "wzp6_ee_qqH_Hss_ecm240",       "processName" : "ZqqHss"},
+    # {"folderName" : "wzp6_ee_qqH_Htautau_ecm240",   "processName" : "ZqqHtautau"},
+    # {"folderName" : "wzp6_ee_qqH_HWW_ecm240",       "processName" : "ZqqHWW"},
+    # {"folderName" : "wzp6_ee_qqH_HZa_ecm240",       "processName" : "ZqqHZa"},
+    # {"folderName" : "wzp6_ee_qqH_HZZ_ecm240",       "processName" : "ZqqHZZ"},
+    # {"folderName" : "wzp6_ee_ssH_Hbb_ecm240",       "processName" : "ZssHbb"},
+    # {"folderName" : "wzp6_ee_ssH_Hcc_ecm240",       "processName" : "ZssHcc"},
+    # {"folderName" : "wzp6_ee_ssH_Hgg_ecm240",       "processName" : "ZssHgg"},
+    # {"folderName" : "wzp6_ee_ssH_Hss_ecm240",       "processName" : "ZssHss"},
+    # {"folderName" : "wzp6_ee_ssH_Htautau_ecm240",   "processName" : "ZssHtautau"},
+    # {"folderName" : "wzp6_ee_ssH_HWW_ecm240",       "processName" : "ZssHWW"},
+    # {"folderName" : "wzp6_ee_ssH_HZa_ecm240",       "processName" : "ZssHZa"},
+    # {"folderName" : "wzp6_ee_ssH_HZZ_ecm240",       "processName" : "ZssHZZ"},
+    ]
+elif args.doZHAllHad6J:
+    submissionJobList = [
+    {"folderName" : "wzp6_ee_qqH_HZZ_qqqq_ecm240",  "processName" : "ZHqqHZZ_qqqq"},
+# COMMENTED FROM HERE
+    {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
+    {"folderName" : "p8_ee_Zqq_ecm240",             "processName" : "Zqq"},
+    {"folderName" : "p8_ee_ZZ_ecm240",              "processName" : "ZZ"},
+    {"folderName" : "wzp6_ee_bbH_Hbb_ecm240",       "processName" : "Hbb"},
+    {"folderName" : "wzp6_ee_bbH_Hcc_ecm240",       "processName" : "Hcc"},
+    {"folderName" : "wzp6_ee_bbH_Hgg_ecm240",       "processName" : "Hgg"},
+    {"folderName" : "wzp6_ee_bbH_Hss_ecm240",       "processName" : "Hss"},
+    {"folderName" : "wzp6_ee_bbH_Htautau_ecm240",   "processName" : "Htautau"},
+    {"folderName" : "wzp6_ee_bbH_HWW_ecm240",       "processName" : "HWW"},
+    {"folderName" : "wzp6_ee_bbH_HZa_ecm240",       "processName" : "HZa"},
+    {"folderName" : "wzp6_ee_bbH_HZZ_ecm240",       "processName" : "HZZ"},
+    {"folderName" : "wzp6_ee_ccH_Hbb_ecm240",       "processName" : "Hbb"},
+    {"folderName" : "wzp6_ee_ccH_Hcc_ecm240",       "processName" : "Hcc"},
+    {"folderName" : "wzp6_ee_ccH_Hgg_ecm240",       "processName" : "Hgg"},
+    {"folderName" : "wzp6_ee_ccH_Hss_ecm240",       "processName" : "Hss"},
+    {"folderName" : "wzp6_ee_ccH_Htautau_ecm240",   "processName" : "Htautau"},
+    {"folderName" : "wzp6_ee_ccH_HWW_ecm240",       "processName" : "HWW"},
+    {"folderName" : "wzp6_ee_ccH_HZa_ecm240",       "processName" : "HZa"},
+    {"folderName" : "wzp6_ee_ccH_HZZ_ecm240",       "processName" : "HZZ"},
+    {"folderName" : "wzp6_ee_nunuH_ecm240",         "processName" : "nunuH"},
+    {"folderName" : "wzp6_ee_qqH_Hbb_ecm240",       "processName" : "Hbb"},
+    {"folderName" : "wzp6_ee_qqH_Hcc_ecm240",       "processName" : "Hcc"},
+    {"folderName" : "wzp6_ee_qqH_Hgg_ecm240",       "processName" : "Hgg"},
+    {"folderName" : "wzp6_ee_qqH_Hss_ecm240",       "processName" : "Hss"},
+    {"folderName" : "wzp6_ee_qqH_Htautau_ecm240",   "processName" : "Htautau"},
+    {"folderName" : "wzp6_ee_qqH_HWW_ecm240",       "processName" : "HWW"},
+    {"folderName" : "wzp6_ee_qqH_HZa_ecm240",       "processName" : "HZa"},
+    {"folderName" : "wzp6_ee_qqH_HZZ_ecm240",       "processName" : "HZZ"},
+    {"folderName" : "wzp6_ee_ssH_Hbb_ecm240",       "processName" : "Hbb"},
+    {"folderName" : "wzp6_ee_ssH_Hcc_ecm240",       "processName" : "Hcc"},
+    {"folderName" : "wzp6_ee_ssH_Hgg_ecm240",       "processName" : "Hgg"},
+    {"folderName" : "wzp6_ee_ssH_Hss_ecm240",       "processName" : "Hss"},
+    {"folderName" : "wzp6_ee_ssH_Htautau_ecm240",   "processName" : "Htautau"},
+    {"folderName" : "wzp6_ee_ssH_HWW_ecm240",       "processName" : "HWW"},
+    {"folderName" : "wzp6_ee_ssH_HZa_ecm240",       "processName" : "HZa"},
+    {"folderName" : "wzp6_ee_ssH_HZZ_ecm240",       "processName" : "HZZ"}
+
+# Commented upto here
+
 
     # {"folderName" : "wzp6_ee_nunuH_HWW_ecm240",     "processName" : "HWW"},
     # {"folderName" : "wzp6_ee_nunuH_HZZ_ecm240",     "processName" : "HZZ"},
@@ -249,6 +343,8 @@ def _getRunCommand(exePath, currJob):
         cmd += ' --analType ZHvvJJ'
     elif(args.doZHAllHad):
         cmd += ' --analType ZHAllHad'
+    elif(args.doZHAllHad6J):
+        cmd += ' --analType ZHAllHad6J'
     else:
         print("Dont know what type of job you are running. doXXXX not supported for run Command")
         exit(1)
